@@ -2,63 +2,74 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Expense;
+use App\Models\ExpenseCategory;
 use Illuminate\Http\Request;
 
 class ExpenseController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $expenses = auth()->user()->expenses()->with('category')->latest()->get();
+        $categories = auth()->user()->expenseCategories()->get();
+        return view('expenses.index', compact('expenses', 'categories'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        $categories = auth()->user()->expenseCategories()->get();
+        return view('expenses.create', compact('categories'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'description' => 'required|string|max:255',
+            'amount'      => 'required|numeric|min:0',
+            'currency'    => 'required|in:RON,EUR',
+            'date'        => 'required|date',
+            'category_id' => 'nullable|exists:expense_categories,id',
+        ]);
+
+        auth()->user()->expenses()->create($validated);
+
+        return redirect()->route('expenses.index')->with('success', 'Cheltuială adăugată cu succes!');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function edit(Expense $expense)
     {
-        //
+        if ($expense->user_id !== auth()->id()) {
+            abort(403);
+        }
+        $categories = auth()->user()->expenseCategories()->get();
+        return view('expenses.edit', compact('expense', 'categories'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function update(Request $request, Expense $expense)
     {
-        //
+        if ($expense->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        $validated = $request->validate([
+            'description' => 'required|string|max:255',
+            'amount'      => 'required|numeric|min:0',
+            'currency'    => 'required|in:RON,EUR',
+            'date'        => 'required|date',
+            'category_id' => 'nullable|exists:expense_categories,id',
+        ]);
+
+        $expense->update($validated);
+
+        return redirect()->route('expenses.index')->with('success', 'Cheltuială actualizată!');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function destroy(Expense $expense)
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        if ($expense->user_id !== auth()->id()) {
+            abort(403);
+        }
+        $expense->delete();
+        return redirect()->route('expenses.index')->with('success', 'Cheltuială ștearsă!');
     }
 }
