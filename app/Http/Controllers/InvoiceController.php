@@ -6,6 +6,7 @@ use App\Models\Invoice;
 use App\Models\Client;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use App\Services\PdfService;
 
 class InvoiceController extends Controller
 {
@@ -107,4 +108,16 @@ class InvoiceController extends Controller
             ->count();
         return 'CASH-' . $year . '-' . str_pad($count + 1, 3, '0', STR_PAD_LEFT);
     }
+
+    public function downloadPdf(Invoice $invoice, PdfService $pdfService)
+    {
+        if ($invoice->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        $pdf = $pdfService->generateInvoicePdf($invoice);
+
+        return $pdf->download('factura-' . $invoice->number . '.pdf');
+    }
+
 }

@@ -17,6 +17,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('products', \App\Http\Controllers\ProductController::class);
     Route::resource('invoices', \App\Http\Controllers\InvoiceController::class);
     Route::post('invoices/{invoice}/mark-as-paid', [\App\Http\Controllers\InvoiceController::class, 'markAsPaid'])->name('invoices.markAsPaid');
+    Route::get('invoices/{invoice}/pdf', [\App\Http\Controllers\InvoiceController::class, 'downloadPdf'])->name('invoices.downloadPdf');
     Route::resource('expenses', \App\Http\Controllers\ExpenseController::class);
 
     Route::get('/settings', [\App\Http\Controllers\SettingsController::class, 'index'])->name('settings.index');

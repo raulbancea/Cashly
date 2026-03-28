@@ -3,13 +3,17 @@
 
     <div class="max-w-4xl">
 
-        {{-- Header --}}
+       {{-- Header --}}
         <div class="flex items-center justify-between mb-6">
             <div>
                 <h2 class="text-xl font-bold text-gray-900">{{ $invoice->number }}</h2>
                 <p class="text-sm text-gray-500">{{ $invoice->client->name }}</p>
             </div>
             <div class="flex gap-2">
+                <a href="{{ route('invoices.downloadPdf', $invoice) }}"
+                class="px-4 py-2 text-sm font-medium text-white bg-gray-700 rounded-lg hover:bg-gray-800">
+                    Descarcă PDF
+                </a>
                 @if($invoice->status !== 'paid')
                     <form method="POST" action="{{ route('invoices.markAsPaid', $invoice) }}">
                         @csrf
@@ -20,7 +24,7 @@
                     </form>
                 @endif
                 <a href="{{ route('invoices.index') }}"
-                   class="px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50">
+                class="px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50">
                     Înapoi
                 </a>
             </div>
