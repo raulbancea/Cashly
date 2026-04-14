@@ -1,76 +1,100 @@
-<x-guest-layout>
-    <form method="POST" action="{{ route('register') }}">
-        @csrf
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cashly — Creează cont</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+</head>
+<body style="background-color: #030712; min-height: 100vh; display: flex; flex-direction: column; font-family: sans-serif;">
 
-        <!-- Name -->
-        <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input id="name" class="block w-full mt-1" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
-            <x-input-error :messages="$errors->get('name')" class="mt-2" />
+    {{-- Navbar --}}
+    <nav style="border-bottom: 1px solid rgba(255,255,255,0.05); padding: 0 24px; height: 64px; display: flex; align-items: center; justify-content: space-between;">
+        <a href="/" style="display: flex; align-items: center; gap: 8px; text-decoration: none;">
+            <div style="width: 28px; height: 28px; background: #14b8a6; border-radius: 8px;"></div>
+            <span style="color: white; font-weight: 700; font-size: 18px;">Cashly</span>
+        </a>
+        <a href="{{ route('login') }}" style="font-size: 14px; color: #9ca3af; text-decoration: none;">
+            Ai deja cont? Autentifică-te
+        </a>
+    </nav>
+
+    {{-- Form --}}
+    <div style="flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px 24px;">
+        <div style="width: 100%; max-width: 440px;">
+
+            <div style="text-align: center; margin-bottom: 32px;">
+                <h1 style="font-size: 28px; font-weight: 700; color: white; margin-bottom: 8px;">Creează cont gratuit</h1>
+                <p style="color: #6b7280; font-size: 14px;">Fără card de credit. Fără angajamente.</p>
+            </div>
+
+            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 32px;">
+                <form method="POST" action="{{ route('register') }}">
+                    @csrf
+
+                    @if($errors->any())
+                        <div style="background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); border-radius: 8px; padding: 12px; margin-bottom: 20px;">
+                            @foreach($errors->all() as $error)
+                                <p style="color: #fca5a5; font-size: 13px; margin: 2px 0;">{{ $error }}</p>
+                            @endforeach
+                        </div>
+                    @endif
+
+                    <div style="margin-bottom: 16px;">
+                        <label style="display: block; font-size: 13px; font-weight: 500; color: #d1d5db; margin-bottom: 6px;">Nume *</label>
+                        <input type="text" name="name" value="{{ old('name') }}" required
+                               style="width: 100%; padding: 10px 14px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; font-size: 14px; outline: none; box-sizing: border-box;"
+                               placeholder="Numele tău">
+                    </div>
+
+                    <div style="margin-bottom: 16px;">
+                        <label style="display: block; font-size: 13px; font-weight: 500; color: #d1d5db; margin-bottom: 6px;">Nume firmă</label>
+                        <input type="text" name="company_name" value="{{ old('company_name') }}"
+                               style="width: 100%; padding: 10px 14px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; font-size: 14px; outline: none; box-sizing: border-box;"
+                               placeholder="SC Firma SRL (opțional)">
+                    </div>
+
+                    <div style="margin-bottom: 16px;">
+                        <label style="display: block; font-size: 13px; font-weight: 500; color: #d1d5db; margin-bottom: 6px;">CUI / VAT</label>
+                        <input type="text" name="company_vat" value="{{ old('company_vat') }}"
+                               style="width: 100%; padding: 10px 14px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; font-size: 14px; outline: none; box-sizing: border-box;"
+                               placeholder="RO12345678 (opțional)">
+                    </div>
+
+                    <div style="margin-bottom: 16px;">
+                        <label style="display: block; font-size: 13px; font-weight: 500; color: #d1d5db; margin-bottom: 6px;">Email *</label>
+                        <input type="email" name="email" value="{{ old('email') }}" required
+                               style="width: 100%; padding: 10px 14px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; font-size: 14px; outline: none; box-sizing: border-box;"
+                               placeholder="email@exemplu.ro">
+                    </div>
+
+                    <div style="margin-bottom: 16px;">
+                        <label style="display: block; font-size: 13px; font-weight: 500; color: #d1d5db; margin-bottom: 6px;">Parolă *</label>
+                        <input type="password" name="password" required
+                               style="width: 100%; padding: 10px 14px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; font-size: 14px; outline: none; box-sizing: border-box;"
+                               placeholder="Minim 8 caractere">
+                    </div>
+
+                    <div style="margin-bottom: 24px;">
+                        <label style="display: block; font-size: 13px; font-weight: 500; color: #d1d5db; margin-bottom: 6px;">Confirmă parola *</label>
+                        <input type="password" name="password_confirmation" required
+                               style="width: 100%; padding: 10px 14px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; font-size: 14px; outline: none; box-sizing: border-box;"
+                               placeholder="Repetă parola">
+                    </div>
+
+                    <button type="submit"
+                            style="width: 100%; padding: 12px; background: #14b8a6; color: white; font-weight: 600; font-size: 15px; border: none; border-radius: 10px; cursor: pointer; box-shadow: 0 0 20px rgba(20, 184, 166, 0.4);">
+                        Creează cont gratuit
+                    </button>
+                </form>
+            </div>
+
+            <p style="text-align: center; margin-top: 24px; font-size: 14px; color: #6b7280;">
+                Ai deja cont?
+                <a href="{{ route('login') }}" style="color: #14b8a6; text-decoration: none;">Autentifică-te</a>
+            </p>
         </div>
+    </div>
 
-        <!-- Company Name -->
-        <div class="mt-4">
-            <x-input-label for="company_name" :value="__('Company Name')" />
-            <x-text-input id="company_name" class="block w-full mt-1" type="text" name="company_name" :value="old('company_name')" required />
-            <x-input-error :messages="$errors->get('company_name')" class="mt-2" />
-        </div>
-
-        <!-- Company VAT -->
-        <div class="mt-4">
-            <x-input-label for="company_vat" :value="__('CUI / VAT')" />
-            <x-text-input id="company_vat" class="block w-full mt-1" type="text" name="company_vat" :value="old('company_vat')" />
-            <x-input-error :messages="$errors->get('company_vat')" class="mt-2" />
-        </div>
-
-        <!-- Phone -->
-        <div class="mt-4">
-            <x-input-label for="phone" :value="__('Phone')" />
-            <x-text-input id="phone" class="block w-full mt-1" type="text" name="phone" :value="old('phone')" />
-            <x-input-error :messages="$errors->get('phone')" class="mt-2" />
-        </div>
-
-        <!-- Address -->
-        <div class="mt-4">
-            <x-input-label for="address" :value="__('Address')" />
-            <x-text-input id="address" class="block w-full mt-1" type="text" name="address" :value="old('address')" />
-            <x-input-error :messages="$errors->get('address')" class="mt-2" />
-        </div>
-
-        <!-- Email Address -->
-        <div class="mt-4">
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block w-full mt-1" type="email" name="email" :value="old('email')" required autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
-
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-            <x-text-input id="password" class="block w-full mt-1"
-                          type="password"
-                          name="password"
-                          required autocomplete="new-password" />
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
-
-        <!-- Confirm Password -->
-        <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
-            <x-text-input id="password_confirmation" class="block w-full mt-1"
-                          type="password"
-                          name="password_confirmation" required autocomplete="new-password" />
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
-            <a class="text-sm text-gray-600 underline rounded-md hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('login') }}">
-                {{ __('Already registered?') }}
-            </a>
-
-            <x-primary-button class="ms-4">
-                {{ __('Register') }}
-            </x-primary-button>
-        </div>
-    </form>
-</x-guest-layout>
+</body>
+</html>

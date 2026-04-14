@@ -4,9 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Concerns\BelongsToUser;
 
 class Expense extends Model
 {
+    use HasFactory, BelongsToUser;
     protected $fillable = [
         'user_id',
         'category_id',

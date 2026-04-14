@@ -81,6 +81,59 @@ class InvoiceController extends Controller
         return view('invoices.show', compact('invoice'));
     }
 
+        public function edit(Invoice $invoice)
+    {
+        $invoice->load('client', 'items');
+        $clients = auth()->user()->clients()->where('status', 'active')->get();
+        $products = auth()->user()->products()->get();
+        return view('invoices.edit', compact('invoice', 'clients', 'products'));
+    }
+
+    public function update(Request $request, Invoice $invoice)
+    {
+        $validated = $request->validate([
+            'client_id'  => 'required|exists:clients,id',
+            'issue_date' => 'required|date',
+            'due_date'   => 'required|date|after_or_equal:issue_date',
+            'currency'   => 'required|in:RON,EUR',
+            'notes'      => 'nullable|string|max:1000',
+            'items'      => 'required|array|min:1',
+            'items.*.description' => 'required|string|max:255',
+            'items.*.quantity'    => 'required|numeric|min:0.01',
+            'items.*.unit_price'  => 'required|numeric|min:0',
+        ]);
+
+        $invoice->update([
+            'client_id'  => $validated['client_id'],
+            'issue_date' => $validated['issue_date'],
+            'due_date'   => $validated['due_date'],
+            'currency'   => $validated['currency'],
+            'notes'      => $validated['notes'] ?? null,
+        ]);
+
+        // Stergem item-urile vechi si le recreem
+        $invoice->items()->delete();
+
+        $total = 0;
+        foreach ($validated['items'] as $item) {
+            $itemTotal = $item['quantity'] * $item['unit_price'];
+            $total += $itemTotal;
+
+            $invoice->items()->create([
+                'description' => $item['description'],
+                'quantity'    => $item['quantity'],
+                'unit_price'  => $item['unit_price'],
+                'total'       => $itemTotal,
+                'product_id'  => $item['product_id'] ?? null,
+            ]);
+        }
+
+        $invoice->update(['total' => $total]);
+
+        return redirect()->route('invoices.show', $invoice)
+            ->with('success', 'Factură actualizată cu succes!');
+    }
+
     public function destroy(Invoice $invoice)
     {
         if ($invoice->user_id !== auth()->id()) {

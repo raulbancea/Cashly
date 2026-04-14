@@ -10,6 +10,10 @@
                 <p class="text-sm text-gray-500">{{ $invoice->client->name }}</p>
             </div>
             <div class="flex gap-2">
+                <a href="{{ route('invoices.edit', $invoice) }}"
+                    class="px-4 py-2 text-sm font-medium text-white bg-teal-600 rounded-lg hover:bg-teal-700">
+                    Editează
+                </a>
                 <a href="{{ route('invoices.downloadPdf', $invoice) }}"
                 class="px-4 py-2 text-sm font-medium text-white bg-gray-700 rounded-lg hover:bg-gray-800">
                     Descarcă PDF

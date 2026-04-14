@@ -1,47 +1,86 @@
-<x-guest-layout>
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cashly — Autentificare</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+</head>
+<body style="background-color: #030712; min-height: 100vh; display: flex; flex-direction: column; font-family: sans-serif;">
 
-    <form method="POST" action="{{ route('login') }}">
-        @csrf
+    {{-- Navbar --}}
+    <nav style="border-bottom: 1px solid rgba(255,255,255,0.05); padding: 0 24px; height: 64px; display: flex; align-items: center; justify-content: space-between;">
+        <a href="/" style="display: flex; align-items: center; gap: 8px; text-decoration: none;">
+            <div style="width: 28px; height: 28px; background: #14b8a6; border-radius: 8px;"></div>
+            <span style="color: white; font-weight: 700; font-size: 18px;">Cashly</span>
+        </a>
+        <a href="{{ route('register') }}" style="font-size: 14px; color: #9ca3af; text-decoration: none;">
+            Nu ai cont? Înregistrează-te
+        </a>
+    </nav>
 
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+    {{-- Form --}}
+    <div style="flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px 24px;">
+        <div style="width: 100%; max-width: 440px;">
+
+            <div style="text-align: center; margin-bottom: 32px;">
+                <h1 style="font-size: 28px; font-weight: 700; color: white; margin-bottom: 8px;">Bun venit înapoi</h1>
+                <p style="color: #6b7280; font-size: 14px;">Intră în contul tău Cashly</p>
+            </div>
+
+            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 32px;">
+                <form method="POST" action="{{ route('login') }}">
+                    @csrf
+
+                    @if($errors->any())
+                        <div style="background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); border-radius: 8px; padding: 12px; margin-bottom: 20px;">
+                            @foreach($errors->all() as $error)
+                                <p style="color: #fca5a5; font-size: 13px; margin: 2px 0;">{{ $error }}</p>
+                            @endforeach
+                        </div>
+                    @endif
+
+                    <div style="margin-bottom: 16px;">
+                        <label style="display: block; font-size: 13px; font-weight: 500; color: #d1d5db; margin-bottom: 6px;">Email</label>
+                        <input type="email" name="email" value="{{ old('email') }}" required autofocus
+                               style="width: 100%; padding: 10px 14px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; font-size: 14px; outline: none; box-sizing: border-box;"
+                               placeholder="email@exemplu.ro">
+                    </div>
+
+                    <div style="margin-bottom: 8px;">
+                        <label style="display: block; font-size: 13px; font-weight: 500; color: #d1d5db; margin-bottom: 6px;">Parolă</label>
+                        <input type="password" name="password" required
+                               style="width: 100%; padding: 10px 14px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; font-size: 14px; outline: none; box-sizing: border-box;"
+                               placeholder="Parola ta">
+                    </div>
+
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" name="remember"
+                                   style="width: 14px; height: 14px; accent-color: #14b8a6;">
+                            <span style="font-size: 13px; color: #9ca3af;">Ține-mă minte</span>
+                        </label>
+                        @if(Route::has('password.request'))
+                            <a href="{{ route('password.request') }}"
+                               style="font-size: 13px; color: #14b8a6; text-decoration: none;">
+                                Ai uitat parola?
+                            </a>
+                        @endif
+                    </div>
+
+                    <button type="submit"
+                            style="width: 100%; padding: 12px; background: #14b8a6; color: white; font-weight: 600; font-size: 15px; border: none; border-radius: 10px; cursor: pointer; box-shadow: 0 0 20px rgba(20, 184, 166, 0.4);">
+                        Autentifică-te
+                    </button>
+                </form>
+            </div>
+
+            <p style="text-align: center; margin-top: 24px; font-size: 14px; color: #6b7280;">
+                Nu ai cont?
+                <a href="{{ route('register') }}" style="color: #14b8a6; text-decoration: none;">Creează unul gratuit</a>
+            </p>
         </div>
+    </div>
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
-
-        <!-- Remember Me -->
-        <div class="block mt-4">
-            <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
-                <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
-            </label>
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
-            @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
-                </a>
-            @endif
-
-            <x-primary-button class="ms-3">
-                {{ __('Log in') }}
-            </x-primary-button>
-        </div>
-    </form>
-</x-guest-layout>
+</body>
+</html>
