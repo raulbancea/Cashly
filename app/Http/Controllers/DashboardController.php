@@ -13,49 +13,57 @@ class DashboardController extends Controller
         $currentMonth = now()->month;
         $currentYear = now()->year;
 
-        $revenue = $user->invoices()
-            ->where('status', 'paid')
-            ->whereMonth('issue_date', $currentMonth)
-            ->whereYear('issue_date', $currentYear)
+        $revenue_ron = (float) $user->invoices()
+            ->where('status', 'paid')->where('currency', 'RON')
+            ->whereMonth('issue_date', $currentMonth)->whereYear('issue_date', $currentYear)
             ->sum('total');
 
-        $expenses = $user->expenses()
-            ->whereMonth('date', $currentMonth)
-            ->whereYear('date', $currentYear)
+        $revenue_eur = (float) $user->invoices()
+            ->where('status', 'paid')->where('currency', 'EUR')
+            ->whereMonth('issue_date', $currentMonth)->whereYear('issue_date', $currentYear)
+            ->sum('total');
+
+        $expenses_ron = (float) $user->expenses()
+            ->where('currency', 'RON')
+            ->whereMonth('date', $currentMonth)->whereYear('date', $currentYear)
             ->sum('amount');
 
-        $profit = $revenue - $expenses;
+        $expenses_eur = (float) $user->expenses()
+            ->where('currency', 'EUR')
+            ->whereMonth('date', $currentMonth)->whereYear('date', $currentYear)
+            ->sum('amount');
 
-        $overdueCount = $user->invoices()
-            ->where('status', 'overdue')
-            ->count();
+        $profit_ron = $revenue_ron - $expenses_ron;
+        $profit_eur = $revenue_eur - $expenses_eur;
 
-        $cashFlow = [];
+        $overdueCount = $user->invoices()->where('status', 'overdue')->count();
+
+        $cashFlow_ron = [];
+        $cashFlow_eur = [];
         for ($i = 5; $i >= 0; $i--) {
             $date = now()->subMonths($i);
             $month = $date->month;
-            $year = $date->year;
+            $year  = $date->year;
+            $label = $date->format('M Y');
 
-            $monthRevenue = $user->invoices()
-                ->where('status', 'paid')
-                ->whereMonth('issue_date', $month)
-                ->whereYear('issue_date', $year)
-                ->sum('total');
+            $cashFlow_ron[] = [
+                'month'    => $label,
+                'revenue'  => (float) $user->invoices()->where('status', 'paid')->where('currency', 'RON')->whereMonth('issue_date', $month)->whereYear('issue_date', $year)->sum('total'),
+                'expenses' => (float) $user->expenses()->where('currency', 'RON')->whereMonth('date', $month)->whereYear('date', $year)->sum('amount'),
+            ];
 
-            $monthExpenses = $user->expenses()
-                ->whereMonth('date', $month)
-                ->whereYear('date', $year)
-                ->sum('amount');
-
-            $cashFlow[] = [
-                'month' => $date->format('M Y'),
-                'revenue' => (float) $monthRevenue,
-                'expenses' => (float) $monthExpenses,
+            $cashFlow_eur[] = [
+                'month'    => $label,
+                'revenue'  => (float) $user->invoices()->where('status', 'paid')->where('currency', 'EUR')->whereMonth('issue_date', $month)->whereYear('issue_date', $year)->sum('total'),
+                'expenses' => (float) $user->expenses()->where('currency', 'EUR')->whereMonth('date', $month)->whereYear('date', $year)->sum('amount'),
             ];
         }
 
         return view('dashboard', compact(
-            'revenue', 'expenses', 'profit', 'overdueCount', 'cashFlow'
+            'revenue_ron', 'revenue_eur',
+            'expenses_ron', 'expenses_eur',
+            'profit_ron', 'profit_eur',
+            'overdueCount', 'cashFlow_ron', 'cashFlow_eur'
         ));
     }
 }

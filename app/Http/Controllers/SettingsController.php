@@ -42,14 +42,7 @@ class SettingsController extends Controller
 
     public function destroyCategory(\App\Models\ExpenseCategory $category)
     {
-        if($category->user_id !== auth()->id()) {
-            abort(403);
-        }
-
         $category->delete();
         return redirect()->route('settings.index')->with('success', 'Categoria a fost stearsa!');
     }
-
-
-
 }
