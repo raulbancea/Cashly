@@ -137,6 +137,12 @@ class InvoiceController extends Controller
         return redirect()->route('invoices.index')->with('success', 'Factură ștearsă!');
     }
 
+    public function markAsSent(Invoice $invoice)
+    {
+        $invoice->update(['status' => 'sent']);
+        return redirect()->back()->with('success', 'Factura marcată ca trimisă!');
+    }
+
     public function markAsPaid(Invoice $invoice)
     {
         $invoice->update(['status' => 'paid']);

@@ -18,6 +18,15 @@
                 class="px-4 py-2 text-sm font-medium text-white bg-gray-700 rounded-lg hover:bg-gray-800">
                     Descarcă PDF
                 </a>
+                @if($invoice->status === 'draft')
+                    <form method="POST" action="{{ route('invoices.markAsSent', $invoice) }}">
+                        @csrf
+                        <button type="submit"
+                                class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700">
+                            Marchează ca trimisă
+                        </button>
+                    </form>
+                @endif
                 @if($invoice->status !== 'paid')
                     <form method="POST" action="{{ route('invoices.markAsPaid', $invoice) }}">
                         @csrf
