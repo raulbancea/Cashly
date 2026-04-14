@@ -74,14 +74,11 @@ class InvoiceController extends Controller
 
     public function show(Invoice $invoice)
     {
-        if ($invoice->user_id !== auth()->id()) {
-            abort(403);
-        }
         $invoice->load('client', 'items');
         return view('invoices.show', compact('invoice'));
     }
 
-        public function edit(Invoice $invoice)
+    public function edit(Invoice $invoice)
     {
         $invoice->load('client', 'items');
         $clients = auth()->user()->clients()->where('status', 'active')->get();
@@ -103,14 +100,6 @@ class InvoiceController extends Controller
             'items.*.unit_price'  => 'required|numeric|min:0',
         ]);
 
-        $invoice->update([
-            'client_id'  => $validated['client_id'],
-            'issue_date' => $validated['issue_date'],
-            'due_date'   => $validated['due_date'],
-            'currency'   => $validated['currency'],
-            'notes'      => $validated['notes'] ?? null,
-        ]);
-
         // Stergem item-urile vechi si le recreem
         $invoice->items()->delete();
 
@@ -128,7 +117,14 @@ class InvoiceController extends Controller
             ]);
         }
 
-        $invoice->update(['total' => $total]);
+        $invoice->update([
+            'client_id'  => $validated['client_id'],
+            'issue_date' => $validated['issue_date'],
+            'due_date'   => $validated['due_date'],
+            'currency'   => $validated['currency'],
+            'notes'      => $validated['notes'] ?? null,
+            'total'      => $total,
+        ]);
 
         return redirect()->route('invoices.show', $invoice)
             ->with('success', 'Factură actualizată cu succes!');
@@ -136,9 +132,6 @@ class InvoiceController extends Controller
 
     public function destroy(Invoice $invoice)
     {
-        if ($invoice->user_id !== auth()->id()) {
-            abort(403);
-        }
         $invoice->items()->delete();
         $invoice->delete();
         return redirect()->route('invoices.index')->with('success', 'Factură ștearsă!');
@@ -146,9 +139,6 @@ class InvoiceController extends Controller
 
     public function markAsPaid(Invoice $invoice)
     {
-        if ($invoice->user_id !== auth()->id()) {
-            abort(403);
-        }
         $invoice->update(['status' => 'paid']);
         return redirect()->back()->with('success', 'Factura marcată ca încasată!');
     }
@@ -164,13 +154,7 @@ class InvoiceController extends Controller
 
     public function downloadPdf(Invoice $invoice, PdfService $pdfService)
     {
-        if ($invoice->user_id !== auth()->id()) {
-            abort(403);
-        }
-
         $pdf = $pdfService->generateInvoicePdf($invoice);
-
         return $pdf->download('factura-' . $invoice->number . '.pdf');
     }
-
 }
