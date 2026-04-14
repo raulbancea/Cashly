@@ -10,7 +10,7 @@ class ExpenseController extends Controller
 {
     public function index()
     {
-        $expenses = auth()->user()->expenses()->with('category')->latest()->get();
+        $expenses = auth()->user()->expenses()->with('category')->latest()->paginate(15);
         $categories = auth()->user()->expenseCategories()->get();
         return view('expenses.index', compact('expenses', 'categories'));
     }

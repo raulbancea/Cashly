@@ -9,7 +9,7 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = auth()->user()->products()->latest()->get();
+        $products = auth()->user()->products()->latest()->paginate(15);
         return view('products.index', compact('products'));
     }
 

@@ -80,6 +80,9 @@
                 </tbody>
             </table>
         </div>
+        <div class="mt-4">
+            {{ $expenses->links() }}
+        </div>
     @endif
 
 </x-cashly-layout>

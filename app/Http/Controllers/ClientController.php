@@ -9,7 +9,7 @@ class ClientController extends Controller
 {
     public function index()
     {
-        $clients = auth()->user()->clients()->latest()->get();
+        $clients = auth()->user()->clients()->latest()->paginate(15);
         return view('clients.index', compact('clients'));
     }
 

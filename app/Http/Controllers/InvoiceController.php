@@ -15,7 +15,7 @@ class InvoiceController extends Controller
         $invoices = auth()->user()->invoices()
             ->with('client')
             ->latest()
-            ->get();
+            ->paginate(15);
         return view('invoices.index', compact('invoices'));
     }
 
