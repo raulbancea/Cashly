@@ -6,10 +6,16 @@
             <h2 class="text-xl font-bold text-gray-900">Facturi</h2>
             <p class="text-sm text-gray-500">Gestionează și urmărește facturile</p>
         </div>
-        <a href="{{ route('invoices.create') }}"
-           class="px-4 py-2 text-sm font-medium text-white bg-teal-600 rounded-lg hover:bg-teal-700">
-            + Factură nouă
-        </a>
+        <div class="flex gap-2">
+            <a href="{{ route('invoices.exportCsv') }}"
+               class="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50">
+                Export Excel
+            </a>
+            <a href="{{ route('invoices.create') }}"
+               class="px-4 py-2 text-sm font-medium text-white bg-teal-600 rounded-lg hover:bg-teal-700">
+                + Factură nouă
+            </a>
+        </div>
     </div>
 
     @if(session('success'))

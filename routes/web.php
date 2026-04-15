@@ -15,7 +15,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('invoices/{invoice}/mark-as-sent', [\App\Http\Controllers\InvoiceController::class, 'markAsSent'])->name('invoices.markAsSent');
     Route::post('invoices/{invoice}/mark-as-paid', [\App\Http\Controllers\InvoiceController::class, 'markAsPaid'])->name('invoices.markAsPaid');
     Route::get('invoices/{invoice}/pdf', [\App\Http\Controllers\InvoiceController::class, 'downloadPdf'])->name('invoices.downloadPdf');
+    Route::get('invoices/export/csv', [\App\Http\Controllers\InvoiceController::class, 'exportCsv'])->name('invoices.exportCsv');
     Route::resource('expenses', \App\Http\Controllers\ExpenseController::class);
+    Route::get('expenses/export/csv', [\App\Http\Controllers\ExpenseController::class, 'exportCsv'])->name('expenses.exportCsv');
 
     Route::get('/settings', [\App\Http\Controllers\SettingsController::class, 'index'])->name('settings.index');
     Route::put('/settings', [\App\Http\Controllers\SettingsController::class, 'update'])->name('settings.update');

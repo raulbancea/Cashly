@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Expense;
 use App\Models\ExpenseCategory;
 use Illuminate\Http\Request;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class ExpenseController extends Controller
 {
@@ -88,5 +90,46 @@ class ExpenseController extends Controller
         }
         $expense->delete();
         return redirect()->route('expenses.index')->with('success', 'Cheltuială ștearsă!');
+    }
+
+    public function exportCsv()
+    {
+        $expenses = Expense::with('category')->latest()->get();
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Cheltuieli');
+
+        $headers = ['Data', 'Categorie', 'Descriere', 'Sumă', 'Monedă'];
+        $sheet->fromArray($headers, null, 'A1');
+
+        // Header bold
+        $sheet->getStyle('A1:E1')->getFont()->setBold(true);
+
+        $row = 2;
+        foreach ($expenses as $expense) {
+            $sheet->fromArray([
+                $expense->date->format('d.m.Y'),
+                $expense->category->name ?? '-',
+                $expense->description,
+                (float) $expense->amount,
+                $expense->currency,
+            ], null, 'A' . $row);
+            $row++;
+        }
+
+        // Auto-fit pe toate coloanele
+        foreach (range('A', 'E') as $col) {
+            $sheet->getColumnDimension($col)->setAutoSize(true);
+        }
+
+        $filename = 'cheltuieli-' . date('Y-m-d') . '.xlsx';
+        $writer   = new Xlsx($spreadsheet);
+
+        return response()->streamDownload(function () use ($writer) {
+            $writer->save('php://output');
+        }, $filename, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ]);
     }
 }

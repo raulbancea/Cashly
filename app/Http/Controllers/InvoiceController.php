@@ -7,6 +7,9 @@ use App\Models\Invoice;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Services\PdfService;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Style\Font;
 
 class InvoiceController extends Controller
 {
@@ -207,5 +210,57 @@ class InvoiceController extends Controller
     {
         $pdf = $pdfService->generateInvoicePdf($invoice);
         return $pdf->download('factura-' . $invoice->number . '.pdf');
+    }
+
+    public function exportCsv()
+    {
+        $invoices = Invoice::with('client')->latest()->get();
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Facturi');
+
+        $headers = ['Număr', 'Client', 'Data emiterii', 'Scadență', 'Status', 'Subtotal', 'TVA', 'Total cu TVA', 'Monedă'];
+        $sheet->fromArray($headers, null, 'A1');
+
+        // Header bold
+        $sheet->getStyle('A1:I1')->getFont()->setBold(true);
+
+        $statusMap = [
+            'draft'   => 'Draft',
+            'sent'    => 'Trimisă',
+            'paid'    => 'Încasată',
+            'overdue' => 'Restantă',
+        ];
+
+        $row = 2;
+        foreach ($invoices as $invoice) {
+            $sheet->fromArray([
+                $invoice->number,
+                $invoice->client->name ?? '-',
+                $invoice->issue_date->format('d.m.Y'),
+                $invoice->due_date ? $invoice->due_date->format('d.m.Y') : '-',
+                $statusMap[$invoice->status] ?? $invoice->status,
+                (float) $invoice->total,
+                (float) $invoice->vat_amount,
+                (float) ($invoice->total_with_vat > 0 ? $invoice->total_with_vat : $invoice->total),
+                $invoice->currency,
+            ], null, 'A' . $row);
+            $row++;
+        }
+
+        // Auto-fit pe toate coloanele
+        foreach (range('A', 'I') as $col) {
+            $sheet->getColumnDimension($col)->setAutoSize(true);
+        }
+
+        $filename = 'facturi-' . date('Y-m-d') . '.xlsx';
+        $writer   = new Xlsx($spreadsheet);
+
+        return response()->streamDownload(function () use ($writer) {
+            $writer->save('php://output');
+        }, $filename, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ]);
     }
 }
