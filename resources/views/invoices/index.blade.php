@@ -18,13 +18,68 @@
         </div>
     @endif
 
+    {{-- Filtre --}}
+    <form method="GET" action="{{ route('invoices.index') }}" class="flex flex-wrap items-end gap-3 p-4 mb-4 bg-white border border-gray-200 rounded-xl">
+        <div class="flex flex-col gap-1">
+            <label class="text-xs font-medium text-gray-500">Status</label>
+            <select name="status" class="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+                <option value="">Toate</option>
+                <option value="draft"   {{ request('status') === 'draft'   ? 'selected' : '' }}>Draft</option>
+                <option value="sent"    {{ request('status') === 'sent'    ? 'selected' : '' }}>Trimise</option>
+                <option value="paid"    {{ request('status') === 'paid'    ? 'selected' : '' }}>Încasate</option>
+                <option value="overdue" {{ request('status') === 'overdue' ? 'selected' : '' }}>Restante</option>
+            </select>
+        </div>
+
+        <div class="flex flex-col gap-1">
+            <label class="text-xs font-medium text-gray-500">Client</label>
+            <select name="client_id" class="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+                <option value="">Toți clienții</option>
+                @foreach($clients as $client)
+                    <option value="{{ $client->id }}" {{ request('client_id') == $client->id ? 'selected' : '' }}>
+                        {{ $client->name }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
+        <div class="flex flex-col gap-1">
+            <label class="text-xs font-medium text-gray-500">An</label>
+            <select name="an" class="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+                <option value="">Toți anii</option>
+                @foreach($ani as $an)
+                    <option value="{{ $an }}" {{ request('an') == $an ? 'selected' : '' }}>{{ $an }}</option>
+                @endforeach
+            </select>
+        </div>
+
+        <button type="submit"
+                class="px-4 py-2 text-sm font-medium text-white bg-teal-600 rounded-lg hover:bg-teal-700">
+            Filtrează
+        </button>
+
+        @if(request()->hasAny(['status', 'client_id', 'an']))
+            <a href="{{ route('invoices.index') }}"
+               class="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">
+                Resetează
+            </a>
+        @endif
+    </form>
+
     @if($invoices->isEmpty())
         <div class="p-10 text-center bg-white border border-gray-200 rounded-xl">
-            <p class="text-sm text-gray-500">Nu ai nicio factură încă.</p>
-            <a href="{{ route('invoices.create') }}"
-               class="inline-block px-4 py-2 mt-3 text-sm text-white bg-teal-600 rounded-lg hover:bg-teal-700">
-                Creează prima factură
-            </a>
+            <p class="text-sm text-gray-500">Nicio factură găsită pentru filtrele selectate.</p>
+            @if(request()->hasAny(['status', 'client_id', 'an']))
+                <a href="{{ route('invoices.index') }}"
+                   class="inline-block px-4 py-2 mt-3 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">
+                    Resetează filtrele
+                </a>
+            @else
+                <a href="{{ route('invoices.create') }}"
+                   class="inline-block px-4 py-2 mt-3 text-sm text-white bg-teal-600 rounded-lg hover:bg-teal-700">
+                    Creează prima factură
+                </a>
+            @endif
         </div>
     @else
         <div class="overflow-hidden bg-white border border-gray-200 rounded-xl">

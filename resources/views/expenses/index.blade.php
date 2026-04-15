@@ -18,13 +18,58 @@
         </div>
     @endif
 
+    {{-- Filtre --}}
+    <form method="GET" action="{{ route('expenses.index') }}" class="flex flex-wrap items-end gap-3 p-4 mb-4 bg-white border border-gray-200 rounded-xl">
+        <div class="flex flex-col gap-1">
+            <label class="text-xs font-medium text-gray-500">Categorie</label>
+            <select name="category_id" class="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+                <option value="">Toate categoriile</option>
+                @foreach($categories as $category)
+                    <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>
+                        {{ $category->name }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
+        <div class="flex flex-col gap-1">
+            <label class="text-xs font-medium text-gray-500">An</label>
+            <select name="an" class="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+                <option value="">Toți anii</option>
+                @foreach($ani as $an)
+                    <option value="{{ $an }}" {{ request('an') == $an ? 'selected' : '' }}>{{ $an }}</option>
+                @endforeach
+            </select>
+        </div>
+
+        <button type="submit"
+                class="px-4 py-2 text-sm font-medium text-white bg-teal-600 rounded-lg hover:bg-teal-700">
+            Filtrează
+        </button>
+
+        @if(request()->hasAny(['category_id', 'an']))
+            <a href="{{ route('expenses.index') }}"
+               class="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">
+                Resetează
+            </a>
+        @endif
+    </form>
+
     @if($expenses->isEmpty())
         <div class="p-10 text-center bg-white border border-gray-200 rounded-xl">
-            <p class="text-sm text-gray-500">Nu ai nicio cheltuială înregistrată.</p>
-            <a href="{{ route('expenses.create') }}"
-               class="inline-block px-4 py-2 mt-3 text-sm text-white bg-teal-600 rounded-lg hover:bg-teal-700">
-                Adaugă prima cheltuială
-            </a>
+            @if(request()->hasAny(['category_id', 'an']))
+                <p class="text-sm text-gray-500">Nicio cheltuială găsită pentru filtrele selectate.</p>
+                <a href="{{ route('expenses.index') }}"
+                   class="inline-block px-4 py-2 mt-3 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">
+                    Resetează filtrele
+                </a>
+            @else
+                <p class="text-sm text-gray-500">Nu ai nicio cheltuială înregistrată.</p>
+                <a href="{{ route('expenses.create') }}"
+                   class="inline-block px-4 py-2 mt-3 text-sm text-white bg-teal-600 rounded-lg hover:bg-teal-700">
+                    Adaugă prima cheltuială
+                </a>
+            @endif
         </div>
     @else
         <div class="overflow-hidden bg-white border border-gray-200 rounded-xl">

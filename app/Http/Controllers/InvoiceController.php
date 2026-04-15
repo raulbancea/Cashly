@@ -10,13 +10,32 @@ use App\Services\PdfService;
 
 class InvoiceController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $invoices = auth()->user()->invoices()
-            ->with('client')
-            ->latest()
-            ->paginate(15);
-        return view('invoices.index', compact('invoices'));
+        $query = auth()->user()->invoices()->with('client');
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->filled('client_id')) {
+            $query->where('client_id', $request->client_id);
+        }
+
+        if ($request->filled('an')) {
+            $query->whereYear('issue_date', $request->an);
+        }
+
+        $invoices = $query->latest()->paginate(15)->withQueryString();
+
+        $clients = auth()->user()->clients()->orderBy('name')->get();
+        $ani = auth()->user()->invoices()
+            ->selectRaw('YEAR(issue_date) as an')
+            ->distinct()
+            ->orderByDesc('an')
+            ->pluck('an');
+
+        return view('invoices.index', compact('invoices', 'clients', 'ani'));
     }
 
     public function create()

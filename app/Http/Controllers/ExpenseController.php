@@ -8,11 +8,28 @@ use Illuminate\Http\Request;
 
 class ExpenseController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $expenses = auth()->user()->expenses()->with('category')->latest()->paginate(15);
-        $categories = auth()->user()->expenseCategories()->get();
-        return view('expenses.index', compact('expenses', 'categories'));
+        $query = auth()->user()->expenses()->with('category');
+
+        if ($request->filled('category_id')) {
+            $query->where('category_id', $request->category_id);
+        }
+
+        if ($request->filled('an')) {
+            $query->whereYear('date', $request->an);
+        }
+
+        $expenses = $query->latest()->paginate(15)->withQueryString();
+
+        $categories = auth()->user()->expenseCategories()->orderBy('name')->get();
+        $ani = auth()->user()->expenses()
+            ->selectRaw('YEAR(date) as an')
+            ->distinct()
+            ->orderByDesc('an')
+            ->pluck('an');
+
+        return view('expenses.index', compact('expenses', 'categories', 'ani'));
     }
 
     public function create()
