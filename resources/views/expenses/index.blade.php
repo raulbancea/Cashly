@@ -22,7 +22,7 @@
     <form method="GET" action="{{ route('expenses.index') }}" class="flex flex-wrap items-end gap-3 p-4 mb-4 bg-white border border-gray-200 rounded-xl">
         <div class="flex flex-col gap-1">
             <label class="text-xs font-medium text-gray-500">Categorie</label>
-            <select name="category_id" class="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+            <select name="category_id" class="form-select pl-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
                 <option value="">Toate categoriile</option>
                 @foreach($categories as $category)
                     <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>
@@ -34,7 +34,7 @@
 
         <div class="flex flex-col gap-1">
             <label class="text-xs font-medium text-gray-500">An</label>
-            <select name="an" class="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+            <select name="an" class="form-select pl-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
                 <option value="">Toți anii</option>
                 @foreach($ani as $an)
                     <option value="{{ $an }}" {{ request('an') == $an ? 'selected' : '' }}>{{ $an }}</option>

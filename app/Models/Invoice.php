@@ -19,15 +19,21 @@ class Invoice extends Model
         'due_date',
         'status',
         'total',
+        'vat_rate',
+        'vat_amount',
+        'total_with_vat',
         'currency',
         'pdf_path',
         'notes',
     ];
 
     protected $casts = [
-        'issue_date' => 'date',
-        'due_date' => 'date',
-        'total' => 'decimal:2',
+        'issue_date'      => 'date',
+        'due_date'        => 'date',
+        'total'           => 'decimal:2',
+        'vat_rate'        => 'decimal:2',
+        'vat_amount'      => 'decimal:2',
+        'total_with_vat'  => 'decimal:2',
     ];
 
     public function user(): BelongsTo

@@ -57,7 +57,7 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-3 gap-4">
+                <div class="grid grid-cols-4 gap-4">
                     <div>
                         <label class="block mb-1 text-sm font-medium text-gray-700">
                             Data emiterii <span class="text-red-500">*</span>
@@ -78,6 +78,17 @@
                                 class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
                             <option value="RON">RON</option>
                             <option value="EUR">EUR</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block mb-1 text-sm font-medium text-gray-700">TVA</label>
+                        <select name="vat_rate" id="vat-rate"
+                                class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+                            <option value="">Fără TVA</option>
+                            <option value="5"  {{ old('vat_rate') == '5'  ? 'selected' : '' }}>5%</option>
+                            <option value="11" {{ old('vat_rate') == '11' ? 'selected' : '' }}>11%</option>
+                            <option value="19" {{ old('vat_rate') == '19' ? 'selected' : '' }}>19%</option>
+                            <option value="21" {{ old('vat_rate') == '21' ? 'selected' : '' }}>21%</option>
                         </select>
                     </div>
                 </div>
@@ -130,9 +141,22 @@
                             class="text-sm font-medium text-teal-600 hover:text-teal-700">
                         + Adaugă linie
                     </button>
-                    <div class="text-right">
-                        <span class="text-sm text-gray-500">Total factură:</span>
-                        <span id="grand-total" class="ml-2 text-xl font-bold text-gray-900">0,00</span>
+                    <div class="text-right space-y-1">
+                        <div class="text-sm text-gray-500">
+                            Subtotal: <span id="grand-total" class="font-semibold text-gray-900">0,00</span>
+                        </div>
+                        <div id="vat-row" class="text-sm text-gray-500 hidden">
+                            TVA (<span id="vat-rate-label"></span>%):
+                            <span id="vat-amount-display" class="font-semibold text-gray-900">0,00</span>
+                        </div>
+                        <div id="total-with-vat-row" class="hidden">
+                            <span class="text-sm text-gray-500">Total cu TVA:</span>
+                            <span id="total-with-vat-display" class="ml-1 text-xl font-bold text-gray-900">0,00</span>
+                        </div>
+                        <div id="total-no-vat-row">
+                            <span class="text-sm text-gray-500">Total factură:</span>
+                            <span id="total-no-vat-display" class="ml-1 text-xl font-bold text-gray-900">0,00</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -226,13 +250,34 @@
         }
 
         function updateGrandTotal() {
-            let grand = 0;
+            let subtotal = 0;
             document.querySelectorAll('.item-total').forEach(input => {
-                grand += parseFloat(input.value.replace(',', '.')) || 0;
+                subtotal += parseFloat(input.value.replace(',', '.')) || 0;
             });
-            document.getElementById('grand-total').textContent = grand.toFixed(2).replace('.', ',');
+
+            const vatSelect = document.getElementById('vat-rate');
+            const vatRate = parseFloat(vatSelect.value) || 0;
+            const vatAmount = vatRate ? subtotal * vatRate / 100 : 0;
+            const totalWithVat = subtotal + vatAmount;
+
+            document.getElementById('grand-total').textContent = subtotal.toFixed(2).replace('.', ',');
+
+            if (vatRate > 0) {
+                document.getElementById('vat-rate-label').textContent = vatRate;
+                document.getElementById('vat-amount-display').textContent = vatAmount.toFixed(2).replace('.', ',');
+                document.getElementById('total-with-vat-display').textContent = totalWithVat.toFixed(2).replace('.', ',');
+                document.getElementById('vat-row').classList.remove('hidden');
+                document.getElementById('total-with-vat-row').classList.remove('hidden');
+                document.getElementById('total-no-vat-row').classList.add('hidden');
+            } else {
+                document.getElementById('total-no-vat-display').textContent = subtotal.toFixed(2).replace('.', ',');
+                document.getElementById('vat-row').classList.add('hidden');
+                document.getElementById('total-with-vat-row').classList.add('hidden');
+                document.getElementById('total-no-vat-row').classList.remove('hidden');
+            }
         }
 
+        document.getElementById('vat-rate').addEventListener('change', updateGrandTotal);
         document.querySelectorAll('.item-row').forEach(row => attachListeners(row));
     </script>
 

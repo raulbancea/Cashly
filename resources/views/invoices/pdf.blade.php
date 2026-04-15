@@ -237,9 +237,24 @@
                 </tr>
             @endforeach
             <tr class="total-row">
-                <td colspan="3" style="text-align: right;">Total factură:</td>
+                <td colspan="3" style="text-align: right; font-weight: normal; color: #6b7280;">Subtotal:</td>
+                <td style="text-align: right;">{{ number_format($invoice->total, 2, ',', '.') }} {{ $invoice->currency }}</td>
+            </tr>
+            @if($invoice->vat_rate)
+            <tr>
+                <td colspan="3" style="text-align: right; color: #6b7280;">TVA ({{ (int)$invoice->vat_rate }}%):</td>
+                <td style="text-align: right; color: #6b7280;">{{ number_format($invoice->vat_amount, 2, ',', '.') }} {{ $invoice->currency }}</td>
+            </tr>
+            <tr style="border-top: 2px solid #e5e7eb;">
+                <td colspan="3" style="text-align: right; padding: 12px; font-weight: bold;">Total cu TVA:</td>
+                <td class="total-amount">{{ number_format($invoice->total_with_vat, 2, ',', '.') }} {{ $invoice->currency }}</td>
+            </tr>
+            @else
+            <tr style="border-top: 2px solid #e5e7eb;">
+                <td colspan="3" style="text-align: right; padding: 12px; font-weight: bold;">Total factură:</td>
                 <td class="total-amount">{{ number_format($invoice->total, 2, ',', '.') }} {{ $invoice->currency }}</td>
             </tr>
+            @endif
         </tbody>
     </table>
 

@@ -111,11 +111,34 @@
                 </tbody>
                 <tfoot>
                     <tr class="border-t-2 border-gray-200">
-                        <td colspan="3" class="px-4 py-3 font-semibold text-right text-gray-700">Total factură:</td>
-                        <td class="px-4 py-3 text-xl font-bold text-right text-gray-900">
+                        <td colspan="3" class="px-4 py-3 font-semibold text-right text-gray-700">Subtotal:</td>
+                        <td class="px-4 py-3 font-semibold text-right text-gray-900">
                             {{ number_format($invoice->total, 2, ',', '.') }} {{ $invoice->currency }}
                         </td>
                     </tr>
+                    @if($invoice->vat_rate)
+                        <tr>
+                            <td colspan="3" class="px-4 py-2 text-right text-gray-600">
+                                TVA ({{ (int)$invoice->vat_rate }}%):
+                            </td>
+                            <td class="px-4 py-2 text-right text-gray-600">
+                                {{ number_format($invoice->vat_amount, 2, ',', '.') }} {{ $invoice->currency }}
+                            </td>
+                        </tr>
+                        <tr class="border-t border-gray-200">
+                            <td colspan="3" class="px-4 py-3 font-semibold text-right text-gray-700">Total cu TVA:</td>
+                            <td class="px-4 py-3 text-xl font-bold text-right text-gray-900">
+                                {{ number_format($invoice->total_with_vat, 2, ',', '.') }} {{ $invoice->currency }}
+                            </td>
+                        </tr>
+                    @else
+                        <tr class="border-t border-gray-200">
+                            <td colspan="3" class="px-4 py-3 font-semibold text-right text-gray-700">Total factură:</td>
+                            <td class="px-4 py-3 text-xl font-bold text-right text-gray-900">
+                                {{ number_format($invoice->total, 2, ',', '.') }} {{ $invoice->currency }}
+                            </td>
+                        </tr>
+                    @endif
                 </tfoot>
             </table>
 

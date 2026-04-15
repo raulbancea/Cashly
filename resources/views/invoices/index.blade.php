@@ -22,7 +22,7 @@
     <form method="GET" action="{{ route('invoices.index') }}" class="flex flex-wrap items-end gap-3 p-4 mb-4 bg-white border border-gray-200 rounded-xl">
         <div class="flex flex-col gap-1">
             <label class="text-xs font-medium text-gray-500">Status</label>
-            <select name="status" class="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+            <select name="status" class="form-select pl-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
                 <option value="">Toate</option>
                 <option value="draft"   {{ request('status') === 'draft'   ? 'selected' : '' }}>Draft</option>
                 <option value="sent"    {{ request('status') === 'sent'    ? 'selected' : '' }}>Trimise</option>
@@ -33,7 +33,7 @@
 
         <div class="flex flex-col gap-1">
             <label class="text-xs font-medium text-gray-500">Client</label>
-            <select name="client_id" class="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+            <select name="client_id" class="form-select pl-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
                 <option value="">Toți clienții</option>
                 @foreach($clients as $client)
                     <option value="{{ $client->id }}" {{ request('client_id') == $client->id ? 'selected' : '' }}>
@@ -45,7 +45,7 @@
 
         <div class="flex flex-col gap-1">
             <label class="text-xs font-medium text-gray-500">An</label>
-            <select name="an" class="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+            <select name="an" class="form-select pl-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
                 <option value="">Toți anii</option>
                 @foreach($ani as $an)
                     <option value="{{ $an }}" {{ request('an') == $an ? 'selected' : '' }}>{{ $an }}</option>

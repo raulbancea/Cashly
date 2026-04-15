@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Invoice;
 use App\Models\Client;
+use App\Models\Invoice;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Services\PdfService;
@@ -54,6 +54,7 @@ class InvoiceController extends Controller
             'issue_date' => 'required|date',
             'due_date'   => 'required|date|after_or_equal:issue_date',
             'currency'   => 'required|in:RON,EUR',
+            'vat_rate'   => 'nullable|numeric|in:5,11,19,21',
             'notes'      => 'nullable|string|max:1000',
             'items'      => 'required|array|min:1',
             'items.*.description' => 'required|string|max:255',
@@ -61,15 +62,22 @@ class InvoiceController extends Controller
             'items.*.unit_price'  => 'required|numeric|min:0',
         ]);
 
+        if (Client::find($validated['client_id'])?->user_id !== auth()->id()) {
+            abort(403);
+        }
+
         $invoice = auth()->user()->invoices()->create([
             'client_id'  => $validated['client_id'],
             'number'     => $validated['number'],
             'issue_date' => $validated['issue_date'],
             'due_date'   => $validated['due_date'],
             'currency'   => $validated['currency'],
+            'vat_rate'   => $validated['vat_rate'] ?? null,
             'notes'      => $validated['notes'] ?? null,
             'status'     => 'draft',
             'total'      => 0,
+            'vat_amount' => 0,
+            'total_with_vat' => 0,
         ]);
 
         $total = 0;
@@ -86,7 +94,14 @@ class InvoiceController extends Controller
             ]);
         }
 
-        $invoice->update(['total' => $total]);
+        $vatRate   = $validated['vat_rate'] ?? null;
+        $vatAmount = $vatRate ? round($total * $vatRate / 100, 2) : 0;
+
+        $invoice->update([
+            'total'          => $total,
+            'vat_amount'     => $vatAmount,
+            'total_with_vat' => $total + $vatAmount,
+        ]);
 
         return redirect()->route('invoices.show', $invoice)->with('success', 'Factură creată cu succes!');
     }
@@ -112,12 +127,17 @@ class InvoiceController extends Controller
             'issue_date' => 'required|date',
             'due_date'   => 'required|date|after_or_equal:issue_date',
             'currency'   => 'required|in:RON,EUR',
+            'vat_rate'   => 'nullable|numeric|in:5,11,19,21',
             'notes'      => 'nullable|string|max:1000',
             'items'      => 'required|array|min:1',
             'items.*.description' => 'required|string|max:255',
             'items.*.quantity'    => 'required|numeric|min:0.01',
             'items.*.unit_price'  => 'required|numeric|min:0',
         ]);
+
+        if (Client::find($validated['client_id'])?->user_id !== auth()->id()) {
+            abort(403);
+        }
 
         // Stergem item-urile vechi si le recreem
         $invoice->items()->delete();
@@ -136,13 +156,19 @@ class InvoiceController extends Controller
             ]);
         }
 
+        $vatRate   = $validated['vat_rate'] ?? null;
+        $vatAmount = $vatRate ? round($total * $vatRate / 100, 2) : 0;
+
         $invoice->update([
-            'client_id'  => $validated['client_id'],
-            'issue_date' => $validated['issue_date'],
-            'due_date'   => $validated['due_date'],
-            'currency'   => $validated['currency'],
-            'notes'      => $validated['notes'] ?? null,
-            'total'      => $total,
+            'client_id'      => $validated['client_id'],
+            'issue_date'     => $validated['issue_date'],
+            'due_date'       => $validated['due_date'],
+            'currency'       => $validated['currency'],
+            'vat_rate'       => $vatRate,
+            'notes'          => $validated['notes'] ?? null,
+            'total'          => $total,
+            'vat_amount'     => $vatAmount,
+            'total_with_vat' => $total + $vatAmount,
         ]);
 
         return redirect()->route('invoices.show', $invoice)
