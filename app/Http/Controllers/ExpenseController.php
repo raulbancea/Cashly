@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Expense;
 use App\Models\ExpenseCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
@@ -47,12 +49,20 @@ class ExpenseController extends Controller
             'amount'      => 'required|numeric|min:0',
             'currency'    => 'required|in:RON,EUR',
             'date'        => 'required|date',
-            'category_id' => 'nullable|exists:expense_categories,id',
+            'category_id' => [
+                'nullable',
+                Rule::exists('expense_categories', 'id')->where('user_id', auth()->id()),
+            ],
         ]);
 
         auth()->user()->expenses()->create($validated);
 
         return redirect()->route('expenses.index')->with('success', 'Cheltuială adăugată cu succes!');
+    }
+
+    public function show(Expense $expense)
+    {
+        abort(404);
     }
 
     public function edit(Expense $expense)
@@ -75,7 +85,10 @@ class ExpenseController extends Controller
             'amount'      => 'required|numeric|min:0',
             'currency'    => 'required|in:RON,EUR',
             'date'        => 'required|date',
-            'category_id' => 'nullable|exists:expense_categories,id',
+            'category_id' => [
+                'nullable',
+                Rule::exists('expense_categories', 'id')->where('user_id', auth()->id()),
+            ],
         ]);
 
         $expense->update($validated);
@@ -94,7 +107,7 @@ class ExpenseController extends Controller
 
     public function exportCsv()
     {
-        $expenses = Expense::with('category')->latest()->get();
+        $expenses = Expense::where('user_id', Auth::id())->with('category')->latest()->get();
 
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();

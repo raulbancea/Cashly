@@ -132,7 +132,7 @@
                                 </span>
                             </td>
                             <td class="px-4 py-3 font-medium text-right text-gray-900">
-                                {{ number_format($invoice->total, 2, ',', '.') }} {{ $invoice->currency }}
+                                {{ number_format($invoice->total_with_vat > 0 ? $invoice->total_with_vat : $invoice->total, 2, ',', '.') }} {{ $invoice->currency }}
                             </td>
                             <td class="px-4 py-3 text-right">
                                 <div class="flex justify-end gap-2">

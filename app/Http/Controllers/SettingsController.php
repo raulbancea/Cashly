@@ -31,17 +31,30 @@ class SettingsController extends Controller
     public function storeCategory(Request $request)
     {
         $validate = $request->validate([
-            'name' => 'required|string|max:255',
-            'color' => 'required|string|max:7',
+            'name'        => 'required|string|max:255',
+            'color'       => ['required', 'string', 'regex:/^#[0-9A-Fa-f]{6}$/'],
+            'redirect_to' => 'nullable|string|max:500',
         ]);
 
-        auth()->user()->expenseCategories()->create($validate);
+        $category = auth()->user()->expenseCategories()->create([
+            'name'  => $validate['name'],
+            'color' => $validate['color'],
+        ]);
 
-        return redirect()->route('settings.index')->with('success', 'Categoria a fost adaugata!');
+        $appUrl = config('app.url');
+        if (!empty($validate['redirect_to']) && !empty($appUrl) && str_starts_with($validate['redirect_to'], $appUrl)) {
+            $base = strtok($validate['redirect_to'], '?');
+            return redirect($base . '?new_category_id=' . $category->id);
+        }
+
+        return redirect()->route('settings.index')->with('success', 'Categoria a fost adăugată!');
     }
 
     public function destroyCategory(\App\Models\ExpenseCategory $category)
     {
+        if ($category->user_id !== auth()->id()) {
+            abort(403);
+        }
         $category->delete();
         return redirect()->route('settings.index')->with('success', 'Categoria a fost stearsa!');
     }

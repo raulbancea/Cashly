@@ -6,10 +6,12 @@ use App\Models\Client;
 use App\Models\Invoice;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 use App\Services\PdfService;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-use PhpOffice\PhpSpreadsheet\Style\Font;
 
 class InvoiceController extends Controller
 {
@@ -52,7 +54,7 @@ class InvoiceController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'client_id'  => 'required|exists:clients,id',
+            'client_id'  => ['required', Rule::exists('clients', 'id')->where('user_id', auth()->id())],
             'number'     => 'required|string|unique:invoices,number',
             'issue_date' => 'required|date',
             'due_date'   => 'required|date|after_or_equal:issue_date',
@@ -63,48 +65,49 @@ class InvoiceController extends Controller
             'items.*.description' => 'required|string|max:255',
             'items.*.quantity'    => 'required|numeric|min:0.01',
             'items.*.unit_price'  => 'required|numeric|min:0',
+            'items.*.product_id'  => ['nullable', Rule::exists('products', 'id')->where('user_id', auth()->id())],
         ]);
 
-        if (Client::find($validated['client_id'])?->user_id !== auth()->id()) {
-            abort(403);
-        }
-
-        $invoice = auth()->user()->invoices()->create([
-            'client_id'  => $validated['client_id'],
-            'number'     => $validated['number'],
-            'issue_date' => $validated['issue_date'],
-            'due_date'   => $validated['due_date'],
-            'currency'   => $validated['currency'],
-            'vat_rate'   => $validated['vat_rate'] ?? null,
-            'notes'      => $validated['notes'] ?? null,
-            'status'     => 'draft',
-            'total'      => 0,
-            'vat_amount' => 0,
-            'total_with_vat' => 0,
-        ]);
-
-        $total = 0;
-        foreach ($validated['items'] as $item) {
-            $itemTotal = $item['quantity'] * $item['unit_price'];
-            $total += $itemTotal;
-
-            $invoice->items()->create([
-                'description' => $item['description'],
-                'quantity'    => $item['quantity'],
-                'unit_price'  => $item['unit_price'],
-                'total'       => $itemTotal,
-                'product_id'  => $item['product_id'] ?? null,
+        $invoice = DB::transaction(function () use ($validated) {
+            $invoice = auth()->user()->invoices()->create([
+                'client_id'      => $validated['client_id'],
+                'number'         => $validated['number'],
+                'issue_date'     => $validated['issue_date'],
+                'due_date'       => $validated['due_date'],
+                'currency'       => $validated['currency'],
+                'vat_rate'       => $validated['vat_rate'] ?? null,
+                'notes'          => $validated['notes'] ?? null,
+                'status'         => 'draft',
+                'total'          => 0,
+                'vat_amount'     => 0,
+                'total_with_vat' => 0,
             ]);
-        }
 
-        $vatRate   = $validated['vat_rate'] ?? null;
-        $vatAmount = $vatRate ? round($total * $vatRate / 100, 2) : 0;
+            $total = 0;
+            foreach ($validated['items'] as $item) {
+                $itemTotal = $item['quantity'] * $item['unit_price'];
+                $total += $itemTotal;
 
-        $invoice->update([
-            'total'          => $total,
-            'vat_amount'     => $vatAmount,
-            'total_with_vat' => $total + $vatAmount,
-        ]);
+                $invoice->items()->create([
+                    'description' => $item['description'],
+                    'quantity'    => $item['quantity'],
+                    'unit_price'  => $item['unit_price'],
+                    'total'       => $itemTotal,
+                    'product_id'  => $item['product_id'] ?? null,
+                ]);
+            }
+
+            $vatRate   = $validated['vat_rate'] ?? null;
+            $vatAmount = $vatRate ? round($total * $vatRate / 100, 2) : 0;
+
+            $invoice->update([
+                'total'          => $total,
+                'vat_amount'     => $vatAmount,
+                'total_with_vat' => $total + $vatAmount,
+            ]);
+
+            return $invoice;
+        });
 
         return redirect()->route('invoices.show', $invoice)->with('success', 'Factură creată cu succes!');
     }
@@ -126,7 +129,7 @@ class InvoiceController extends Controller
     public function update(Request $request, Invoice $invoice)
     {
         $validated = $request->validate([
-            'client_id'  => 'required|exists:clients,id',
+            'client_id'  => ['required', Rule::exists('clients', 'id')->where('user_id', auth()->id())],
             'issue_date' => 'required|date',
             'due_date'   => 'required|date|after_or_equal:issue_date',
             'currency'   => 'required|in:RON,EUR',
@@ -136,43 +139,42 @@ class InvoiceController extends Controller
             'items.*.description' => 'required|string|max:255',
             'items.*.quantity'    => 'required|numeric|min:0.01',
             'items.*.unit_price'  => 'required|numeric|min:0',
+            'items.*.product_id'  => ['nullable', Rule::exists('products', 'id')->where('user_id', auth()->id())],
         ]);
 
-        if (Client::find($validated['client_id'])?->user_id !== auth()->id()) {
-            abort(403);
-        }
+        DB::transaction(function () use ($validated, $invoice) {
+            // Stergem item-urile vechi si le recreem
+            $invoice->items()->delete();
 
-        // Stergem item-urile vechi si le recreem
-        $invoice->items()->delete();
+            $total = 0;
+            foreach ($validated['items'] as $item) {
+                $itemTotal = $item['quantity'] * $item['unit_price'];
+                $total += $itemTotal;
 
-        $total = 0;
-        foreach ($validated['items'] as $item) {
-            $itemTotal = $item['quantity'] * $item['unit_price'];
-            $total += $itemTotal;
+                $invoice->items()->create([
+                    'description' => $item['description'],
+                    'quantity'    => $item['quantity'],
+                    'unit_price'  => $item['unit_price'],
+                    'total'       => $itemTotal,
+                    'product_id'  => $item['product_id'] ?? null,
+                ]);
+            }
 
-            $invoice->items()->create([
-                'description' => $item['description'],
-                'quantity'    => $item['quantity'],
-                'unit_price'  => $item['unit_price'],
-                'total'       => $itemTotal,
-                'product_id'  => $item['product_id'] ?? null,
+            $vatRate   = $validated['vat_rate'] ?? null;
+            $vatAmount = $vatRate ? round($total * $vatRate / 100, 2) : 0;
+
+            $invoice->update([
+                'client_id'      => $validated['client_id'],
+                'issue_date'     => $validated['issue_date'],
+                'due_date'       => $validated['due_date'],
+                'currency'       => $validated['currency'],
+                'vat_rate'       => $vatRate,
+                'notes'          => $validated['notes'] ?? null,
+                'total'          => $total,
+                'vat_amount'     => $vatAmount,
+                'total_with_vat' => $total + $vatAmount,
             ]);
-        }
-
-        $vatRate   = $validated['vat_rate'] ?? null;
-        $vatAmount = $vatRate ? round($total * $vatRate / 100, 2) : 0;
-
-        $invoice->update([
-            'client_id'      => $validated['client_id'],
-            'issue_date'     => $validated['issue_date'],
-            'due_date'       => $validated['due_date'],
-            'currency'       => $validated['currency'],
-            'vat_rate'       => $vatRate,
-            'notes'          => $validated['notes'] ?? null,
-            'total'          => $total,
-            'vat_amount'     => $vatAmount,
-            'total_with_vat' => $total + $vatAmount,
-        ]);
+        });
 
         return redirect()->route('invoices.show', $invoice)
             ->with('success', 'Factură actualizată cu succes!');
@@ -187,12 +189,14 @@ class InvoiceController extends Controller
 
     public function markAsSent(Invoice $invoice)
     {
+        abort_if($invoice->status !== 'draft', 403);
         $invoice->update(['status' => 'sent']);
         return redirect()->back()->with('success', 'Factura marcată ca trimisă!');
     }
 
     public function markAsPaid(Invoice $invoice)
     {
+        abort_if($invoice->status === 'paid', 403);
         $invoice->update(['status' => 'paid']);
         return redirect()->back()->with('success', 'Factura marcată ca încasată!');
     }
@@ -200,10 +204,14 @@ class InvoiceController extends Controller
     private function generateInvoiceNumber(): string
     {
         $year = date('Y');
-        $count = auth()->user()->invoices()
+        $prefix = 'CASH-' . $year . '-';
+        $last = Invoice::where('user_id', Auth::id())
             ->whereYear('created_at', $year)
-            ->count();
-        return 'CASH-' . $year . '-' . str_pad($count + 1, 3, '0', STR_PAD_LEFT);
+            ->where('number', 'like', $prefix . '%')
+            ->max('number');
+
+        $next = $last ? (int) substr($last, strlen($prefix)) + 1 : 1;
+        return $prefix . str_pad($next, 3, '0', STR_PAD_LEFT);
     }
 
     public function downloadPdf(Invoice $invoice, PdfService $pdfService)
@@ -214,7 +222,7 @@ class InvoiceController extends Controller
 
     public function exportCsv()
     {
-        $invoices = Invoice::with('client')->latest()->get();
+        $invoices = Invoice::where('user_id', Auth::id())->with('client')->latest()->get();
 
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();

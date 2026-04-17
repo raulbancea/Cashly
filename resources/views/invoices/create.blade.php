@@ -10,8 +10,6 @@
         <form method="POST" action="{{ route('invoices.store') }}">
             @csrf
 
-            @csrf
-
             @if($errors->any())
                 <div class="p-3 mb-4 text-sm text-red-700 border border-red-200 rounded-lg bg-red-50">
                     <ul class="list-disc list-inside">

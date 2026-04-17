@@ -16,12 +16,12 @@ class DashboardController extends Controller
         $revenue_ron = (float) $user->invoices()
             ->where('status', 'paid')->where('currency', 'RON')
             ->whereMonth('issue_date', $currentMonth)->whereYear('issue_date', $currentYear)
-            ->sum('total');
+            ->sum('total_with_vat');
 
         $revenue_eur = (float) $user->invoices()
             ->where('status', 'paid')->where('currency', 'EUR')
             ->whereMonth('issue_date', $currentMonth)->whereYear('issue_date', $currentYear)
-            ->sum('total');
+            ->sum('total_with_vat');
 
         $expenses_ron = (float) $user->expenses()
             ->where('currency', 'RON')
@@ -38,24 +38,44 @@ class DashboardController extends Controller
 
         $overdueCount = $user->invoices()->where('status', 'overdue')->count();
 
+        $sixMonthsAgo = now()->startOfMonth()->subMonths(5);
+
+        // Un singur query per valuta pentru venituri (facturi platite, ultimele 6 luni)
+        $invoiceRows = $user->invoices()
+            ->where('status', 'paid')
+            ->where('issue_date', '>=', $sixMonthsAgo)
+            ->selectRaw('YEAR(issue_date) as year, MONTH(issue_date) as month, currency, SUM(total_with_vat) as total')
+            ->groupBy('year', 'month', 'currency')
+            ->get()
+            ->keyBy(fn($r) => $r->year . '-' . $r->month . '-' . $r->currency);
+
+        // Un singur query per valuta pentru cheltuieli (ultimele 6 luni)
+        $expenseRows = $user->expenses()
+            ->where('date', '>=', $sixMonthsAgo)
+            ->selectRaw('YEAR(date) as year, MONTH(date) as month, currency, SUM(amount) as total')
+            ->groupBy('year', 'month', 'currency')
+            ->get()
+            ->keyBy(fn($r) => $r->year . '-' . $r->month . '-' . $r->currency);
+
         $cashFlow_ron = [];
         $cashFlow_eur = [];
         for ($i = 5; $i >= 0; $i--) {
-            $date = now()->subMonths($i);
-            $month = $date->month;
+            $date  = now()->subMonths($i);
             $year  = $date->year;
+            $month = $date->month;
             $label = $date->format('M Y');
+            $key   = $year . '-' . $month;
 
             $cashFlow_ron[] = [
                 'month'    => $label,
-                'revenue'  => (float) $user->invoices()->where('status', 'paid')->where('currency', 'RON')->whereMonth('issue_date', $month)->whereYear('issue_date', $year)->sum('total'),
-                'expenses' => (float) $user->expenses()->where('currency', 'RON')->whereMonth('date', $month)->whereYear('date', $year)->sum('amount'),
+                'revenue'  => (float) ($invoiceRows->get("{$key}-RON")->total ?? 0),
+                'expenses' => (float) ($expenseRows->get("{$key}-RON")->total ?? 0),
             ];
 
             $cashFlow_eur[] = [
                 'month'    => $label,
-                'revenue'  => (float) $user->invoices()->where('status', 'paid')->where('currency', 'EUR')->whereMonth('issue_date', $month)->whereYear('issue_date', $year)->sum('total'),
-                'expenses' => (float) $user->expenses()->where('currency', 'EUR')->whereMonth('date', $month)->whereYear('date', $year)->sum('amount'),
+                'revenue'  => (float) ($invoiceRows->get("{$key}-EUR")->total ?? 0),
+                'expenses' => (float) ($expenseRows->get("{$key}-EUR")->total ?? 0),
             ];
         }
 
