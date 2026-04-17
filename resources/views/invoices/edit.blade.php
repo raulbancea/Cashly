@@ -107,11 +107,20 @@
                     @foreach($invoice->items as $index => $item)
                     <div class="grid grid-cols-12 gap-2 mb-2 item-row" id="item-{{ $index }}">
                         <div class="col-span-5">
+                            <select name="items[{{ $index }}][product_id]"
+                                    class="w-full px-3 py-1 mb-1 text-xs text-gray-500 border border-gray-200 rounded-lg bg-gray-50 focus:outline-none focus:ring-1 focus:ring-teal-400 item-product"
+                                    onchange="fillFromProduct(this)">
+                                <option value="">— selectează produs din catalog —</option>
+                                @foreach($products as $p)
+                                    <option value="{{ $p->id }}" {{ $item->product_id == $p->id ? 'selected' : '' }}>
+                                        {{ $p->name }}
+                                    </option>
+                                @endforeach
+                            </select>
                             <input type="text" name="items[{{ $index }}][description]"
                                    value="{{ old("items.$index.description", $item->description) }}"
                                    placeholder="Descriere serviciu/produs"
-                                   class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
-                            <input type="hidden" name="items[{{ $index }}][product_id]" value="{{ $item->product_id }}">
+                                   class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 item-description">
                         </div>
                         <div class="col-span-2">
                             <input type="number" name="items[{{ $index }}][quantity]"
@@ -186,7 +195,26 @@
     </div>
 
     <script>
+        const products = @json($products->keyBy('id'));
         let itemCount = {{ $invoice->items->count() }};
+
+        function buildProductOptions() {
+            let opts = '<option value="">— selectează produs din catalog —</option>';
+            Object.values(products).forEach(p => {
+                opts += `<option value="${p.id}">${p.name}</option>`;
+            });
+            return opts;
+        }
+
+        function fillFromProduct(select) {
+            const row = select.closest('.item-row');
+            const product = products[select.value];
+            if (!product) return;
+
+            row.querySelector('.item-description').value = product.name;
+            row.querySelector('.item-price').value = parseFloat(product.price);
+            row.querySelector('.item-quantity').dispatchEvent(new Event('input'));
+        }
 
         function addItem() {
             const container = document.getElementById('items-container');
@@ -197,10 +225,14 @@
             row.id = 'item-' + index;
             row.innerHTML = `
                 <div class="col-span-5">
+                    <select name="items[${index}][product_id]"
+                            class="w-full px-3 py-1 mb-1 text-xs text-gray-500 border border-gray-200 rounded-lg bg-gray-50 focus:outline-none focus:ring-1 focus:ring-teal-400 item-product"
+                            onchange="fillFromProduct(this)">
+                        ${buildProductOptions()}
+                    </select>
                     <input type="text" name="items[${index}][description]"
                            placeholder="Descriere serviciu/produs"
-                           class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
-                    <input type="hidden" name="items[${index}][product_id]" value="">
+                           class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 item-description">
                 </div>
                 <div class="col-span-2">
                     <input type="number" name="items[${index}][quantity]" value="1"

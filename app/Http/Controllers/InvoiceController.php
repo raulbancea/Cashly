@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Client;
 use App\Models\Invoice;
-use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -19,7 +17,7 @@ class InvoiceController extends Controller
     {
         $query = auth()->user()->invoices()->with('client');
 
-        if ($request->filled('status')) {
+        if ($request->filled('status') && in_array($request->status, ['draft', 'sent', 'paid', 'overdue'])) {
             $query->where('status', $request->status);
         }
 
@@ -55,7 +53,7 @@ class InvoiceController extends Controller
     {
         $validated = $request->validate([
             'client_id'  => ['required', Rule::exists('clients', 'id')->where('user_id', auth()->id())],
-            'number'     => 'required|string|unique:invoices,number',
+            'number'     => ['required', 'string', Rule::unique('invoices', 'number')->where('user_id', auth()->id())],
             'issue_date' => 'required|date',
             'due_date'   => 'required|date|after_or_equal:issue_date',
             'currency'   => 'required|in:RON,EUR',
@@ -121,7 +119,12 @@ class InvoiceController extends Controller
     public function edit(Invoice $invoice)
     {
         $invoice->load('client', 'items');
-        $clients = auth()->user()->clients()->where('status', 'active')->get();
+        // Includem clientul curent al facturii chiar daca nu mai e activ
+        $clients = auth()->user()->clients()
+            ->where(function ($q) use ($invoice) {
+                $q->where('status', 'active')->orWhere('id', $invoice->client_id);
+            })
+            ->get();
         $products = auth()->user()->products()->get();
         return view('invoices.edit', compact('invoice', 'clients', 'products'));
     }

@@ -29,7 +29,7 @@
                             Sumă <span class="text-red-500">*</span>
                         </label>
                         <input type="number" name="amount" value="{{ old('amount') }}"
-                               step="0.01" min="0"
+                               step="0.01" min="0.01"
                                class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500
                                @error('amount') border-red-400 @enderror">
                         @error('amount')
@@ -38,10 +38,11 @@
                     </div>
                     <div class="w-32">
                         <label class="block mb-1 text-sm font-medium text-gray-700">Monedă</label>
+                        @php $defaultCurrency = old('currency', auth()->user()->currency ?? 'RON') @endphp
                         <select name="currency"
                                 class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
-                            <option value="RON" {{ old('currency') === 'RON' ? 'selected' : '' }}>RON</option>
-                            <option value="EUR" {{ old('currency') === 'EUR' ? 'selected' : '' }}>EUR</option>
+                            <option value="RON" {{ $defaultCurrency === 'RON' ? 'selected' : '' }}>RON</option>
+                            <option value="EUR" {{ $defaultCurrency === 'EUR' ? 'selected' : '' }}>EUR</option>
                         </select>
                     </div>
                 </div>

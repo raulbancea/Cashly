@@ -46,7 +46,7 @@ class ExpenseController extends Controller
     {
         $validated = $request->validate([
             'description' => 'required|string|max:255',
-            'amount'      => 'required|numeric|min:0',
+            'amount'      => 'required|numeric|min:0.01',
             'currency'    => 'required|in:RON,EUR',
             'date'        => 'required|date',
             'category_id' => [
@@ -82,7 +82,7 @@ class ExpenseController extends Controller
 
         $validated = $request->validate([
             'description' => 'required|string|max:255',
-            'amount'      => 'required|numeric|min:0',
+            'amount'      => 'required|numeric|min:0.01',
             'currency'    => 'required|in:RON,EUR',
             'date'        => 'required|date',
             'category_id' => [

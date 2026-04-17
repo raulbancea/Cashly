@@ -6,7 +6,8 @@
       "Bash(find /d/laragon/www/cashly -type f -name \"README.md\" -exec head -50 {} \\\\;)",
       "Bash(xargs grep:*)",
       "Bash(grep -c \"public function show\" /d/laragon/www/cashly/app/Http/Controllers/*.php)",
-      "Bash(find /d/laragon/www/cashly/config -type f -name \"*.php\" -exec grep -l \"RATE\\\\|LIMIT\\\\|PASSWORD\" {} \\\\;)"
+      "Bash(find /d/laragon/www/cashly/config -type f -name \"*.php\" -exec grep -l \"RATE\\\\|LIMIT\\\\|PASSWORD\" {} \\\\;)",
+      "Bash(xargs ls:*)"
     ]
   }
 }
