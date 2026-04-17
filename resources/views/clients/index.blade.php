@@ -61,6 +61,10 @@
 
                     {{-- Actiuni --}}
                     <div class="flex gap-2 pt-3 border-t border-gray-100">
+                        <a href="{{ route('clients.show', $client) }}"
+                           class="flex-1 text-center px-3 py-1.5 text-sm font-medium text-teal-700 border border-teal-200 rounded-lg hover:bg-teal-50">
+                            Vezi
+                        </a>
                         <a href="{{ route('clients.edit', $client) }}"
                            class="flex-1 text-center px-3 py-1.5 text-sm border border-gray-200 rounded-lg hover:bg-gray-50">
                             Editează

@@ -39,7 +39,25 @@ class ClientController extends Controller
         if ($client->user_id !== auth()->id()) {
             abort(403);
         }
-        return view('clients.show', compact('client'));
+
+        $invoices = $client->invoices()->latest()->get();
+
+        // KPI-uri calculate per valuta
+        $kpi = [];
+        foreach (['RON', 'EUR'] as $currency) {
+            $subset = $invoices->where('currency', $currency);
+            if ($subset->isEmpty()) continue;
+
+            $sum = fn($col) => $col->sum(fn($i) => (float) ($i->total_with_vat > 0 ? $i->total_with_vat : $i->total));
+
+            $kpi[$currency] = [
+                'total_facturat' => $sum($subset),
+                'total_incasat'  => $sum($subset->where('status', 'paid')),
+                'total_restant'  => $sum($subset->whereIn('status', ['sent', 'overdue'])),
+            ];
+        }
+
+        return view('clients.show', compact('client', 'invoices', 'kpi'));
     }
 
     public function edit(Client $client)
