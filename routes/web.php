@@ -7,8 +7,12 @@ Route::get('/', function () {
     return view('landing');
 });
 
+Route::get('/auth/google', [\App\Http\Controllers\GoogleController::class, 'redirect'])->name('auth.google');
+Route::get('/auth/google/callback', [\App\Http\Controllers\GoogleController::class, 'callback'])->name('auth.google.callback');
+
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/reports', [\App\Http\Controllers\ReportController::class, 'index'])->name('reports.index');
     Route::resource('clients', \App\Http\Controllers\ClientController::class);
 
     Route::resource('products', \App\Http\Controllers\ProductController::class)->except(['show']);

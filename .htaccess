@@ -1,0 +1,6 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /cashly/
+    RewriteCond %{REQUEST_URI} !^/cashly/public
+    RewriteRule ^(.*)$ /cashly/public/$1 [L,R=302]
+</IfModule>

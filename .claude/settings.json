@@ -7,7 +7,9 @@
       "Bash(xargs grep:*)",
       "Bash(grep -c \"public function show\" /d/laragon/www/cashly/app/Http/Controllers/*.php)",
       "Bash(find /d/laragon/www/cashly/config -type f -name \"*.php\" -exec grep -l \"RATE\\\\|LIMIT\\\\|PASSWORD\" {} \\\\;)",
-      "Bash(xargs ls:*)"
+      "Bash(xargs ls:*)",
+      "Bash(grep -r \"unauthorized\\\\|abort\" /d/laragon/www/cashly/app/Http/Controllers/*.php)",
+      "Bash(grep -rn \"Expense::\\\\|Invoice::\\\\|Client::\\\\|Product::\" /d/laragon/www/cashly/app/Http/Controllers/*.php)"
     ]
   }
 }
