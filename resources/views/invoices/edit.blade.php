@@ -2,7 +2,7 @@
     <x-slot name="title">Editează Factură</x-slot>
 
     <div class="max-w-4xl">
-        <div class="mb-6">
+        <div class="mb-4">
             <h2 class="text-xl font-bold text-gray-900">Editează Factura {{ $invoice->number }}</h2>
             <p class="text-sm text-gray-500">Modifică detaliile facturii</p>
         </div>
@@ -21,8 +21,8 @@
                 </div>
             @endif
 
-            <div class="p-6 mb-4 bg-white border border-gray-200 rounded-xl">
-                <h3 class="mb-4 font-semibold text-gray-700">Detalii factură</h3>
+            <div class="p-5 mb-4 bg-white border border-gray-100 rounded-xl shadow-sm">
+                <h3 class="mb-4 text-sm font-semibold text-gray-800">Detalii factură</h3>
 
                 <div class="grid grid-cols-2 gap-4 mb-4">
                     <div>
@@ -92,8 +92,8 @@
             </div>
 
             {{-- Linii factura --}}
-            <div class="p-6 mb-4 bg-white border border-gray-200 rounded-xl">
-                <h3 class="mb-4 font-semibold text-gray-700">Produse / Servicii</h3>
+            <div class="p-5 mb-4 bg-white border border-gray-100 rounded-xl shadow-sm">
+                <h3 class="mb-4 text-sm font-semibold text-gray-800">Produse / Servicii</h3>
 
                 <div id="items-container">
                     <div class="grid grid-cols-12 gap-2 mb-2 text-xs font-medium text-gray-500 uppercase">
@@ -173,7 +173,7 @@
             </div>
 
             {{-- Note --}}
-            <div class="p-6 mb-4 bg-white border border-gray-200 rounded-xl">
+            <div class="p-5 mb-4 bg-white border border-gray-100 rounded-xl shadow-sm">
                 <label class="block mb-1 text-sm font-medium text-gray-700">Note (opțional)</label>
                 <textarea name="notes" rows="2"
                           class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"

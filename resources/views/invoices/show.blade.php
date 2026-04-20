@@ -4,10 +4,10 @@
     <div class="max-w-4xl">
 
        {{-- Header --}}
-        <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center justify-between mb-4">
             <div>
                 <h2 class="text-xl font-bold text-gray-900">{{ $invoice->number }}</h2>
-                <p class="text-sm text-gray-500">{{ $invoice->client->name }}</p>
+                <p class="text-sm text-gray-500">{{ $invoice->client?->name ?? 'Client necunoscut' }}</p>
             </div>
             <div class="flex gap-2">
                 <a href="{{ route('invoices.edit', $invoice) }}"
@@ -27,12 +27,20 @@
                         </button>
                     </form>
                 @endif
-                @if($invoice->status !== 'paid')
+                @if(!in_array($invoice->status, ['paid', 'cancelled']))
                     <form method="POST" action="{{ route('invoices.markAsPaid', $invoice) }}">
                         @csrf
                         <button type="submit"
                                 class="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700">
                             Marchează încasată
+                        </button>
+                    </form>
+                    <form method="POST" action="{{ route('invoices.markAsCancelled', $invoice) }}"
+                          onsubmit="return confirm('Sigur vrei să anulezi această factură?')">
+                        @csrf
+                        <button type="submit"
+                                class="px-4 py-2 text-sm font-medium text-red-600 border border-red-300 rounded-lg hover:bg-red-50">
+                            Anulează factura
                         </button>
                     </form>
                 @endif
@@ -49,7 +57,7 @@
             </div>
         @endif
 
-        <div class="p-6 mb-4 bg-white border border-gray-200 rounded-xl">
+        <div class="p-5 mb-4 bg-white border border-gray-100 rounded-xl shadow-sm">
 
             {{-- Status + date --}}
             <div class="grid grid-cols-4 gap-4 mb-6">
@@ -59,13 +67,15 @@
                         {{ $invoice->status === 'paid' ? 'bg-green-100 text-green-700' : '' }}
                         {{ $invoice->status === 'draft' ? 'bg-gray-100 text-gray-600' : '' }}
                         {{ $invoice->status === 'sent' ? 'bg-blue-100 text-blue-700' : '' }}
-                        {{ $invoice->status === 'overdue' ? 'bg-red-100 text-red-700' : '' }}">
+                        {{ $invoice->status === 'overdue' ? 'bg-red-100 text-red-700' : '' }}
+                        {{ $invoice->status === 'cancelled' ? 'bg-orange-100 text-orange-700' : '' }}">
                         {{ match($invoice->status) {
-                            'paid' => 'Încasată',
-                            'draft' => 'Draft',
-                            'sent' => 'Trimisă',
-                            'overdue' => 'Restantă',
-                            default => $invoice->status
+                            'paid'      => 'Încasată',
+                            'draft'     => 'Draft',
+                            'sent'      => 'Trimisă',
+                            'overdue'   => 'Restantă',
+                            'cancelled' => 'Anulată',
+                            default     => $invoice->status
                         } }}
                     </span>
                 </div>

@@ -1,7 +1,7 @@
 <x-cashly-layout>
     <x-slot name="title">Facturi</x-slot>
 
-    <div class="flex items-center justify-between mb-6">
+    <div class="flex items-center justify-between mb-4">
         <div>
             <h2 class="text-xl font-bold text-gray-900">Facturi</h2>
             <p class="text-sm text-gray-500">Gestionează și urmărește facturile</p>
@@ -25,15 +25,16 @@
     @endif
 
     {{-- Filtre --}}
-    <form method="GET" action="{{ route('invoices.index') }}" class="flex flex-wrap items-end gap-3 p-4 mb-4 bg-white border border-gray-200 rounded-xl">
+    <form method="GET" action="{{ route('invoices.index') }}" class="flex flex-wrap items-end gap-3 p-4 mb-4 bg-white border border-gray-100 rounded-xl shadow-sm">
         <div class="flex flex-col gap-1">
             <label class="text-xs font-medium text-gray-500">Status</label>
             <select name="status" class="form-select pl-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
                 <option value="">Toate</option>
-                <option value="draft"   {{ request('status') === 'draft'   ? 'selected' : '' }}>Draft</option>
-                <option value="sent"    {{ request('status') === 'sent'    ? 'selected' : '' }}>Trimise</option>
-                <option value="paid"    {{ request('status') === 'paid'    ? 'selected' : '' }}>Încasate</option>
-                <option value="overdue" {{ request('status') === 'overdue' ? 'selected' : '' }}>Restante</option>
+                <option value="draft"     {{ request('status') === 'draft'     ? 'selected' : '' }}>Draft</option>
+                <option value="sent"      {{ request('status') === 'sent'      ? 'selected' : '' }}>Trimise</option>
+                <option value="paid"      {{ request('status') === 'paid'      ? 'selected' : '' }}>Încasate</option>
+                <option value="overdue"   {{ request('status') === 'overdue'   ? 'selected' : '' }}>Restante</option>
+                <option value="cancelled" {{ request('status') === 'cancelled' ? 'selected' : '' }}>Anulate</option>
             </select>
         </div>
 
@@ -59,21 +60,25 @@
             </select>
         </div>
 
-        <button type="submit"
-                class="px-4 py-2 text-sm font-medium text-white bg-teal-600 rounded-lg hover:bg-teal-700">
-            Filtrează
-        </button>
-
-        @if(request()->hasAny(['status', 'client_id', 'an']))
-            <a href="{{ route('invoices.index') }}"
-               class="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">
-                Resetează
-            </a>
-        @endif
+        <div class="flex flex-col gap-1">
+            <span class="text-xs font-medium text-gray-500 invisible">_</span>
+            <div class="flex gap-2">
+                <button type="submit"
+                        class="px-3 py-1.5 text-sm font-medium text-white bg-teal-600 rounded-lg hover:bg-teal-700">
+                    Filtrează
+                </button>
+                @if(request()->hasAny(['status', 'client_id', 'an']))
+                    <a href="{{ route('invoices.index') }}"
+                       class="px-3 py-1.5 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">
+                        Resetează
+                    </a>
+                @endif
+            </div>
+        </div>
     </form>
 
     @if($invoices->isEmpty())
-        <div class="p-10 text-center bg-white border border-gray-200 rounded-xl">
+        <div class="p-10 text-center bg-white border border-gray-100 rounded-xl shadow-sm">
             <p class="text-sm text-gray-500">Nicio factură găsită pentru filtrele selectate.</p>
             @if(request()->hasAny(['status', 'client_id', 'an']))
                 <a href="{{ route('invoices.index') }}"
@@ -88,53 +93,55 @@
             @endif
         </div>
     @else
-        <div class="overflow-hidden bg-white border border-gray-200 rounded-xl">
+        <div class="overflow-hidden bg-white border border-gray-100 rounded-xl shadow-sm">
             <table class="w-full text-sm">
-                <thead class="border-b border-gray-200 bg-gray-50">
+                <thead class="bg-gray-50">
                     <tr>
-                        <th class="px-4 py-3 font-medium text-left text-gray-600">Număr</th>
-                        <th class="px-4 py-3 font-medium text-left text-gray-600">Client</th>
-                        <th class="px-4 py-3 font-medium text-left text-gray-600">Data</th>
-                        <th class="px-4 py-3 font-medium text-left text-gray-600">Scadență</th>
-                        <th class="px-4 py-3 font-medium text-left text-gray-600">Status</th>
-                        <th class="px-4 py-3 font-medium text-right text-gray-600">Total</th>
-                        <th class="px-4 py-3 font-medium text-right text-gray-600">Acțiuni</th>
+                        <th class="px-5 py-2.5 text-left text-xs font-medium text-gray-400 uppercase tracking-wide">Număr</th>
+                        <th class="px-5 py-2.5 text-left text-xs font-medium text-gray-400 uppercase tracking-wide">Client</th>
+                        <th class="px-5 py-2.5 text-left text-xs font-medium text-gray-400 uppercase tracking-wide">Data</th>
+                        <th class="px-5 py-2.5 text-left text-xs font-medium text-gray-400 uppercase tracking-wide">Scadență</th>
+                        <th class="px-5 py-2.5 text-left text-xs font-medium text-gray-400 uppercase tracking-wide">Status</th>
+                        <th class="px-5 py-2.5 text-right text-xs font-medium text-gray-400 uppercase tracking-wide">Total</th>
+                        <th class="px-5 py-2.5 text-right text-xs font-medium text-gray-400 uppercase tracking-wide">Acțiuni</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-100">
+                <tbody class="divide-y divide-gray-50">
                     @foreach($invoices as $invoice)
                         <tr class="hover:bg-gray-50">
-                            <td class="px-4 py-3 font-medium text-gray-900">
+                            <td class="px-5 py-2.5 font-medium text-gray-900">
                                 {{ $invoice->number }}
                             </td>
-                            <td class="px-4 py-3 text-gray-600">
-                                {{ $invoice->client->name ?? '-' }}
+                            <td class="px-5 py-2.5 text-gray-600">
+                                {{ $invoice->client?->name ?? '-' }}
                             </td>
-                            <td class="px-4 py-3 text-gray-600">
+                            <td class="px-5 py-2.5 text-gray-600">
                                 {{ $invoice->issue_date->format('d.m.Y') }}
                             </td>
-                            <td class="px-4 py-3 text-gray-600">
+                            <td class="px-5 py-2.5 text-gray-600">
                                 {{ $invoice->due_date ? $invoice->due_date->format('d.m.Y') : '-' }}
                             </td>
-                            <td class="px-4 py-3">
+                            <td class="px-5 py-2.5">
                                 <span class="px-2 py-1 text-xs font-medium rounded-full
-                                    {{ $invoice->status === 'paid' ? 'bg-green-100 text-green-700' : '' }}
-                                    {{ $invoice->status === 'draft' ? 'bg-gray-100 text-gray-600' : '' }}
-                                    {{ $invoice->status === 'sent' ? 'bg-blue-100 text-blue-700' : '' }}
-                                    {{ $invoice->status === 'overdue' ? 'bg-red-100 text-red-700' : '' }}">
+                                    {{ $invoice->status === 'paid'      ? 'bg-green-100 text-green-700'   : '' }}
+                                    {{ $invoice->status === 'draft'     ? 'bg-gray-100 text-gray-600'     : '' }}
+                                    {{ $invoice->status === 'sent'      ? 'bg-blue-100 text-blue-700'     : '' }}
+                                    {{ $invoice->status === 'overdue'   ? 'bg-red-100 text-red-700'       : '' }}
+                                    {{ $invoice->status === 'cancelled' ? 'bg-orange-100 text-orange-700' : '' }}">
                                     {{ match($invoice->status) {
-                                        'paid' => 'Încasată',
-                                        'draft' => 'Draft',
-                                        'sent' => 'Trimisă',
-                                        'overdue' => 'Restantă',
-                                        default => $invoice->status
+                                        'paid'      => 'Încasată',
+                                        'draft'     => 'Draft',
+                                        'sent'      => 'Trimisă',
+                                        'overdue'   => 'Restantă',
+                                        'cancelled' => 'Anulată',
+                                        default     => $invoice->status
                                     } }}
                                 </span>
                             </td>
-                            <td class="px-4 py-3 font-medium text-right text-gray-900">
+                            <td class="px-5 py-2.5 font-medium text-right text-gray-900">
                                 {{ number_format($invoice->total_with_vat > 0 ? $invoice->total_with_vat : $invoice->total, 2, ',', '.') }} {{ $invoice->currency }}
                             </td>
-                            <td class="px-4 py-3 text-right">
+                            <td class="px-5 py-2.5 text-right">
                                 <div class="flex justify-end gap-2">
                                     <a href="{{ route('invoices.show', $invoice) }}"
                                        class="px-3 py-1.5 text-sm border border-gray-200 rounded-lg hover:bg-gray-50">

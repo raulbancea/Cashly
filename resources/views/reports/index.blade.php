@@ -2,7 +2,7 @@
     <x-slot name="title">Rapoarte {{ $selectedYear }}</x-slot>
 
     {{-- ── Header + selector an ──────────────────────────────────────────── --}}
-    <div class="flex items-center justify-between mb-6">
+    <div class="flex items-center justify-between mb-4">
         <div>
             <h2 class="text-xl font-bold text-gray-900">Rapoarte financiare</h2>
             <p class="text-sm text-gray-500">Sumar anual — {{ $selectedYear }}</p>
@@ -17,8 +17,12 @@
         </form>
     </div>
 
+    @php
+        $pieCategories = $expensesByCategory->where('ron', '>', 0)->values();
+    @endphp
+
     @if(empty($totale) && empty($monthly))
-        <div class="p-10 text-center bg-white border border-gray-200 rounded-xl shadow-sm">
+        <div class="p-10 text-center bg-white border border-gray-100 rounded-xl shadow-sm">
             <p class="text-gray-400">Nu există date pentru anul {{ $selectedYear }}.</p>
         </div>
     @else
@@ -27,7 +31,7 @@
     @foreach($totale as $currency => $t)
     <div class="grid grid-cols-2 gap-3 mb-4">
 
-        <div class="p-4 bg-white border border-gray-200 rounded-xl shadow-sm">
+        <div class="p-4 bg-white border border-gray-100 rounded-xl shadow-sm">
             <p class="text-xs font-medium tracking-wide text-gray-400 uppercase">Venituri {{ $currency }}</p>
             <p class="mt-1 text-xl font-bold text-gray-900">
                 {{ number_format($t['venituri'], 2, ',', '.') }}
@@ -36,7 +40,7 @@
             <p class="mt-0.5 text-xs text-gray-400">facturi încasate</p>
         </div>
 
-        <div class="p-4 bg-white border border-gray-200 rounded-xl shadow-sm">
+        <div class="p-4 bg-white border border-gray-100 rounded-xl shadow-sm">
             <p class="text-xs font-medium tracking-wide text-gray-400 uppercase">Cheltuieli {{ $currency }}</p>
             <p class="mt-1 text-xl font-bold text-gray-900">
                 {{ number_format($t['cheltuieli'], 2, ',', '.') }}
@@ -45,7 +49,7 @@
             <p class="mt-0.5 text-xs text-gray-400">total cheltuieli</p>
         </div>
 
-        <div class="p-4 bg-white border border-{{ $t['profit'] >= 0 ? 'teal' : 'red' }}-100 rounded-xl shadow-sm">
+        <div class="p-4 bg-white rounded-xl shadow-sm" style="border: 1px solid {{ $t['profit'] >= 0 ? '#99f6e4' : '#fecaca' }}">
             <p class="text-xs font-medium tracking-wide text-gray-400 uppercase">Profit net {{ $currency }}</p>
             <p class="mt-1 text-xl font-bold {{ $t['profit'] >= 0 ? 'text-teal-600' : 'text-red-500' }}">
                 {{ number_format($t['profit'], 2, ',', '.') }}
@@ -68,7 +72,7 @@
 
     {{-- ── Grafic bar: venituri vs cheltuieli — full width, 300px ───────── --}}
     @foreach($monthly as $currency => $data)
-    <div class="p-6 mb-4 bg-white border border-gray-200 rounded-xl shadow-sm">
+    <div class="p-5 mb-4 bg-white border border-gray-100 rounded-xl shadow-sm">
         <h3 class="mb-4 text-sm font-semibold text-gray-700">
             Venituri vs Cheltuieli — {{ $selectedYear }}
             <span class="ml-1 px-1.5 py-0.5 text-xs font-medium bg-gray-100 text-gray-500 rounded">{{ $currency }}</span>
@@ -79,10 +83,15 @@
     </div>
     @endforeach
 
-    {{-- ── TVA colectat per cotă ────────────────────────────────────────── --}}
+    {{-- ── TVA colectat per cotă și monedă ────────────────────────────── --}}
     @if($vatByRate->isNotEmpty())
-    <div class="p-6 mb-4 bg-white border border-gray-200 rounded-xl shadow-sm">
-        <h3 class="mb-4 text-sm font-semibold text-gray-700">TVA colectat pe cotă — {{ $selectedYear }}</h3>
+    @foreach($vatByRate->groupBy('currency') as $currency => $rows)
+    @php $totalCurrency = $vatTotalByCurrency[$currency] ?? 0; @endphp
+    <div class="p-5 mb-4 bg-white border border-gray-100 rounded-xl shadow-sm">
+        <h3 class="mb-4 text-sm font-semibold text-gray-700">
+            TVA colectat pe cotă — {{ $selectedYear }}
+            <span class="ml-1 px-1.5 py-0.5 text-xs font-medium bg-blue-100 text-blue-600 rounded">{{ $currency }}</span>
+        </h3>
         <table class="w-full text-sm">
             <thead>
                 <tr class="text-xs font-medium tracking-wide text-left text-gray-400 uppercase border-b border-gray-100">
@@ -93,18 +102,18 @@
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-50">
-                @foreach($vatByRate as $row)
+                @foreach($rows as $row)
                 <tr>
                     <td class="py-2.5 font-medium text-gray-900">
                         <span class="px-2 py-0.5 text-xs bg-blue-100 text-blue-700 rounded-full">{{ $row['cota'] }}%</span>
                     </td>
                     <td class="py-2.5 text-right text-gray-600">{{ $row['numar_facturi'] }}</td>
                     <td class="py-2.5 font-semibold text-right text-gray-900">
-                        {{ number_format($row['total_vat'], 2, ',', '.') }} RON
+                        {{ number_format($row['total_vat'], 2, ',', '.') }} {{ $currency }}
                     </td>
                     <td class="py-2.5 text-right text-gray-500">
-                        @if($totalVatColectat > 0)
-                            {{ number_format($row['total_vat'] / $totalVatColectat * 100, 1) }}%
+                        @if($totalCurrency > 0)
+                            {{ number_format($row['total_vat'] / $totalCurrency * 100, 1) }}%
                         @else —
                         @endif
                     </td>
@@ -114,25 +123,24 @@
             <tfoot>
                 <tr class="border-t-2 border-gray-200">
                     <td class="pt-3 font-semibold text-gray-700">Total</td>
-                    <td class="pt-3 font-semibold text-right text-gray-700">{{ $vatByRate->sum('numar_facturi') }}</td>
+                    <td class="pt-3 font-semibold text-right text-gray-700">{{ $rows->sum('numar_facturi') }}</td>
                     <td class="pt-3 font-bold text-right text-gray-900">
-                        {{ number_format($totalVatColectat, 2, ',', '.') }} RON
+                        {{ number_format($totalCurrency, 2, ',', '.') }} {{ $currency }}
                     </td>
                     <td class="pt-3 text-right text-gray-500">100%</td>
                 </tr>
             </tfoot>
         </table>
     </div>
+    @endforeach
     @endif
 
     {{-- ── Cheltuieli pe categorie: bare + doughnut side-by-side ──────────── --}}
-    @php $pieCategories = $expensesByCategory->where('ron', '>', 0)->values(); @endphp
-    @php $pieCategories ??= collect(); @endphp
     @if($expensesByCategory->isNotEmpty())
     <div class="grid grid-cols-1 gap-4 mb-4 lg:grid-cols-2">
 
         {{-- Tabel cu bare de progres --}}
-        <div class="p-6 bg-white border border-gray-200 rounded-xl shadow-sm">
+        <div class="p-5 bg-white border border-gray-100 rounded-xl shadow-sm">
             <h3 class="mb-4 text-sm font-semibold text-gray-700">Cheltuieli pe categorie — {{ $selectedYear }}</h3>
             <div class="space-y-3">
                 @php $maxRon = $expensesByCategory->max('ron') ?: 1; @endphp
@@ -169,7 +177,7 @@
         </div>
 
         {{-- Doughnut chart cu total în centru --}}
-        <div class="p-6 bg-white border border-gray-200 rounded-xl shadow-sm flex flex-col items-center">
+        <div class="p-5 bg-white border border-gray-100 rounded-xl shadow-sm flex flex-col items-center">
             <h3 class="mb-4 text-sm font-semibold text-gray-700 self-start">Distribuție cheltuieli (RON)</h3>
             @if($pieCategories->isNotEmpty())
                 {{-- Wrapper pătrat, max 300px, pentru center text --}}

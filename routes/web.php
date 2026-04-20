@@ -22,11 +22,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('invoices', \App\Http\Controllers\InvoiceController::class);
     Route::post('invoices/{invoice}/mark-as-sent', [\App\Http\Controllers\InvoiceController::class, 'markAsSent'])->name('invoices.markAsSent');
     Route::post('invoices/{invoice}/mark-as-paid', [\App\Http\Controllers\InvoiceController::class, 'markAsPaid'])->name('invoices.markAsPaid');
+    Route::post('invoices/{invoice}/mark-as-cancelled', [\App\Http\Controllers\InvoiceController::class, 'markAsCancelled'])->name('invoices.markAsCancelled');
     Route::get('invoices/{invoice}/pdf', [\App\Http\Controllers\InvoiceController::class, 'downloadPdf'])->name('invoices.downloadPdf');
 
     // Ruta specifica expenses INAINTE de resource()
     Route::get('expenses/export/csv', [\App\Http\Controllers\ExpenseController::class, 'exportCsv'])->name('expenses.exportCsv');
-    Route::resource('expenses', \App\Http\Controllers\ExpenseController::class);
+    Route::get('expenses/{expense}/receipt', [\App\Http\Controllers\ExpenseController::class, 'downloadReceipt'])->name('expenses.downloadReceipt');
+    Route::resource('expenses', \App\Http\Controllers\ExpenseController::class)->except(['show']);
 
     Route::get('/settings', [\App\Http\Controllers\SettingsController::class, 'index'])->name('settings.index');
     Route::put('/settings', [\App\Http\Controllers\SettingsController::class, 'update'])->name('settings.update');

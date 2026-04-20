@@ -1,7 +1,7 @@
 <x-cashly-layout>
     <x-slot name="title">Clienți</x-slot>
 
-    <div class="flex items-center justify-between mb-6">
+    <div class="flex items-center justify-between mb-4">
         <div>
             <h2 class="text-xl font-bold text-gray-900">Clienți</h2>
             <p class="text-sm text-gray-500">Gestionează portofoliul de clienți</p>
@@ -21,7 +21,7 @@
 
     {{-- Lista clienti --}}
     @if($clients->isEmpty())
-        <div class="p-10 text-center bg-white border border-gray-200 rounded-xl">
+        <div class="p-10 text-center bg-white border border-gray-100 rounded-xl shadow-sm">
             <p class="text-sm text-gray-500">Nu ai niciun client încă.</p>
             <a href="{{ route('clients.create') }}"
                class="inline-block px-4 py-2 mt-3 text-sm text-white bg-teal-600 rounded-lg hover:bg-teal-700">
@@ -31,7 +31,7 @@
     @else
         <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
             @foreach($clients as $client)
-                <div class="p-5 bg-white border border-gray-200 rounded-xl">
+                <div class="p-5 bg-white border border-gray-100 rounded-xl shadow-sm">
 
                     {{-- Header card --}}
                     <div class="flex items-start justify-between mb-3">

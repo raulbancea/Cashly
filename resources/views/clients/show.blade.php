@@ -2,7 +2,7 @@
     <x-slot name="title">{{ $client->name }}</x-slot>
 
     {{-- Header --}}
-    <div class="flex items-start justify-between mb-6">
+    <div class="flex items-start justify-between mb-4">
         <div>
             <div class="flex items-center gap-3">
                 <h2 class="text-xl font-bold text-gray-900">{{ $client->name }}</h2>
@@ -29,11 +29,11 @@
         </div>
     </div>
 
-    <div class="grid grid-cols-1 gap-4 mb-6 lg:grid-cols-3">
+    <div class="grid grid-cols-1 gap-4 mb-4 lg:grid-cols-3">
 
         {{-- Date contact --}}
-        <div class="p-6 bg-white border border-gray-200 rounded-xl">
-            <h3 class="mb-4 text-sm font-semibold tracking-wide text-gray-500 uppercase">Date contact</h3>
+        <div class="p-5 bg-white border border-gray-100 rounded-xl shadow-sm">
+            <h3 class="mb-4 text-xs font-semibold tracking-wide text-gray-400 uppercase">Date contact</h3>
             <div class="space-y-3">
                 @if($client->email)
                     <div class="flex items-start gap-3">
@@ -79,7 +79,7 @@
                 @foreach($kpi as $currency => $valori)
                     <div class="grid grid-cols-3 gap-4 {{ !$loop->first ? 'mt-4' : '' }}">
                         {{-- Total facturat --}}
-                        <div class="p-5 bg-white border border-gray-200 rounded-xl">
+                        <div class="p-5 bg-white border border-gray-100 rounded-xl shadow-sm">
                             <p class="mb-1 text-xs font-medium tracking-wide text-gray-500 uppercase">Total facturat</p>
                             <p class="text-2xl font-bold text-gray-900">
                                 {{ number_format($valori['total_facturat'], 2, ',', '.') }}
@@ -101,7 +101,7 @@
                         </div>
 
                         {{-- Total restant --}}
-                        <div class="p-5 bg-white border border-{{ $valori['total_restant'] > 0 ? 'red' : 'gray' }}-100 rounded-xl">
+                        <div class="p-5 bg-white rounded-xl" style="border: 1px solid {{ $valori['total_restant'] > 0 ? '#fecaca' : '#e5e7eb' }}">
                             <p class="mb-1 text-xs font-medium tracking-wide text-gray-500 uppercase">Neîncasat</p>
                             <p class="text-2xl font-bold {{ $valori['total_restant'] > 0 ? 'text-red-600' : 'text-gray-400' }}">
                                 {{ number_format($valori['total_restant'], 2, ',', '.') }}
@@ -118,9 +118,9 @@
     </div>
 
     {{-- Tabel facturi --}}
-    <div class="bg-white border border-gray-200 rounded-xl">
+    <div class="bg-white border border-gray-100 rounded-xl shadow-sm">
         <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
-            <h3 class="font-semibold text-gray-700">Facturi emise</h3>
+            <h3 class="text-sm font-semibold text-gray-800">Facturi emise</h3>
             @if($invoices->isNotEmpty())
                 <a href="{{ route('invoices.create') }}"
                    class="px-3 py-1.5 text-sm font-medium text-teal-600 border border-teal-200 rounded-lg hover:bg-teal-50">
@@ -141,16 +141,16 @@
             <div class="overflow-x-auto">
                 <table class="w-full text-sm">
                     <thead>
-                        <tr class="text-xs font-medium tracking-wide text-left text-gray-500 uppercase border-b border-gray-100 bg-gray-50">
-                            <th class="px-6 py-3">Număr</th>
-                            <th class="px-6 py-3">Data emiterii</th>
-                            <th class="px-6 py-3">Scadență</th>
-                            <th class="px-6 py-3">Status</th>
-                            <th class="px-6 py-3 text-right">Total</th>
-                            <th class="px-6 py-3"></th>
+                        <tr class="bg-gray-50">
+                            <th class="px-5 py-2.5 text-left text-xs font-medium text-gray-400 uppercase tracking-wide">Număr</th>
+                            <th class="px-5 py-2.5 text-left text-xs font-medium text-gray-400 uppercase tracking-wide">Data emiterii</th>
+                            <th class="px-5 py-2.5 text-left text-xs font-medium text-gray-400 uppercase tracking-wide">Scadență</th>
+                            <th class="px-5 py-2.5 text-left text-xs font-medium text-gray-400 uppercase tracking-wide">Status</th>
+                            <th class="px-5 py-2.5 text-right text-xs font-medium text-gray-400 uppercase tracking-wide">Total</th>
+                            <th class="px-5 py-2.5"></th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-50">
+                    <tbody class="divide-y divide-gray-50 text-sm">
                         @foreach($invoices as $invoice)
                             <tr class="hover:bg-gray-50">
                                 <td class="px-6 py-3 font-medium text-gray-900">

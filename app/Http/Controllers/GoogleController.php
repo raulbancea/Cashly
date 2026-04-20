@@ -26,18 +26,25 @@ class GoogleController extends Controller
 
             if ($user) {
                 // Leaga contul Google la contul existent
-                $user->update(['google_id' => $googleUser->getId()]);
+                $user->update([
+                    'google_id' => $googleUser->getId(),
+                    'avatar'    => $googleUser->getAvatar(),
+                ]);
             } else {
                 // 3. Creeaza cont nou din Google
                 $user = User::create([
                     'name'              => $googleUser->getName(),
                     'email'             => $googleUser->getEmail(),
                     'google_id'         => $googleUser->getId(),
+                    'avatar'            => $googleUser->getAvatar(),
                     'password'          => null,
-                    'email_verified_at' => now(), // Google confirma emailul
+                    'email_verified_at' => now(),
                 ]);
             }
         }
+
+        // Actualizeaza avatarul la fiecare login (poate fi schimbat pe Google)
+        $user->update(['avatar' => $googleUser->getAvatar()]);
 
         Auth::login($user, remember: true);
 

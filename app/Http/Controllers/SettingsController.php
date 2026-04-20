@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class SettingsController extends Controller
 {
@@ -16,16 +17,37 @@ class SettingsController extends Controller
     public function update(Request $request)
     {
         $validate = $request->validate([
-            'name' => 'required|string|max:255',
+            'name'         => 'required|string|max:255',
             'company_name' => 'nullable|string|max:255',
-            'company_vat' => 'nullable|string|max:50',
-            'phone' => 'nullable|string|max:50',
-            'address' => 'nullable|string|max:500',
-            'currency' => 'required|in:RON,EUR',
+            'company_vat'  => 'nullable|string|max:50',
+            'phone'        => 'nullable|string|max:50',
+            'address'      => 'nullable|string|max:500',
+            'currency'     => 'required|in:RON,EUR',
+            'bank_account' => 'nullable|string|max:255',
+            'logo'         => 'nullable|image|mimes:png,jpg,jpeg|max:2048',
+            'remove_logo'  => 'nullable|boolean',
         ]);
 
-        auth()->user()->update($validate);
-        return redirect()->route('settings.index')->with('success', 'Setarile au fost salvate!');
+        $user = auth()->user();
+        $data = collect($validate)->except(['logo', 'remove_logo'])->toArray();
+
+        // Sterge logo dacă e bifat
+        if ($request->boolean('remove_logo') && $user->logo) {
+            Storage::disk('public')->delete($user->logo);
+            $data['logo'] = null;
+        }
+
+        // Upload logo nou
+        if ($request->hasFile('logo')) {
+            if ($user->logo) {
+                Storage::disk('public')->delete($user->logo);
+            }
+            $path = $request->file('logo')->store('logos/' . $user->id, 'public');
+            $data['logo'] = $path;
+        }
+
+        $user->update($data);
+        return redirect()->route('settings.index')->with('success', 'Setările au fost salvate!');
     }
 
     public function storeCategory(Request $request)
@@ -41,10 +63,15 @@ class SettingsController extends Controller
             'color' => $validate['color'],
         ]);
 
-        $appUrl = config('app.url');
-        if (!empty($validate['redirect_to']) && !empty($appUrl) && str_starts_with($validate['redirect_to'], $appUrl)) {
-            $base = strtok($validate['redirect_to'], '?');
-            return redirect($base . '?new_category_id=' . $category->id);
+        if (!empty($validate['redirect_to'])) {
+            $parsed = parse_url($validate['redirect_to']);
+            $appParsed = parse_url(config('app.url'));
+            $sameHost = isset($parsed['host']) && $parsed['host'] === ($appParsed['host'] ?? '');
+            $isRelative = !isset($parsed['host']);
+            if ($sameHost || $isRelative) {
+                $base = strtok($validate['redirect_to'], '?');
+                return redirect($base . '?new_category_id=' . $category->id);
+            }
         }
 
         return redirect()->route('settings.index')->with('success', 'Categoria a fost adăugată!');

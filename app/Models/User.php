@@ -24,12 +24,15 @@ class User extends Authenticatable
         'email',
         'password',
         'google_id',
+        'avatar',
         'company_name',
         'company_vat',
         'phone',
         'address',
         'currency',
         'plan',
+        'logo',
+        'bank_account',
     ];
 
     /**

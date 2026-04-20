@@ -17,7 +17,7 @@ class InvoiceController extends Controller
     {
         $query = auth()->user()->invoices()->with('client');
 
-        if ($request->filled('status') && in_array($request->status, ['draft', 'sent', 'paid', 'overdue'])) {
+        if ($request->filled('status') && in_array($request->status, ['draft', 'sent', 'paid', 'overdue', 'cancelled'])) {
             $query->where('status', $request->status);
         }
 
@@ -112,12 +112,14 @@ class InvoiceController extends Controller
 
     public function show(Invoice $invoice)
     {
+        abort_if($invoice->user_id !== auth()->id(), 403);
         $invoice->load('client', 'items');
         return view('invoices.show', compact('invoice'));
     }
 
     public function edit(Invoice $invoice)
     {
+        abort_if($invoice->user_id !== auth()->id(), 403);
         $invoice->load('client', 'items');
         // Includem clientul curent al facturii chiar daca nu mai e activ
         $clients = auth()->user()->clients()
@@ -131,6 +133,7 @@ class InvoiceController extends Controller
 
     public function update(Request $request, Invoice $invoice)
     {
+        abort_if($invoice->user_id !== auth()->id(), 403);
         $validated = $request->validate([
             'client_id'  => ['required', Rule::exists('clients', 'id')->where('user_id', auth()->id())],
             'issue_date' => 'required|date',
@@ -185,6 +188,8 @@ class InvoiceController extends Controller
 
     public function destroy(Invoice $invoice)
     {
+        abort_if($invoice->user_id !== auth()->id(), 403);
+        abort_if($invoice->status === 'paid', 403, 'Facturile încasate nu pot fi șterse.');
         $invoice->items()->delete();
         $invoice->delete();
         return redirect()->route('invoices.index')->with('success', 'Factură ștearsă!');
@@ -192,6 +197,7 @@ class InvoiceController extends Controller
 
     public function markAsSent(Invoice $invoice)
     {
+        abort_if($invoice->user_id !== auth()->id(), 403);
         abort_if($invoice->status !== 'draft', 403);
         $invoice->update(['status' => 'sent']);
         return redirect()->back()->with('success', 'Factura marcată ca trimisă!');
@@ -199,9 +205,18 @@ class InvoiceController extends Controller
 
     public function markAsPaid(Invoice $invoice)
     {
-        abort_if($invoice->status === 'paid', 403);
+        abort_if($invoice->user_id !== auth()->id(), 403);
+        abort_if(in_array($invoice->status, ['paid', 'cancelled']), 403);
         $invoice->update(['status' => 'paid']);
         return redirect()->back()->with('success', 'Factura marcată ca încasată!');
+    }
+
+    public function markAsCancelled(Invoice $invoice)
+    {
+        abort_if($invoice->user_id !== auth()->id(), 403);
+        abort_if($invoice->status === 'paid', 403, 'Facturile încasate nu pot fi anulate.');
+        $invoice->update(['status' => 'cancelled']);
+        return redirect()->back()->with('success', 'Factura a fost anulată!');
     }
 
     private function generateInvoiceNumber(): string
@@ -219,6 +234,7 @@ class InvoiceController extends Controller
 
     public function downloadPdf(Invoice $invoice, PdfService $pdfService)
     {
+        abort_if($invoice->user_id !== auth()->id(), 403);
         $pdf = $pdfService->generateInvoicePdf($invoice);
         return $pdf->download('factura-' . $invoice->number . '.pdf');
     }
@@ -238,10 +254,11 @@ class InvoiceController extends Controller
         $sheet->getStyle('A1:I1')->getFont()->setBold(true);
 
         $statusMap = [
-            'draft'   => 'Draft',
-            'sent'    => 'Trimisă',
-            'paid'    => 'Încasată',
-            'overdue' => 'Restantă',
+            'draft'     => 'Draft',
+            'sent'      => 'Trimisă',
+            'paid'      => 'Încasată',
+            'overdue'   => 'Restantă',
+            'cancelled' => 'Anulată',
         ];
 
         $row = 2;

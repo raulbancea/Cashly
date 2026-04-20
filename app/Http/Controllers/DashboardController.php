@@ -68,22 +68,44 @@ class DashboardController extends Controller
 
             $cashFlow_ron[] = [
                 'month'    => $label,
-                'revenue'  => (float) ($invoiceRows->get("{$key}-RON")->total ?? 0),
-                'expenses' => (float) ($expenseRows->get("{$key}-RON")->total ?? 0),
+                'revenue'  => (float) ($invoiceRows->get("{$key}-RON")?->total ?? 0),
+                'expenses' => (float) ($expenseRows->get("{$key}-RON")?->total ?? 0),
             ];
 
             $cashFlow_eur[] = [
                 'month'    => $label,
-                'revenue'  => (float) ($invoiceRows->get("{$key}-EUR")->total ?? 0),
-                'expenses' => (float) ($expenseRows->get("{$key}-EUR")->total ?? 0),
+                'revenue'  => (float) ($invoiceRows->get("{$key}-EUR")?->total ?? 0),
+                'expenses' => (float) ($expenseRows->get("{$key}-EUR")?->total ?? 0),
             ];
         }
+
+        // Breakdown status facturi (total, nu doar luna curenta)
+        $statusCounts = $user->invoices()
+            ->selectRaw('status, COUNT(*) as cnt')
+            ->groupBy('status')
+            ->pluck('cnt', 'status');
+
+        $invoiceStatusCounts = [
+            'draft'     => (int) ($statusCounts['draft']     ?? 0),
+            'sent'      => (int) ($statusCounts['sent']      ?? 0),
+            'paid'      => (int) ($statusCounts['paid']      ?? 0),
+            'overdue'   => (int) ($statusCounts['overdue']   ?? 0),
+            'cancelled' => (int) ($statusCounts['cancelled'] ?? 0),
+        ];
+
+        // Ultimele 5 facturi
+        $recentInvoices = $user->invoices()
+            ->with('client')
+            ->latest()
+            ->limit(5)
+            ->get();
 
         return view('dashboard', compact(
             'revenue_ron', 'revenue_eur',
             'expenses_ron', 'expenses_eur',
             'profit_ron', 'profit_eur',
-            'overdueCount', 'cashFlow_ron', 'cashFlow_eur'
+            'overdueCount', 'cashFlow_ron', 'cashFlow_eur',
+            'invoiceStatusCounts', 'recentInvoices'
         ));
     }
 }

@@ -58,22 +58,25 @@ class ReportController extends Controller
             }
         }
 
-        // ── 2. TVA colectat per cotă (doar facturi paid) ──────────────────────
+        // ── 2. TVA colectat per cotă și monedă (doar facturi paid) ───────────
         $vatByRate = $user->invoices()
             ->where('status', 'paid')
             ->whereYear('issue_date', $selectedYear)
             ->whereNotNull('vat_rate')
             ->where('vat_amount', '>', 0)
-            ->selectRaw('vat_rate, SUM(vat_amount) as total_vat, COUNT(*) as numar_facturi')
-            ->groupBy('vat_rate')
+            ->selectRaw('vat_rate, currency, SUM(vat_amount) as total_vat, COUNT(*) as numar_facturi')
+            ->groupBy('vat_rate', 'currency')
+            ->orderBy('currency')
             ->orderBy('vat_rate')
             ->get()
             ->map(fn($r) => [
                 'cota'            => (int) round((float) $r->vat_rate),
+                'currency'        => $r->currency,
                 'total_vat'       => (float) $r->total_vat,
                 'numar_facturi'   => (int) $r->numar_facturi,
             ]);
 
+        $vatTotalByCurrency = $vatByRate->groupBy('currency')->map(fn($rows) => $rows->sum('total_vat'));
         $totalVatColectat = $vatByRate->sum('total_vat');
 
         // ── 3. Cheltuieli grupate pe categorie (pentru pie chart) ─────────────
@@ -121,6 +124,7 @@ class ReportController extends Controller
             'availableYears',
             'monthly',
             'vatByRate',
+            'vatTotalByCurrency',
             'totalVatColectat',
             'expensesByCategory',
             'totale'

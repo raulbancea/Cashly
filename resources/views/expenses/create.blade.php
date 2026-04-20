@@ -2,13 +2,13 @@
     <x-slot name="title">Adaugă Cheltuială</x-slot>
 
     <div class="max-w-2xl">
-        <div class="mb-6">
+        <div class="mb-4">
             <h2 class="text-xl font-bold text-gray-900">Adaugă Cheltuială</h2>
             <p class="text-sm text-gray-500">Înregistrează o cheltuială nouă</p>
         </div>
 
-        <div class="p-6 bg-white border border-gray-200 rounded-xl">
-            <form method="POST" action="{{ route('expenses.store') }}">
+        <div class="p-5 bg-white border border-gray-100 rounded-xl shadow-sm">
+            <form method="POST" action="{{ route('expenses.store') }}" enctype="multipart/form-data">
                 @csrf
 
                 <div class="mb-4">
@@ -77,6 +77,17 @@
                             </option>
                         @endforeach
                     </select>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block mb-1 text-sm font-medium text-gray-700">Bon / Chitanță</label>
+                    <input type="file" name="receipt" accept=".jpg,.jpeg,.png,.pdf"
+                           class="w-full text-sm text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0
+                                  file:text-sm file:font-medium file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100">
+                    <p class="mt-1 text-xs text-gray-400">JPG, PNG sau PDF — max 5 MB</p>
+                    @error('receipt')
+                        <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 <div class="flex gap-3">

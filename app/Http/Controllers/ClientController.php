@@ -42,19 +42,25 @@ class ClientController extends Controller
 
         $invoices = $client->invoices()->latest()->get();
 
-        // KPI-uri calculate per valuta
+        // KPI-uri calculate cu SQL aggregates per valuta
         $kpi = [];
         foreach (['RON', 'EUR'] as $currency) {
-            $subset = $invoices->where('currency', $currency);
-            if ($subset->isEmpty()) continue;
+            $row = $client->invoices()
+                ->where('currency', $currency)
+                ->selectRaw("
+                    SUM(CASE WHEN total_with_vat > 0 THEN total_with_vat ELSE total END) as total_facturat,
+                    SUM(CASE WHEN status = 'paid' THEN (CASE WHEN total_with_vat > 0 THEN total_with_vat ELSE total END) ELSE 0 END) as total_incasat,
+                    SUM(CASE WHEN status IN ('sent','overdue') THEN (CASE WHEN total_with_vat > 0 THEN total_with_vat ELSE total END) ELSE 0 END) as total_restant
+                ")
+                ->first();
 
-            $sum = fn($col) => $col->sum(fn($i) => (float) ($i->total_with_vat > 0 ? $i->total_with_vat : $i->total));
-
-            $kpi[$currency] = [
-                'total_facturat' => $sum($subset),
-                'total_incasat'  => $sum($subset->where('status', 'paid')),
-                'total_restant'  => $sum($subset->whereIn('status', ['sent', 'overdue'])),
-            ];
+            if ($row && $row->total_facturat > 0) {
+                $kpi[$currency] = [
+                    'total_facturat' => (float) $row->total_facturat,
+                    'total_incasat'  => (float) $row->total_incasat,
+                    'total_restant'  => (float) $row->total_restant,
+                ];
+            }
         }
 
         return view('clients.show', compact('client', 'invoices', 'kpi'));

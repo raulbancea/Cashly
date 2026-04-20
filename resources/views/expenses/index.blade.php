@@ -1,7 +1,7 @@
 <x-cashly-layout>
     <x-slot name="title">Cheltuieli</x-slot>
 
-    <div class="flex items-center justify-between mb-6">
+    <div class="flex items-center justify-between mb-4">
         <div>
             <h2 class="text-xl font-bold text-gray-900">Cheltuieli</h2>
             <p class="text-sm text-gray-500">Monitorizează și gestionează cheltuielile</p>
@@ -25,7 +25,7 @@
     @endif
 
     {{-- Filtre --}}
-    <form method="GET" action="{{ route('expenses.index') }}" class="flex flex-wrap items-end gap-3 p-4 mb-4 bg-white border border-gray-200 rounded-xl">
+    <form method="GET" action="{{ route('expenses.index') }}" class="flex flex-wrap items-end gap-3 p-4 mb-4 bg-white border border-gray-100 rounded-xl shadow-sm">
         <div class="flex flex-col gap-1">
             <label class="text-xs font-medium text-gray-500">Categorie</label>
             <select name="category_id" class="form-select pl-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
@@ -48,21 +48,25 @@
             </select>
         </div>
 
-        <button type="submit"
-                class="px-4 py-2 text-sm font-medium text-white bg-teal-600 rounded-lg hover:bg-teal-700">
-            Filtrează
-        </button>
-
-        @if(request()->hasAny(['category_id', 'an']))
-            <a href="{{ route('expenses.index') }}"
-               class="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">
-                Resetează
-            </a>
-        @endif
+        <div class="flex flex-col gap-1">
+            <span class="text-xs font-medium text-gray-500 invisible">_</span>
+            <div class="flex gap-2">
+                <button type="submit"
+                        class="px-3 py-1.5 text-sm font-medium text-white bg-teal-600 rounded-lg hover:bg-teal-700">
+                    Filtrează
+                </button>
+                @if(request()->hasAny(['category_id', 'an']))
+                    <a href="{{ route('expenses.index') }}"
+                       class="px-3 py-1.5 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">
+                        Resetează
+                    </a>
+                @endif
+            </div>
+        </div>
     </form>
 
     @if($expenses->isEmpty())
-        <div class="p-10 text-center bg-white border border-gray-200 rounded-xl">
+        <div class="p-10 text-center bg-white border border-gray-100 rounded-xl shadow-sm">
             @if(request()->hasAny(['category_id', 'an']))
                 <p class="text-sm text-gray-500">Nicio cheltuială găsită pentru filtrele selectate.</p>
                 <a href="{{ route('expenses.index') }}"
@@ -78,22 +82,23 @@
             @endif
         </div>
     @else
-        <div class="overflow-hidden bg-white border border-gray-200 rounded-xl">
+        <div class="overflow-hidden bg-white border border-gray-100 rounded-xl shadow-sm">
             <table class="w-full text-sm">
-                <thead class="border-b border-gray-200 bg-gray-50">
+                <thead class="bg-gray-50">
                     <tr>
-                        <th class="px-4 py-3 font-medium text-left text-gray-600">Descriere</th>
-                        <th class="px-4 py-3 font-medium text-left text-gray-600">Categorie</th>
-                        <th class="px-4 py-3 font-medium text-left text-gray-600">Data</th>
-                        <th class="px-4 py-3 font-medium text-right text-gray-600">Sumă</th>
-                        <th class="px-4 py-3 font-medium text-right text-gray-600">Acțiuni</th>
+                        <th class="px-5 py-2.5 text-left text-xs font-medium text-gray-400 uppercase tracking-wide">Descriere</th>
+                        <th class="px-5 py-2.5 text-left text-xs font-medium text-gray-400 uppercase tracking-wide">Categorie</th>
+                        <th class="px-5 py-2.5 text-left text-xs font-medium text-gray-400 uppercase tracking-wide">Data</th>
+                        <th class="px-5 py-2.5 text-right text-xs font-medium text-gray-400 uppercase tracking-wide">Sumă</th>
+                        <th class="px-5 py-2.5 text-center text-xs font-medium text-gray-400 uppercase tracking-wide">Bon</th>
+                        <th class="px-5 py-2.5 text-right text-xs font-medium text-gray-400 uppercase tracking-wide">Acțiuni</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-100">
+                <tbody class="divide-y divide-gray-50">
                     @foreach($expenses as $expense)
                         <tr class="hover:bg-gray-50">
-                            <td class="px-4 py-3 text-gray-900">{{ $expense->description }}</td>
-                            <td class="px-4 py-3">
+                            <td class="px-5 py-2.5 text-gray-900">{{ $expense->description }}</td>
+                            <td class="px-5 py-2.5">
                                 @if($expense->category)
                                     <span class="px-2 py-1 text-xs font-medium rounded-full"
                                           style="background-color: {{ $expense->category->color }}22; color: {{ $expense->category->color }}">
@@ -103,13 +108,27 @@
                                     <span class="text-gray-400">-</span>
                                 @endif
                             </td>
-                            <td class="px-4 py-3 text-gray-600">
+                            <td class="px-5 py-2.5 text-gray-600">
                                 {{ $expense->date->format('d.m.Y') }}
                             </td>
-                            <td class="px-4 py-3 font-medium text-right text-red-600">
+                            <td class="px-5 py-2.5 font-medium text-right text-red-600">
                                 -{{ number_format($expense->amount, 2, ',', '.') }} {{ $expense->currency }}
                             </td>
-                            <td class="px-4 py-3 text-right">
+                            <td class="px-5 py-2.5 text-center">
+                                @if($expense->receipt_path)
+                                    <a href="{{ route('expenses.downloadReceipt', $expense) }}"
+                                       title="Descarcă bon"
+                                       class="inline-flex items-center text-teal-600 hover:text-teal-800">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                        </svg>
+                                    </a>
+                                @else
+                                    <span class="text-gray-300">—</span>
+                                @endif
+                            </td>
+                            <td class="px-5 py-2.5 text-right">
                                 <div class="flex justify-end gap-2">
                                     <a href="{{ route('expenses.edit', $expense) }}"
                                        class="px-3 py-1.5 text-sm border border-gray-200 rounded-lg hover:bg-gray-50">

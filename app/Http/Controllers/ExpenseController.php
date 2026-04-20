@@ -6,6 +6,7 @@ use App\Models\Expense;
 use App\Models\ExpenseCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -53,9 +54,15 @@ class ExpenseController extends Controller
                 'nullable',
                 Rule::exists('expense_categories', 'id')->where('user_id', auth()->id()),
             ],
+            'receipt'     => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
         ]);
 
-        auth()->user()->expenses()->create($validated);
+        $receiptPath = null;
+        if ($request->hasFile('receipt')) {
+            $receiptPath = $request->file('receipt')->store('receipts/' . auth()->id(), 'private');
+        }
+
+        auth()->user()->expenses()->create(array_merge($validated, ['receipt_path' => $receiptPath]));
 
         return redirect()->route('expenses.index')->with('success', 'Cheltuială adăugată cu succes!');
     }
@@ -81,16 +88,29 @@ class ExpenseController extends Controller
         }
 
         $validated = $request->validate([
-            'description' => 'required|string|max:255',
-            'amount'      => 'required|numeric|min:0.01',
-            'currency'    => 'required|in:RON,EUR',
-            'date'        => 'required|date',
-            'category_id' => [
+            'description'    => 'required|string|max:255',
+            'amount'         => 'required|numeric|min:0.01',
+            'currency'       => 'required|in:RON,EUR',
+            'date'           => 'required|date',
+            'category_id'    => [
                 'nullable',
                 Rule::exists('expense_categories', 'id')->where('user_id', auth()->id()),
             ],
+            'receipt'        => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'remove_receipt' => 'nullable|boolean',
         ]);
 
+        if ($request->boolean('remove_receipt') && $expense->receipt_path) {
+            Storage::disk('private')->delete($expense->receipt_path);
+            $validated['receipt_path'] = null;
+        } elseif ($request->hasFile('receipt')) {
+            if ($expense->receipt_path) {
+                Storage::disk('private')->delete($expense->receipt_path);
+            }
+            $validated['receipt_path'] = $request->file('receipt')->store('receipts/' . auth()->id(), 'private');
+        }
+
+        unset($validated['receipt'], $validated['remove_receipt']);
         $expense->update($validated);
 
         return redirect()->route('expenses.index')->with('success', 'Cheltuială actualizată!');
@@ -101,8 +121,21 @@ class ExpenseController extends Controller
         if ($expense->user_id !== auth()->id()) {
             abort(403);
         }
+        if ($expense->receipt_path) {
+            Storage::disk('private')->delete($expense->receipt_path);
+        }
         $expense->delete();
         return redirect()->route('expenses.index')->with('success', 'Cheltuială ștearsă!');
+    }
+
+    public function downloadReceipt(Expense $expense)
+    {
+        if ($expense->user_id !== auth()->id()) {
+            abort(403);
+        }
+        abort_if(!$expense->receipt_path, 404);
+
+        return Storage::disk('private')->download($expense->receipt_path);
     }
 
     public function exportCsv()

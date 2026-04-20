@@ -2,12 +2,12 @@
     <x-slot name="title">Editează Produs</x-slot>
 
     <div class="max-w-2xl">
-        <div class="mb-6">
+        <div class="mb-4">
             <h2 class="text-xl font-bold text-gray-900">Editează Produs</h2>
             <p class="text-sm text-gray-500">{{ $product->name }}</p>
         </div>
 
-        <div class="p-6 bg-white border border-gray-200 rounded-xl">
+        <div class="p-5 bg-white border border-gray-100 rounded-xl shadow-sm">
             <form method="POST" action="{{ route('products.update', $product) }}">
                 @csrf
                 @method('PUT')

@@ -9,7 +9,10 @@
       "Bash(find /d/laragon/www/cashly/config -type f -name \"*.php\" -exec grep -l \"RATE\\\\|LIMIT\\\\|PASSWORD\" {} \\\\;)",
       "Bash(xargs ls:*)",
       "Bash(grep -r \"unauthorized\\\\|abort\" /d/laragon/www/cashly/app/Http/Controllers/*.php)",
-      "Bash(grep -rn \"Expense::\\\\|Invoice::\\\\|Client::\\\\|Product::\" /d/laragon/www/cashly/app/Http/Controllers/*.php)"
+      "Bash(grep -rn \"Expense::\\\\|Invoice::\\\\|Client::\\\\|Product::\" /d/laragon/www/cashly/app/Http/Controllers/*.php)",
+      "Bash(grep -rn \"page_url\\\\|paginate\\\\|links\\(\\)\" /d/laragon/www/cashly/app/Http/Controllers/*.php)",
+      "Bash(grep -rn \"\\\\->client\\\\|\\\\->invoices\\\\|\\\\->items\" /d/laragon/www/cashly/resources/views/invoices/*.blade.php)",
+      "Bash(awk '/^[[:space:]]*\\\\?\\\\?/||/optional\\\\\\(/ {print FILENAME\":\"NR\":\"$0}' /d/laragon/www/cashly/resources/views/**/*.blade.php)"
     ]
   }
 }

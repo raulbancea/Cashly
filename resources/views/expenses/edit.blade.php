@@ -2,13 +2,13 @@
     <x-slot name="title">Editează Cheltuială</x-slot>
 
     <div class="max-w-2xl">
-        <div class="mb-6">
+        <div class="mb-4">
             <h2 class="text-xl font-bold text-gray-900">Editează Cheltuială</h2>
             <p class="text-sm text-gray-500">{{ $expense->description }}</p>
         </div>
 
-        <div class="p-6 bg-white border border-gray-200 rounded-xl">
-            <form method="POST" action="{{ route('expenses.update', $expense) }}">
+        <div class="p-5 bg-white border border-gray-100 rounded-xl shadow-sm">
+            <form method="POST" action="{{ route('expenses.update', $expense) }}" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
 
@@ -77,6 +77,32 @@
                             </option>
                         @endforeach
                     </select>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block mb-1 text-sm font-medium text-gray-700">Bon / Chitanță</label>
+                    @if($expense->receipt_path)
+                        <div class="flex items-center gap-3 p-3 mb-2 border border-gray-200 rounded-lg bg-gray-50">
+                            <svg class="w-5 h-5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                            <a href="{{ route('expenses.downloadReceipt', $expense) }}"
+                               class="text-sm text-teal-600 hover:underline flex-1 truncate">
+                                Bon atașat — descarcă
+                            </a>
+                            <label class="flex items-center gap-1.5 text-xs text-red-500 cursor-pointer">
+                                <input type="checkbox" name="remove_receipt" value="1" class="rounded">
+                                Șterge bonul
+                            </label>
+                        </div>
+                    @endif
+                    <input type="file" name="receipt" accept=".jpg,.jpeg,.png,.pdf"
+                           class="w-full text-sm text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0
+                                  file:text-sm file:font-medium file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100">
+                    <p class="mt-1 text-xs text-gray-400">JPG, PNG sau PDF — max 5 MB</p>
+                    @error('receipt')
+                        <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 <div class="flex gap-3">

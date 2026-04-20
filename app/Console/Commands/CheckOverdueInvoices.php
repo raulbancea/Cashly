@@ -13,14 +13,23 @@ class CheckOverdueInvoices extends Command
 
     public function handle(): int
     {
-        $count = Invoice::query()
-            ->where('status', 'sent')
-            ->whereDate('due_date', '<', today())
-            ->update(['status' => 'overdue']);
+        try {
+            $count = Invoice::query()
+                ->where('status', 'sent')
+                ->whereDate('due_date', '<', today())
+                ->update(['status' => 'overdue']);
 
-        Log::info("invoices:check-overdue: {$count} " . ($count === 1 ? 'factură marcată' : 'facturi marcate') . ' ca restante.');
-        $this->info("{$count} " . ($count === 1 ? 'factură marcată' : 'facturi marcate') . ' ca restante.');
+            Log::info("invoices:check-overdue: {$count} " . ($count === 1 ? 'factură marcată' : 'facturi marcate') . ' ca restante.');
+            $this->info("{$count} " . ($count === 1 ? 'factură marcată' : 'facturi marcate') . ' ca restante.');
 
-        return self::SUCCESS;
+            return self::SUCCESS;
+        } catch (\Throwable $e) {
+            Log::error('invoices:check-overdue a eșuat: ' . $e->getMessage(), [
+                'exception' => $e,
+            ]);
+            $this->error('Eroare la procesare: ' . $e->getMessage());
+
+            return self::FAILURE;
+        }
     }
 }
