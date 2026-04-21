@@ -7,6 +7,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class ProfileController extends Controller
@@ -37,14 +38,44 @@ class ProfileController extends Controller
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
 
+    public function updateAvatar(Request $request): RedirectResponse
+    {
+        $request->validate(['avatar' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048']);
+
+        $user = $request->user();
+
+        if ($user->avatar) {
+            Storage::disk('public')->delete($user->avatar);
+        }
+
+        $path = $request->file('avatar')->store("avatars/{$user->id}", 'public');
+        $user->update(['avatar' => $path]);
+
+        return Redirect::route('profile.edit')->with('success', 'Fotografia de profil a fost actualizată!');
+    }
+
+    public function removeAvatar(Request $request): RedirectResponse
+    {
+        $user = $request->user();
+
+        if ($user->avatar) {
+            Storage::disk('public')->delete($user->avatar);
+            $user->update(['avatar' => null]);
+        }
+
+        return Redirect::route('profile.edit')->with('success', 'Fotografia de profil a fost ștearsă.');
+    }
+
     /**
      * Delete the user's account.
      */
     public function destroy(Request $request): RedirectResponse
     {
-        $request->validateWithBag('userDeletion', [
-            'password' => ['required', 'current_password'],
-        ]);
+        $rules = $request->user()->google_id
+            ? ['password' => ['nullable']]
+            : ['password' => ['required', 'current_password']];
+
+        $request->validateWithBag('userDeletion', $rules);
 
         $user = $request->user();
 

@@ -13,25 +13,24 @@ class DashboardController extends Controller
         $currentMonth = now()->month;
         $currentYear = now()->year;
 
-        $revenue_ron = (float) $user->invoices()
-            ->where('status', 'paid')->where('currency', 'RON')
+        $revenues = $user->invoices()
+            ->where('status', 'paid')
             ->whereMonth('issue_date', $currentMonth)->whereYear('issue_date', $currentYear)
-            ->sum('total_with_vat');
+            ->selectRaw('currency, SUM(total_with_vat) as total')
+            ->groupBy('currency')
+            ->pluck('total', 'currency');
 
-        $revenue_eur = (float) $user->invoices()
-            ->where('status', 'paid')->where('currency', 'EUR')
-            ->whereMonth('issue_date', $currentMonth)->whereYear('issue_date', $currentYear)
-            ->sum('total_with_vat');
+        $revenue_ron = (float) ($revenues['RON'] ?? 0);
+        $revenue_eur = (float) ($revenues['EUR'] ?? 0);
 
-        $expenses_ron = (float) $user->expenses()
-            ->where('currency', 'RON')
+        $expTotals = $user->expenses()
             ->whereMonth('date', $currentMonth)->whereYear('date', $currentYear)
-            ->sum('amount');
+            ->selectRaw('currency, SUM(amount) as total')
+            ->groupBy('currency')
+            ->pluck('total', 'currency');
 
-        $expenses_eur = (float) $user->expenses()
-            ->where('currency', 'EUR')
-            ->whereMonth('date', $currentMonth)->whereYear('date', $currentYear)
-            ->sum('amount');
+        $expenses_ron = (float) ($expTotals['RON'] ?? 0);
+        $expenses_eur = (float) ($expTotals['EUR'] ?? 0);
 
         $profit_ron = $revenue_ron - $expenses_ron;
         $profit_eur = $revenue_eur - $expenses_eur;

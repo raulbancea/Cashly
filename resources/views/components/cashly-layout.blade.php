@@ -1,3 +1,4 @@
+@php use Illuminate\Support\Facades\Storage; @endphp
 <!DOCTYPE html>
 <html lang="ro">
 <head>
@@ -117,7 +118,7 @@
             <h1 class="text-lg font-semibold text-gray-800">{{ $title ?? 'Dashboard' }}</h1>
             <div class="flex items-center gap-3 min-w-0">
                 @if(auth()->user()->avatar)
-                    <img src="{{ auth()->user()->avatar }}" alt="Avatar"
+                    <img src="{{ Storage::disk('public')->url(auth()->user()->avatar) }}" alt="Avatar"
                          class="w-8 h-8 rounded-full object-cover border border-gray-200 flex-shrink-0">
                 @else
                     <div class="flex items-center justify-center w-8 h-8 bg-teal-600 rounded-full flex-shrink-0">

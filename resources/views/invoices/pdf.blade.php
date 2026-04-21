@@ -195,7 +195,8 @@
                     $logoBase64 = null;
                     if ($invoice->user->logo && \Illuminate\Support\Facades\Storage::disk('public')->exists($invoice->user->logo)) {
                         $logoPath   = \Illuminate\Support\Facades\Storage::disk('public')->path($invoice->user->logo);
-                        $logoMime   = mime_content_type($logoPath);
+                        $finfo      = new \finfo(FILEINFO_MIME_TYPE);
+                        $logoMime   = $finfo->file($logoPath);
                         $logoBase64 = 'data:' . $logoMime . ';base64,' . base64_encode(file_get_contents($logoPath));
                     }
                 @endphp
@@ -212,7 +213,7 @@
                         @if($invoice->user->company_vat)CUI: {{ $invoice->user->company_vat }}<br>@endif
                         @if($invoice->user->address){{ $invoice->user->address }}<br>@endif
                         @if($invoice->user->phone)Tel: {{ $invoice->user->phone }}<br>@endif
-                        {{ $invoice->user->email }}
+                        @if($invoice->user->email){{ $invoice->user->email }}@endif
                     </div>
                 @endif
             </td>
@@ -257,7 +258,7 @@
                 @if($invoice->user->phone)
                     <div class="party-detail">Telefon: {{ $invoice->user->phone }}</div>
                 @endif
-                <div class="party-detail">Email: {{ $invoice->user->email }}</div>
+                @if($invoice->user->email)<div class="party-detail">Email: {{ $invoice->user->email }}</div>@endif
             </td>
             <td class="party-cell party-cumparator">
                 <div class="party-label party-label-buyer">Cumpărător</div>

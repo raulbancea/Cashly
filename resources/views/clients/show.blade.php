@@ -5,6 +5,15 @@
     <div class="flex items-start justify-between mb-4">
         <div>
             <div class="flex items-center gap-3">
+                @if($client->avatar)
+                    <img src="{{ Storage::disk('public')->url($client->avatar) }}"
+                         alt="{{ $client->name }}"
+                         class="w-10 h-10 rounded-full object-cover flex-shrink-0">
+                @else
+                    <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold text-sm flex-shrink-0 bg-teal-500">
+                        {{ strtoupper(mb_substr($client->name, 0, 1)) }}
+                    </div>
+                @endif
                 <h2 class="text-xl font-bold text-gray-900">{{ $client->name }}</h2>
                 <span class="px-2.5 py-1 text-xs font-medium rounded-full
                     {{ $client->status === 'active'   ? 'bg-green-100 text-green-700'  : '' }}
@@ -54,6 +63,18 @@
                         </div>
                     </div>
                 @endif
+                @if($client->website)
+                    <div class="flex items-start gap-3">
+                        <span class="mt-0.5 text-gray-400 text-sm">🌐</span>
+                        <div>
+                            <p class="text-xs text-gray-400">Website</p>
+                            <a href="{{ $client->website }}" target="_blank" rel="noopener noreferrer"
+                               class="text-sm text-teal-600 hover:underline truncate block max-w-[180px]">
+                                {{ preg_replace('#^https?://#', '', rtrim($client->website, '/')) }}
+                            </a>
+                        </div>
+                    </div>
+                @endif
                 @if($client->address)
                     <div class="flex items-start gap-3">
                         <span class="mt-0.5 text-gray-400 text-sm">⌂</span>
@@ -63,7 +84,7 @@
                         </div>
                     </div>
                 @endif
-                @if(!$client->email && !$client->phone && !$client->address)
+                @if(!$client->email && !$client->phone && !$client->website && !$client->address)
                     <p class="text-sm text-gray-400">Nicio informație de contact adăugată.</p>
                 @endif
             </div>
@@ -85,7 +106,7 @@
                                 {{ number_format($valori['total_facturat'], 2, ',', '.') }}
                                 <span class="text-base font-medium text-gray-400">{{ $currency }}</span>
                             </p>
-                            <p class="mt-1 text-xs text-gray-400">{{ $invoices->where('currency', $currency)->count() }} facturi</p>
+                            <p class="mt-1 text-xs text-gray-400">{{ $valori['total_count'] }} facturi</p>
                         </div>
 
                         {{-- Total incasat --}}
@@ -96,7 +117,7 @@
                                 <span class="text-base font-medium text-green-400">{{ $currency }}</span>
                             </p>
                             <p class="mt-1 text-xs text-gray-400">
-                                {{ $invoices->where('currency', $currency)->where('status', 'paid')->count() }} facturi plătite
+                                {{ $valori['count_platite'] }} facturi plătite
                             </p>
                         </div>
 
@@ -108,7 +129,7 @@
                                 <span class="text-base font-medium {{ $valori['total_restant'] > 0 ? 'text-red-300' : 'text-gray-300' }}">{{ $currency }}</span>
                             </p>
                             <p class="mt-1 text-xs text-gray-400">
-                                {{ $invoices->where('currency', $currency)->whereIn('status', ['sent', 'overdue'])->count() }} facturi în așteptare
+                                {{ $valori['count_asteptare'] }} facturi în așteptare
                             </p>
                         </div>
                     </div>
@@ -164,15 +185,16 @@
                                 </td>
                                 <td class="px-6 py-3">
                                     <span class="px-2 py-0.5 text-xs font-medium rounded-full
-                                        {{ $invoice->status === 'draft'   ? 'bg-gray-100 text-gray-600'   : '' }}
-                                        {{ $invoice->status === 'sent'    ? 'bg-blue-100 text-blue-700'   : '' }}
-                                        {{ $invoice->status === 'paid'    ? 'bg-green-100 text-green-700' : '' }}
-                                        {{ $invoice->status === 'overdue' ? 'bg-red-100 text-red-700'     : '' }}">
-                                        {{ ['draft' => 'Draft', 'sent' => 'Trimisă', 'paid' => 'Încasată', 'overdue' => 'Restantă'][$invoice->status] ?? $invoice->status }}
+                                        {{ $invoice->status === 'draft'     ? 'bg-gray-100 text-gray-600'    : '' }}
+                                        {{ $invoice->status === 'sent'      ? 'bg-blue-100 text-blue-700'    : '' }}
+                                        {{ $invoice->status === 'paid'      ? 'bg-green-100 text-green-700'  : '' }}
+                                        {{ $invoice->status === 'overdue'   ? 'bg-red-100 text-red-700'      : '' }}
+                                        {{ $invoice->status === 'cancelled' ? 'bg-orange-100 text-orange-700': '' }}">
+                                        {{ ['draft' => 'Draft', 'sent' => 'Trimisă', 'paid' => 'Încasată', 'overdue' => 'Restantă', 'cancelled' => 'Anulată'][$invoice->status] ?? $invoice->status }}
                                     </span>
                                 </td>
                                 <td class="px-6 py-3 font-semibold text-right text-gray-900">
-                                    {{ number_format($invoice->total_with_vat > 0 ? $invoice->total_with_vat : $invoice->total, 2, ',', '.') }}
+                                    {{ number_format($invoice->effective_total, 2, ',', '.') }}
                                     <span class="text-xs font-normal text-gray-400">{{ $invoice->currency }}</span>
                                 </td>
                                 <td class="px-6 py-3 text-right">
@@ -186,6 +208,11 @@
                     </tbody>
                 </table>
             </div>
+            @if($invoices->hasPages())
+                <div class="px-5 py-3 border-t border-gray-100">
+                    {{ $invoices->links() }}
+                </div>
+            @endif
         @endif
     </div>
 

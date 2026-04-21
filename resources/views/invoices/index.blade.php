@@ -18,6 +18,38 @@
         </div>
     </div>
 
+    {{-- Modal confirmare ștergere --}}
+    <div id="delete-modal" style="display:none;position:fixed;inset:0;z-index:50;background:rgba(0,0,0,0.4);align-items:center;justify-content:center;">
+        <div style="background:#fff;border-radius:1rem;padding:1.5rem;width:100%;max-width:400px;margin:1rem;box-shadow:0 20px 60px rgba(0,0,0,0.2);">
+            <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
+                <div style="width:40px;height:40px;min-width:40px;border-radius:50%;background:#fef2f2;display:flex;align-items:center;justify-content:center;">
+                    <svg width="20" height="20" fill="none" stroke="#ef4444" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+                    </svg>
+                </div>
+                <div>
+                    <p style="font-weight:600;color:#111827;font-size:0.95rem;">Șterge factură</p>
+                    <p style="font-size:0.75rem;color:#6b7280;" id="modal-subtitle"></p>
+                </div>
+            </div>
+            <p style="font-size:0.875rem;color:#374151;margin-bottom:1.25rem;line-height:1.5;" id="modal-message"></p>
+            <div style="display:flex;gap:0.75rem;justify-content:flex-end;">
+                <button onclick="closeDeleteModal()"
+                        style="padding:0.5rem 1.25rem;font-size:0.875rem;border:1px solid #d1d5db;border-radius:0.5rem;background:#fff;color:#374151;cursor:pointer;">
+                    Anulează
+                </button>
+                <form id="delete-form" method="POST" style="margin:0;">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit"
+                            style="padding:0.5rem 1.25rem;font-size:0.875rem;border:none;border-radius:0.5rem;background:#ef4444;color:#fff;cursor:pointer;font-weight:500;">
+                        Șterge
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
     @if(session('success'))
         <div class="p-3 mb-4 text-sm text-green-700 border border-green-200 rounded-lg bg-green-50">
             {{ session('success') }}
@@ -122,24 +154,30 @@
                                 {{ $invoice->due_date ? $invoice->due_date->format('d.m.Y') : '-' }}
                             </td>
                             <td class="px-5 py-2.5">
-                                <span class="px-2 py-1 text-xs font-medium rounded-full
-                                    {{ $invoice->status === 'paid'      ? 'bg-green-100 text-green-700'   : '' }}
-                                    {{ $invoice->status === 'draft'     ? 'bg-gray-100 text-gray-600'     : '' }}
-                                    {{ $invoice->status === 'sent'      ? 'bg-blue-100 text-blue-700'     : '' }}
-                                    {{ $invoice->status === 'overdue'   ? 'bg-red-100 text-red-700'       : '' }}
-                                    {{ $invoice->status === 'cancelled' ? 'bg-orange-100 text-orange-700' : '' }}">
-                                    {{ match($invoice->status) {
-                                        'paid'      => 'Încasată',
-                                        'draft'     => 'Draft',
-                                        'sent'      => 'Trimisă',
-                                        'overdue'   => 'Restantă',
-                                        'cancelled' => 'Anulată',
-                                        default     => $invoice->status
-                                    } }}
-                                </span>
+                                <div class="flex items-center gap-1.5">
+                                    <span class="px-2 py-1 text-xs font-medium rounded-full
+                                        {{ $invoice->status === 'paid'      ? 'bg-green-100 text-green-700'   : '' }}
+                                        {{ $invoice->status === 'draft'     ? 'bg-gray-100 text-gray-600'     : '' }}
+                                        {{ $invoice->status === 'sent'      ? 'bg-blue-100 text-blue-700'     : '' }}
+                                        {{ $invoice->status === 'overdue'   ? 'bg-red-100 text-red-700'       : '' }}
+                                        {{ $invoice->status === 'cancelled' ? 'bg-orange-100 text-orange-700' : '' }}">
+                                        {{ match($invoice->status) {
+                                            'paid'      => 'Încasată',
+                                            'draft'     => 'Draft',
+                                            'sent'      => 'Trimisă',
+                                            'overdue'   => 'Restantă',
+                                            'cancelled' => 'Anulată',
+                                            default     => $invoice->status
+                                        } }}
+                                    </span>
+                                    @if($invoice->reminder_sent_at)
+                                        <span title="Reminder trimis {{ $invoice->reminder_sent_at->format('d.m.Y') }}"
+                                              class="text-amber-500 text-xs">●</span>
+                                    @endif
+                                </div>
                             </td>
                             <td class="px-5 py-2.5 font-medium text-right text-gray-900">
-                                {{ number_format($invoice->total_with_vat > 0 ? $invoice->total_with_vat : $invoice->total, 2, ',', '.') }} {{ $invoice->currency }}
+                                {{ number_format($invoice->effective_total, 2, ',', '.') }} {{ $invoice->currency }}
                             </td>
                             <td class="px-5 py-2.5 text-right">
                                 <div class="flex justify-end gap-2">
@@ -147,15 +185,11 @@
                                        class="px-3 py-1.5 text-sm border border-gray-200 rounded-lg hover:bg-gray-50">
                                         Vezi
                                     </a>
-                                    <form method="POST" action="{{ route('invoices.destroy', $invoice) }}"
-                                          onsubmit="return confirm('Sigur vrei să ștergi această factură?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit"
-                                                class="px-3 py-1.5 text-sm border border-red-200 text-red-600 rounded-lg hover:bg-red-50">
-                                            Șterge
-                                        </button>
-                                    </form>
+                                    <button type="button"
+                                            onclick="openDeleteModal('{{ route('invoices.destroy', $invoice) }}', {{ json_encode($invoice->number) }})"
+                                            class="px-3 py-1.5 text-sm border border-red-200 text-red-600 rounded-lg hover:bg-red-50">
+                                        Șterge
+                                    </button>
                                 </div>
                             </td>
                         </tr>
@@ -167,5 +201,31 @@
             {{ $invoices->links() }}
         </div>
     @endif
+
+    <script>
+        const modal = document.getElementById('delete-modal');
+
+        function openDeleteModal(action, number) {
+            document.getElementById('delete-form').action = action;
+            document.getElementById('modal-subtitle').textContent = number;
+            document.getElementById('modal-message').textContent =
+                'Ești sigur că vrei să ștergi factura "' + number + '"? Această acțiune nu poate fi anulată.';
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeDeleteModal() {
+            modal.style.display = 'none';
+            document.body.style.overflow = '';
+        }
+
+        modal.addEventListener('click', function (e) {
+            if (e.target === modal) closeDeleteModal();
+        });
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') closeDeleteModal();
+        });
+    </script>
 
 </x-cashly-layout>

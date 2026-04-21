@@ -35,17 +35,13 @@ class ProductController extends Controller
 
     public function edit(Product $product)
     {
-        if ($product->user_id !== auth()->id()) {
-            abort(403);
-        }
+        $this->authorize('update', $product);
         return view('products.edit', compact('product'));
     }
 
     public function update(Request $request, Product $product)
     {
-        if ($product->user_id !== auth()->id()) {
-            abort(403);
-        }
+        $this->authorize('update', $product);
 
         $validated = $request->validate([
             'name'        => 'required|string|max:255',
@@ -62,9 +58,7 @@ class ProductController extends Controller
 
     public function destroy(Product $product)
     {
-        if ($product->user_id !== auth()->id()) {
-            abort(403);
-        }
+        $this->authorize('delete', $product);
         $product->delete();
         return redirect()->route('products.index')->with('success', 'Produs șters!');
     }

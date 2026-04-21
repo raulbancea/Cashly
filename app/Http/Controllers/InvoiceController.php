@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\InvoiceMail;
 use App\Models\Invoice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rule;
 use App\Services\PdfService;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -53,7 +55,7 @@ class InvoiceController extends Controller
     {
         $validated = $request->validate([
             'client_id'  => ['required', Rule::exists('clients', 'id')->where('user_id', auth()->id())],
-            'number'     => ['required', 'string', Rule::unique('invoices', 'number')->where('user_id', auth()->id())],
+            'number'     => ['required', 'string', Rule::unique('invoices', 'number')->where('user_id', auth()->id())->whereNull('deleted_at')],
             'issue_date' => 'required|date',
             'due_date'   => 'required|date|after_or_equal:issue_date',
             'currency'   => 'required|in:RON,EUR',
@@ -112,14 +114,15 @@ class InvoiceController extends Controller
 
     public function show(Invoice $invoice)
     {
-        abort_if($invoice->user_id !== auth()->id(), 403);
+        $this->authorize('view', $invoice);
         $invoice->load('client', 'items');
-        return view('invoices.show', compact('invoice'));
+        $clientEmail = $invoice->client?->email ?: null;
+        return view('invoices.show', compact('invoice', 'clientEmail'));
     }
 
     public function edit(Invoice $invoice)
     {
-        abort_if($invoice->user_id !== auth()->id(), 403);
+        $this->authorize('update', $invoice);
         $invoice->load('client', 'items');
         // Includem clientul curent al facturii chiar daca nu mai e activ
         $clients = auth()->user()->clients()
@@ -133,7 +136,7 @@ class InvoiceController extends Controller
 
     public function update(Request $request, Invoice $invoice)
     {
-        abort_if($invoice->user_id !== auth()->id(), 403);
+        $this->authorize('update', $invoice);
         $validated = $request->validate([
             'client_id'  => ['required', Rule::exists('clients', 'id')->where('user_id', auth()->id())],
             'issue_date' => 'required|date',
@@ -188,7 +191,7 @@ class InvoiceController extends Controller
 
     public function destroy(Invoice $invoice)
     {
-        abort_if($invoice->user_id !== auth()->id(), 403);
+        $this->authorize('delete', $invoice);
         abort_if($invoice->status === 'paid', 403, 'Facturile încasate nu pot fi șterse.');
         $invoice->items()->delete();
         $invoice->delete();
@@ -197,7 +200,7 @@ class InvoiceController extends Controller
 
     public function markAsSent(Invoice $invoice)
     {
-        abort_if($invoice->user_id !== auth()->id(), 403);
+        $this->authorize('markAsSent', $invoice);
         abort_if($invoice->status !== 'draft', 403);
         $invoice->update(['status' => 'sent']);
         return redirect()->back()->with('success', 'Factura marcată ca trimisă!');
@@ -205,7 +208,7 @@ class InvoiceController extends Controller
 
     public function markAsPaid(Invoice $invoice)
     {
-        abort_if($invoice->user_id !== auth()->id(), 403);
+        $this->authorize('markAsPaid', $invoice);
         abort_if(in_array($invoice->status, ['paid', 'cancelled']), 403);
         $invoice->update(['status' => 'paid']);
         return redirect()->back()->with('success', 'Factura marcată ca încasată!');
@@ -213,7 +216,7 @@ class InvoiceController extends Controller
 
     public function markAsCancelled(Invoice $invoice)
     {
-        abort_if($invoice->user_id !== auth()->id(), 403);
+        $this->authorize('markAsCancelled', $invoice);
         abort_if($invoice->status === 'paid', 403, 'Facturile încasate nu pot fi anulate.');
         $invoice->update(['status' => 'cancelled']);
         return redirect()->back()->with('success', 'Factura a fost anulată!');
@@ -221,27 +224,77 @@ class InvoiceController extends Controller
 
     private function generateInvoiceNumber(): string
     {
-        $year = date('Y');
+        $year   = date('Y');
         $prefix = 'CASH-' . $year . '-';
-        $last = Invoice::where('user_id', Auth::id())
-            ->whereYear('created_at', $year)
+        $last   = Invoice::withoutGlobalScope('user')
+            ->where('user_id', Auth::id())
+            ->whereYear('issue_date', $year)
             ->where('number', 'like', $prefix . '%')
+            ->lockForUpdate()
             ->max('number');
 
         $next = $last ? (int) substr($last, strlen($prefix)) + 1 : 1;
         return $prefix . str_pad($next, 3, '0', STR_PAD_LEFT);
     }
 
+    public function duplicate(Invoice $invoice)
+    {
+        $this->authorize('duplicate', $invoice);
+        abort_if(in_array($invoice->status, ['paid', 'cancelled']), 403, 'Facturile încasate sau anulate nu pot fi duplicate.');
+        $invoice->load('items');
+
+        $newInvoice = DB::transaction(function () use ($invoice) {
+            $new = $invoice->replicate(['number', 'status', 'pdf_path']);
+            $new->number  = $this->generateInvoiceNumber();
+            $new->status  = 'draft';
+            $new->issue_date = today();
+            $new->due_date   = today()->addDays(
+                $invoice->issue_date && $invoice->due_date
+                    ? $invoice->issue_date->diffInDays($invoice->due_date)
+                    : 30
+            );
+            $new->save();
+
+            foreach ($invoice->items as $item) {
+                $new->items()->create($item->only(['description', 'quantity', 'unit_price', 'total', 'product_id']));
+            }
+
+            return $new;
+        });
+
+        return redirect()->route('invoices.edit', $newInvoice)
+            ->with('success', "Factură duplicată ca {$newInvoice->number}. Verifică și salvează.");
+    }
+
+    public function sendEmail(Invoice $invoice)
+    {
+        $this->authorize('sendEmail', $invoice);
+
+        $invoice->load('client', 'items', 'user');
+
+        if (empty($invoice->client?->email)) {
+            return redirect()->back()->with('error', 'Clientul nu are adresă de email setată.');
+        }
+
+        Mail::to($invoice->client->email)->send(new InvoiceMail($invoice));
+
+        if (in_array($invoice->status, ['draft', 'sent'])) {
+            $invoice->update(['status' => 'sent']);
+        }
+
+        return redirect()->back()->with('success', "Factura a fost trimisă pe email la {$invoice->client->email}.");
+    }
+
     public function downloadPdf(Invoice $invoice, PdfService $pdfService)
     {
-        abort_if($invoice->user_id !== auth()->id(), 403);
+        $this->authorize('downloadPdf', $invoice);
         $pdf = $pdfService->generateInvoicePdf($invoice);
         return $pdf->download('factura-' . $invoice->number . '.pdf');
     }
 
     public function exportCsv()
     {
-        $invoices = Invoice::where('user_id', Auth::id())->with('client')->latest()->get();
+        $invoices = Invoice::where('user_id', Auth::id())->with('client')->latest()->lazy(100);
 
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
@@ -271,7 +324,7 @@ class InvoiceController extends Controller
                 $statusMap[$invoice->status] ?? $invoice->status,
                 (float) $invoice->total,
                 (float) $invoice->vat_amount,
-                (float) ($invoice->total_with_vat > 0 ? $invoice->total_with_vat : $invoice->total),
+                $invoice->effective_total,
                 $invoice->currency,
             ], null, 'A' . $row);
             $row++;

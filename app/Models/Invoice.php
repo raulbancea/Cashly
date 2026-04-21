@@ -26,6 +26,7 @@ class Invoice extends Model
         'currency',
         'pdf_path',
         'notes',
+        'reminder_sent_at',
     ];
 
     protected $casts = [
@@ -35,6 +36,7 @@ class Invoice extends Model
         'vat_rate'        => 'decimal:2',
         'vat_amount'      => 'decimal:2',
         'total_with_vat'  => 'decimal:2',
+        'reminder_sent_at' => 'datetime',
     ];
 
     public function user(): BelongsTo
@@ -50,5 +52,10 @@ class Invoice extends Model
     public function items(): HasMany
     {
         return $this->hasMany(InvoiceItem::class);
+    }
+
+    public function getEffectiveTotalAttribute(): float
+    {
+        return $this->vat_rate ? (float) $this->total_with_vat : (float) $this->total;
     }
 }

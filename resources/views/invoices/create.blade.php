@@ -60,14 +60,15 @@
                         <label class="block mb-1 text-sm font-medium text-gray-700">
                             Data emiterii <span class="text-red-500">*</span>
                         </label>
-                        <input type="date" name="issue_date" value="{{ old('issue_date', date('Y-m-d')) }}"
+                        <input type="date" id="issue_date" name="issue_date" value="{{ old('issue_date', date('Y-m-d')) }}"
                                class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
                     </div>
                     <div>
                         <label class="block mb-1 text-sm font-medium text-gray-700">
                             Scadență <span class="text-red-500">*</span>
                         </label>
-                        <input type="date" name="due_date" value="{{ old('due_date', date('Y-m-d', strtotime('+30 days'))) }}"
+                        <input type="date" id="due_date" name="due_date" value="{{ old('due_date', date('Y-m-d', strtotime('+30 days'))) }}"
+                               min="{{ old('issue_date', date('Y-m-d')) }}"
                                class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
                     </div>
                     <div>
@@ -286,8 +287,8 @@
 
             const vatSelect = document.getElementById('vat-rate');
             const vatRate = parseFloat(vatSelect.value) || 0;
-            const vatAmount = vatRate ? subtotal * vatRate / 100 : 0;
-            const totalWithVat = subtotal + vatAmount;
+            const vatAmount = vatRate ? Math.round(subtotal * vatRate / 100 * 100) / 100 : 0;
+            const totalWithVat = Math.round((subtotal + vatAmount) * 100) / 100;
 
             document.getElementById('grand-total').textContent = subtotal.toFixed(2).replace('.', ',');
 
@@ -308,6 +309,14 @@
 
         document.getElementById('vat-rate').addEventListener('change', updateGrandTotal);
         document.querySelectorAll('.item-row').forEach(row => attachListeners(row));
+
+        document.getElementById('issue_date').addEventListener('change', function () {
+            const dueDateInput = document.getElementById('due_date');
+            dueDateInput.min = this.value;
+            if (dueDateInput.value && dueDateInput.value < this.value) {
+                dueDateInput.value = this.value;
+            }
+        });
     </script>
 
 </x-cashly-layout>

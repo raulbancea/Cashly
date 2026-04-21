@@ -1,3 +1,4 @@
+@php use Illuminate\Support\Facades\Storage; @endphp
 <x-cashly-layout>
     <x-slot name="title">Profil</x-slot>
 
@@ -13,6 +14,53 @@
                 {{ session('success') }}
             </div>
         @endif
+
+        {{-- ── Avatar ───────────────────────────────────────────────────── --}}
+        <div class="p-5 bg-white border border-gray-100 rounded-xl shadow-sm">
+            <h3 class="mb-1 text-sm font-semibold text-gray-800">Fotografie de profil</h3>
+            <p class="mb-5 text-xs text-gray-400">JPG, PNG sau WebP — max 2 MB.</p>
+
+            <div class="flex items-center gap-5">
+                <div class="flex-shrink-0">
+                    @if($user->avatar)
+                        <img src="{{ Storage::disk('public')->url($user->avatar) }}"
+                             alt="Avatar" class="w-20 h-20 rounded-full object-cover border-2 border-gray-100 shadow-sm">
+                    @else
+                        <div class="flex items-center justify-center w-20 h-20 text-2xl font-bold text-white bg-teal-500 rounded-full shadow-sm">
+                            {{ strtoupper(substr($user->name, 0, 1)) }}
+                        </div>
+                    @endif
+                </div>
+
+                <div class="flex-1 space-y-3">
+                    <form method="POST" action="{{ route('profile.avatar') }}" enctype="multipart/form-data">
+                        @csrf
+                        <div class="flex items-center gap-3">
+                            <input type="file" name="avatar" accept=".jpg,.jpeg,.png,.webp" required
+                                   class="text-sm text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0
+                                          file:text-sm file:font-medium file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100">
+                            <button type="submit"
+                                    class="px-4 py-1.5 text-sm font-medium text-white bg-teal-600 rounded-lg hover:bg-teal-700">
+                                Încarcă
+                            </button>
+                        </div>
+                        @error('avatar')
+                            <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                        @enderror
+                    </form>
+
+                    @if($user->avatar)
+                        <form method="POST" action="{{ route('profile.avatar.remove') }}">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="text-xs text-red-500 hover:underline">
+                                Șterge fotografia
+                            </button>
+                        </form>
+                    @endif
+                </div>
+            </div>
+        </div>
 
         {{-- ── Informații profil ─────────────────────────────────────────── --}}
         <div class="p-5 bg-white border border-gray-100 rounded-xl shadow-sm">

@@ -74,18 +74,14 @@ class ExpenseController extends Controller
 
     public function edit(Expense $expense)
     {
-        if ($expense->user_id !== auth()->id()) {
-            abort(403);
-        }
+        $this->authorize('update', $expense);
         $categories = auth()->user()->expenseCategories()->get();
         return view('expenses.edit', compact('expense', 'categories'));
     }
 
     public function update(Request $request, Expense $expense)
     {
-        if ($expense->user_id !== auth()->id()) {
-            abort(403);
-        }
+        $this->authorize('update', $expense);
 
         $validated = $request->validate([
             'description'    => 'required|string|max:255',
@@ -118,9 +114,7 @@ class ExpenseController extends Controller
 
     public function destroy(Expense $expense)
     {
-        if ($expense->user_id !== auth()->id()) {
-            abort(403);
-        }
+        $this->authorize('delete', $expense);
         if ($expense->receipt_path) {
             Storage::disk('private')->delete($expense->receipt_path);
         }
@@ -130,9 +124,7 @@ class ExpenseController extends Controller
 
     public function downloadReceipt(Expense $expense)
     {
-        if ($expense->user_id !== auth()->id()) {
-            abort(403);
-        }
+        $this->authorize('downloadReceipt', $expense);
         abort_if(!$expense->receipt_path, 404);
 
         return Storage::disk('private')->download($expense->receipt_path);
