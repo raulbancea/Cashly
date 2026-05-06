@@ -33,6 +33,11 @@ class User extends Authenticatable
         'plan',
         'logo',
         'bank_account',
+        'trial_ends_at',
+        'stripe_customer_id',
+        'stripe_subscription_id',
+        'subscription_status',
+        'subscription_ends_at',
     ];
 
     /**
@@ -53,9 +58,36 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'email_verified_at'   => 'datetime',
+            'password'            => 'hashed',
+            'trial_ends_at'       => 'datetime',
+            'subscription_ends_at' => 'datetime',
         ];
+    }
+
+    public function hasActiveSubscription(): bool
+    {
+        if ($this->trial_ends_at && $this->trial_ends_at->isFuture()) {
+            return true;
+        }
+
+        return $this->stripe_subscription_id !== null
+            && in_array($this->subscription_status, ['active', 'trialing'])
+            && $this->subscription_ends_at !== null
+            && $this->subscription_ends_at->isFuture();
+    }
+
+    public function isOnTrial(): bool
+    {
+        return $this->trial_ends_at !== null
+            && $this->trial_ends_at->isFuture()
+            && $this->stripe_subscription_id === null;
+    }
+
+    public function trialDaysLeft(): int
+    {
+        if (!$this->trial_ends_at) return 0;
+        return max(0, (int) now()->diffInDays($this->trial_ends_at, false));
     }
 
     public function clients(): HasMany

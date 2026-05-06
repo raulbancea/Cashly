@@ -50,11 +50,6 @@
         </div>
     </div>
 
-    @if(session('success'))
-        <div class="p-3 mb-4 text-sm text-green-700 border border-green-200 rounded-lg bg-green-50">
-            {{ session('success') }}
-        </div>
-    @endif
 
     {{-- Filtre --}}
     <form method="GET" action="{{ route('invoices.index') }}" class="flex flex-wrap items-end gap-3 p-4 mb-4 bg-white border border-gray-100 rounded-xl shadow-sm">

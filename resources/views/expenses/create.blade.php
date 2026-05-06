@@ -84,7 +84,7 @@
                     <input type="file" name="receipt" accept=".jpg,.jpeg,.png,.pdf"
                            class="w-full text-sm text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0
                                   file:text-sm file:font-medium file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100">
-                    <p class="mt-1 text-xs text-gray-400">JPG, PNG sau PDF — max 5 MB</p>
+                    <p class="mt-1 text-xs text-gray-400">JPG, PNG sau PDF, max 5 MB</p>
                     @error('receipt')
                         <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
                     @enderror

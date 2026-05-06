@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rule;
 use App\Services\PdfService;
+use Illuminate\Support\Facades\Storage;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
@@ -64,7 +65,7 @@ class InvoiceController extends Controller
             'items'      => 'required|array|min:1',
             'items.*.description' => 'required|string|max:255',
             'items.*.quantity'    => 'required|numeric|min:0.01',
-            'items.*.unit_price'  => 'required|numeric|min:0',
+            'items.*.unit_price'  => 'required|numeric|min:0.01',
             'items.*.product_id'  => ['nullable', Rule::exists('products', 'id')->where('user_id', auth()->id())],
         ]);
 
@@ -147,7 +148,7 @@ class InvoiceController extends Controller
             'items'      => 'required|array|min:1',
             'items.*.description' => 'required|string|max:255',
             'items.*.quantity'    => 'required|numeric|min:0.01',
-            'items.*.unit_price'  => 'required|numeric|min:0',
+            'items.*.unit_price'  => 'required|numeric|min:0.01',
             'items.*.product_id'  => ['nullable', Rule::exists('products', 'id')->where('user_id', auth()->id())],
         ]);
 
@@ -184,6 +185,12 @@ class InvoiceController extends Controller
                 'total_with_vat' => $total + $vatAmount,
             ]);
         });
+
+        // Invalidate cached PDF — invoice content changed
+        if ($invoice->pdf_path && Storage::exists($invoice->pdf_path)) {
+            Storage::delete($invoice->pdf_path);
+        }
+        $invoice->update(['pdf_path' => null]);
 
         return redirect()->route('invoices.show', $invoice)
             ->with('success', 'Factură actualizată cu succes!');
@@ -288,8 +295,13 @@ class InvoiceController extends Controller
     public function downloadPdf(Invoice $invoice, PdfService $pdfService)
     {
         $this->authorize('downloadPdf', $invoice);
-        $pdf = $pdfService->generateInvoicePdf($invoice);
-        return $pdf->download('factura-' . $invoice->number . '.pdf');
+
+        if (!$invoice->pdf_path || !Storage::exists($invoice->pdf_path)) {
+            $path = $pdfService->savePdf($invoice);
+            $invoice->update(['pdf_path' => $path]);
+        }
+
+        return Storage::download($invoice->pdf_path, 'factura-' . $invoice->number . '.pdf');
     }
 
     public function exportCsv()

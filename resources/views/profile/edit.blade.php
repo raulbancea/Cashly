@@ -9,16 +9,10 @@
             <p class="text-sm text-gray-500">Gestionează informațiile contului tău</p>
         </div>
 
-        @if(session('success'))
-            <div class="p-3 text-sm text-green-700 border border-green-200 rounded-lg bg-green-50">
-                {{ session('success') }}
-            </div>
-        @endif
-
         {{-- ── Avatar ───────────────────────────────────────────────────── --}}
         <div class="p-5 bg-white border border-gray-100 rounded-xl shadow-sm">
             <h3 class="mb-1 text-sm font-semibold text-gray-800">Fotografie de profil</h3>
-            <p class="mb-5 text-xs text-gray-400">JPG, PNG sau WebP — max 2 MB.</p>
+            <p class="mb-5 text-xs text-gray-400">JPG, PNG sau WebP, max 2 MB.</p>
 
             <div class="flex items-center gap-5">
                 <div class="flex-shrink-0">

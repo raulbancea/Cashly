@@ -69,7 +69,8 @@ class ExpenseController extends Controller
 
     public function show(Expense $expense)
     {
-        abort(404);
+        $this->authorize('update', $expense);
+        return redirect()->route('expenses.edit', $expense);
     }
 
     public function edit(Expense $expense)

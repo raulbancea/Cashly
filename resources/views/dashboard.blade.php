@@ -29,7 +29,7 @@
             </svg>
         </div>
         <div class="min-w-0">
-            <p class="text-xs text-gray-400 font-medium uppercase tracking-wide truncate">Venituri luna aceasta</p>
+            <p class="text-xs text-gray-400 font-medium uppercase tracking-wide truncate">Încasate luna aceasta</p>
             <p class="text-xl font-bold text-gray-900 leading-tight">{{ number_format($revenue_ron, 0, ',', '.') }} <span class="text-xs font-normal text-gray-400">RON</span></p>
             @if($revenue_eur > 0)<p class="text-xs text-gray-400">+ {{ number_format($revenue_eur, 0, ',', '.') }} EUR</p>@endif
         </div>
@@ -88,7 +88,7 @@
     <div class="col-span-2 bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
         <div class="flex items-center justify-between mb-3">
             <div>
-                <h3 class="text-sm font-semibold text-gray-800">Cash Flow — ultimele 6 luni</h3>
+                <h3 class="text-sm font-semibold text-gray-800">Cash Flow, ultimele 6 luni</h3>
                 <p class="text-xs text-gray-400">Venituri vs Cheltuieli (RON)</p>
             </div>
             <div class="flex items-center gap-4 text-xs text-gray-500">
@@ -170,7 +170,7 @@
                     <td class="px-5 py-2.5">
                         <a href="{{ route('invoices.show', $inv) }}" class="font-medium text-teal-700 hover:underline text-xs">{{ $inv->number }}</a>
                     </td>
-                    <td class="px-5 py-2.5 text-xs text-gray-600">{{ $inv->client?->name ?? '—' }}</td>
+                    <td class="px-5 py-2.5 text-xs text-gray-600">{{ $inv->client?->name ?? '-' }}</td>
                     <td class="px-5 py-2.5 text-xs text-gray-500">{{ $inv->issue_date->format('d.m.Y') }}</td>
                     <td class="px-5 py-2.5">
                         @php

@@ -3,338 +3,490 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cashly — Gestiune financiară pentru freelanceri</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <title>Cashly - Platforma financiara pentru freelanceri si PFA-uri</title>
+    @vite(['resources/css/app.css'])
     <style>
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
+        * { box-sizing: border-box; }
+        body { margin:0; font-family:ui-sans-serif,system-ui,sans-serif; background:#fff; color:#0f172a; }
+
+        @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+        .f1 { animation: fadeUp .6s ease .05s both; }
+        .f2 { animation: fadeUp .6s ease .2s both; }
+        .f3 { animation: fadeUp .6s ease .35s both; }
+
+        a { text-decoration:none; }
+
+        .btn-teal { display:inline-flex;align-items:center;gap:8px;padding:13px 28px;background:#0d9488;color:#fff;font-size:15px;font-weight:600;border-radius:10px;transition:background .2s,transform .2s,box-shadow .2s; }
+        .btn-teal:hover { background:#0f766e;transform:translateY(-2px);box-shadow:0 8px 24px rgba(13,148,136,0.3); }
+        .btn-outline { display:inline-flex;align-items:center;gap:8px;padding:13px 28px;background:#fff;color:#0d9488;font-size:15px;font-weight:600;border-radius:10px;border:2px solid #0d9488;transition:background .2s,transform .2s; }
+        .btn-outline:hover { background:#f0fdfa;transform:translateY(-2px); }
+
+        a.nav-link { font-size:14px;font-weight:500;color:#64748b;padding:6px 14px;border-radius:8px;transition:color .15s,background .15s; }
+        a.nav-link:hover { color:#0d9488;background:#f0fdfa; }
+
+        .benefit-card { background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:28px;transition:transform .25s,box-shadow .25s,border-color .25s; }
+        .benefit-card:hover { transform:translateY(-4px);box-shadow:0 12px 40px rgba(13,148,136,0.1);border-color:#5eead4; }
+
+        .feature-row { display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;padding:64px 0;border-bottom:1px solid #f1f5f9; }
+        .feature-row:last-child { border-bottom:none; }
+
+        .faq-item { border-bottom:1px solid #e2e8f0; }
+        .faq-question { display:flex;align-items:center;justify-content:space-between;padding:20px 0;cursor:pointer;font-size:16px;font-weight:600;color:#0f172a; }
+        .faq-answer { font-size:15px;color:#64748b;line-height:1.7;padding-bottom:20px;display:none; }
+        .faq-item.open .faq-answer { display:block; }
+        .faq-item.open .faq-icon { transform:rotate(45deg); }
+        .faq-icon { transition:transform .2s;font-size:22px;color:#0d9488;font-weight:300; }
+
+        .testimonial-card { background:#f8fafc;border:1px solid #e2e8f0;border-radius:16px;padding:28px;transition:transform .2s,box-shadow .2s; }
+        .testimonial-card:hover { transform:translateY(-3px);box-shadow:0 8px 32px rgba(0,0,0,0.07); }
+
+        .pricing-card { border-radius:20px;padding:36px;transition:transform .25s,box-shadow .25s; }
+        .pricing-card:hover { transform:translateY(-4px); }
+
+        @media (max-width:900px) {
+            .hero-grid { grid-template-columns:1fr !important; }
+            .hero-mockup { display:none !important; }
+            .benefits-grid { grid-template-columns:1fr 1fr !important; }
+            .feature-row { grid-template-columns:1fr !important;gap:32px !important; }
+            .pricing-grid { grid-template-columns:1fr !important; }
+            .testimonials-grid { grid-template-columns:1fr !important; }
         }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .float { animation: float 6s ease-in-out infinite; }
-        .fade-in-up { animation: fadeInUp 0.8s ease forwards; }
-        .fade-in-up-delay-1 { animation: fadeInUp 0.8s ease 0.2s forwards; opacity: 0; }
-        .fade-in-up-delay-2 { animation: fadeInUp 0.8s ease 0.4s forwards; opacity: 0; }
-        .fade-in-up-delay-3 { animation: fadeInUp 0.8s ease 0.6s forwards; opacity: 0; }
-        .glow { box-shadow: 0 0 60px rgba(20, 184, 166, 0.15); }
-        .gradient-text {
-            background: linear-gradient(135deg, #14b8a6, #06b6d4);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .hero-gradient {
-            background: radial-gradient(ellipse at 50% 0%, rgba(20, 184, 166, 0.15) 0%, transparent 70%);
-        }
-        @keyframes barGrow {
-            from { transform: scaleY(0); }
-            to { transform: scaleY(1); }
-        }
-        .bar-animate {
-            animation: barGrow 1.5s ease forwards;
-            transform-origin: bottom;
-        }
-        .feature-card:hover {
-            transform: translateY(-4px);
-            border-color: rgba(20, 184, 166, 0.3) !important;
-        }
-        .feature-card {
-            transition: all 0.3s ease;
+        @media (max-width:600px) {
+            .benefits-grid { grid-template-columns:1fr !important; }
+            .nav-links { display:none !important; }
+            .steps-grid { grid-template-columns:1fr 1fr !important; }
         }
     </style>
 </head>
-<body style="background-color: #030712; color: white; font-family: sans-serif;">
+<body>
 
-    {{-- NAVBAR --}}
-    <nav style="border-bottom: 1px solid rgba(255,255,255,0.05); position: sticky; top: 0; z-index: 50; backdrop-filter: blur(12px); background-color: rgba(3, 7, 18, 0.8);">
-        <div style="max-width: 1152px; margin: 0 auto; padding: 0 24px; height: 64px; display: flex; align-items: center; justify-content: space-between;">
-            <div style="display: flex; align-items: center; gap: 8px;">
-                <div style="width: 28px; height: 28px; background: #14b8a6; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
-                    <svg style="width: 16px; height: 16px; color: white;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
-                </div>
-                <span style="font-size: 18px; font-weight: 700; color: white;">Cashly</span>
+{{-- NAVBAR --}}
+<nav style="background:#fff;border-bottom:1px solid #e2e8f0;position:sticky;top:0;z-index:50;">
+    <div style="max-width:1200px;margin:0 auto;padding:0 28px;height:64px;display:flex;align-items:center;justify-content:space-between;">
+        <a href="/" style="display:flex;align-items:center;gap:10px;">
+            <div style="width:34px;height:34px;background:#0d9488;border-radius:9px;display:flex;align-items:center;justify-content:center;">
+                <svg width="18" height="18" fill="none" stroke="#fff" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
             </div>
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <a href="{{ route('login') }}" style="font-size: 14px; color: #9ca3af; text-decoration: none;">Autentificare</a>
-                <a href="{{ route('register') }}"
-                   style="padding: 8px 16px; background: #14b8a6; color: white; font-size: 14px; font-weight: 500; border-radius: 8px; text-decoration: none;">
-                    Începe gratuit
-                </a>
-            </div>
+            <span style="font-size:20px;font-weight:800;color:#0d9488;letter-spacing:-0.5px;">Cashly</span>
+        </a>
+        <div class="nav-links" style="display:flex;align-items:center;gap:4px;">
+            <a href="#beneficii" class="nav-link">Beneficii</a>
+            <a href="#cum-functioneaza" class="nav-link">Cum functioneaza</a>
+            <a href="#pricing" class="nav-link">Preturi</a>
+            <a href="#faq" class="nav-link">Intrebari</a>
+            <div style="width:1px;height:20px;background:#e2e8f0;margin:0 8px;"></div>
+            <a href="{{ route('login') }}" class="nav-link">Autentificare</a>
+            <a href="{{ route('register') }}" class="btn-teal" style="padding:8px 18px;font-size:14px;margin-left:4px;">Incepe gratuit</a>
         </div>
-    </nav>
+    </div>
+</nav>
 
-    {{-- HERO --}}
-    <section class="hero-gradient" style="position: relative; overflow: hidden;">
-        <div style="max-width: 1152px; margin: 0 auto; padding: 96px 24px 64px; text-align: center;">
-            <h1 class="fade-in-up-delay-1" style="font-size: clamp(40px, 6vw, 72px); font-weight: 700; color: white; line-height: 1.1; margin-bottom: 24px;">
-                Finanțele tale,<br>
-                <span class="gradient-text">sub control total</span>
+{{-- HERO --}}
+<section style="background:linear-gradient(160deg,#f0fdfa 0%,#fff 60%);border-bottom:1px solid #e2e8f0;padding:80px 28px 0;">
+    <div class="hero-grid" style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;padding-bottom:72px;">
+
+        <div>
+            <h1 class="f2" style="font-size:clamp(32px,4vw,52px);font-weight:800;line-height:1.15;letter-spacing:-1px;margin:0 0 22px;color:#0f172a;">
+                Facturi, cheltuieli si<br>rapoarte <span style="color:#0d9488;">intr-un<br>singur loc</span>
             </h1>
 
-            <p class="fade-in-up-delay-2" style="font-size: 20px; color: #9ca3af; max-width: 600px; margin: 0 auto 40px; line-height: 1.7;">
-                Cashly înlocuiește foile Excel cu o platformă profesională de facturare,
-                monitorizare cheltuieli și analiză financiară în timp real.
+            <p class="f3" style="font-size:17px;color:#374151;line-height:1.8;margin:0 0 14px;max-width:500px;">
+                Cashly automatizeaza facturarea, urmarirea platilor si gestiunea cheltuielilor. Tu te ocupi de clienti, Cashly se ocupa de restul.
+            </p>
+            <p class="f3" style="font-size:15px;color:#64748b;line-height:1.8;margin:0 0 36px;max-width:500px;">
+                Freelancerii care folosesc Cashly economisesc in medie <strong style="color:#0d9488;">6 ore pe luna</strong> si incaseaza facturile cu <strong style="color:#0d9488;">40% mai rapid</strong> datorita reminder-urilor automate.
             </p>
 
-            <div class="fade-in-up-delay-3" style="display: flex; flex-direction: column; align-items: center; gap: 16px; margin-bottom: 80px;">
-                <div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
-                    <a href="{{ route('register') }}"
-                       style="padding: 16px 32px; background: #14b8a6; color: white; font-weight: 600; border-radius: 12px; text-decoration: none; font-size: 18px; box-shadow: 0 0 30px rgba(20, 184, 166, 0.4);">
-                        Începe gratuit
-                    </a>
-                    <a href="{{ route('login') }}"
-                       style="padding: 16px 32px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #d1d5db; font-weight: 600; border-radius: 12px; text-decoration: none; font-size: 18px;">
-                        Ai deja cont?
-                    </a>
-                </div>
-
-                {{-- Separator --}}
-                <div style="display: flex; align-items: center; gap: 12px; width: 320px;">
-                    <div style="flex: 1; height: 1px; background: rgba(255,255,255,0.1);"></div>
-                    <span style="font-size: 13px; color: #4b5563;">sau intră rapid cu</span>
-                    <div style="flex: 1; height: 1px; background: rgba(255,255,255,0.1);"></div>
-                </div>
-
-                {{-- Buton Google --}}
-                <a href="{{ route('auth.google') }}"
-                   style="display: inline-flex; align-items: center; gap: 10px; padding: 13px 28px; background: white; color: #111827; font-weight: 600; font-size: 15px; border-radius: 12px; text-decoration: none; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
-                    <svg width="20" height="20" viewBox="0 0 48 48">
-                        <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
-                        <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
-                        <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
-                        <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
-                        <path fill="none" d="M0 0h48v48H0z"/>
-                    </svg>
-                    Continuă cu Google
+            <div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:32px;">
+                <a href="{{ route('register') }}" class="btn-teal">
+                    Incepe gratuit
                 </a>
+                <a href="{{ route('login') }}" class="btn-outline">Am deja cont</a>
             </div>
 
-            {{-- APP MOCKUP --}}
-            <div class="float" style="max-width: 900px; margin: 0 auto;">
-                <div class="glow" style="border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); background: #0f172a;">
+            <a href="{{ route('auth.google') }}"
+               style="display:inline-flex;align-items:center;gap:9px;padding:10px 20px;background:#fff;color:#374151;font-size:14px;font-weight:500;border-radius:9px;border:1px solid #e2e8f0;transition:box-shadow .2s;"
+               onmouseover="this.style.boxShadow='0 4px 16px rgba(0,0,0,0.1)'" onmouseout="this.style.boxShadow=''">
+                <svg width="17" height="17" viewBox="0 0 48 48">
+                    <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                    <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                    <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                    <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                </svg>
+                Continua cu Google
+            </a>
+        </div>
 
-                    {{-- Browser bar --}}
-                    <div style="display: flex; align-items: center; gap: 8px; padding: 12px 16px; background: #1e293b; border-bottom: 1px solid rgba(255,255,255,0.05);">
-                        <div style="width: 12px; height: 12px; border-radius: 50%; background: #ef4444; opacity: 0.7;"></div>
-                        <div style="width: 12px; height: 12px; border-radius: 50%; background: #f59e0b; opacity: 0.7;"></div>
-                        <div style="width: 12px; height: 12px; border-radius: 50%; background: #22c55e; opacity: 0.7;"></div>
-                        <div style="flex: 1; text-align: center; font-size: 12px; color: #6b7280;">cashly.app/dashboard</div>
+        {{-- Mockup --}}
+        <div class="hero-mockup" style="border-radius:20px;overflow:hidden;border:1px solid #e2e8f0;box-shadow:0 24px 80px rgba(0,0,0,0.08);transition:transform .3s,box-shadow .3s;"
+             onmouseover="this.style.transform='translateY(-6px)';this.style.boxShadow='0 32px 96px rgba(0,0,0,0.13)'"
+             onmouseout="this.style.transform='';this.style.boxShadow='0 24px 80px rgba(0,0,0,0.08)'">
+            <div style="display:flex;align-items:center;gap:7px;padding:10px 16px;background:#f8fafc;border-bottom:1px solid #e2e8f0;">
+                <div style="width:10px;height:10px;border-radius:50%;background:#ef4444;opacity:.5;"></div>
+                <div style="width:10px;height:10px;border-radius:50%;background:#f59e0b;opacity:.5;"></div>
+                <div style="width:10px;height:10px;border-radius:50%;background:#22c55e;opacity:.5;"></div>
+                <span style="flex:1;text-align:center;font-size:11px;color:#94a3b8;font-family:monospace;">cashly.app/dashboard</span>
+            </div>
+            <div style="display:flex;height:340px;background:#f8fafc;">
+                <div style="width:160px;flex-shrink:0;background:#fff;border-right:1px solid #e2e8f0;padding:14px;">
+                    <div style="display:flex;align-items:center;gap:6px;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid #f1f5f9;">
+                        <div style="width:20px;height:20px;background:#0d9488;border-radius:5px;"></div>
+                        <span style="font-size:13px;font-weight:700;color:#0d9488;">Cashly</span>
                     </div>
-
-                    {{-- App content --}}
-                    <div style="display: flex; height: 380px;">
-
-                        {{-- Sidebar --}}
-                        <div style="width: 180px; flex-shrink: 0; padding: 16px; background: #0f172a; border-right: 1px solid rgba(255,255,255,0.05);">
-                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 24px;">
-                                <div style="width: 24px; height: 24px; background: #14b8a6; border-radius: 6px;"></div>
-                                <span style="font-size: 14px; font-weight: 700; color: white;">Cashly</span>
-                            </div>
-                            @foreach([
-                                ['Dashboard', true],
-                                ['Clienți', false],
-                                ['Produse', false],
-                                ['Facturi', false],
-                                ['Cheltuieli', false],
-                            ] as $item)
-                            <div style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 8px; margin-bottom: 2px; background: {{ $item[1] ? 'rgba(20, 184, 166, 0.15)' : 'transparent' }};">
-                                <div style="width: 12px; height: 12px; border-radius: 4px; background: {{ $item[1] ? '#14b8a6' : 'rgba(255,255,255,0.1)' }};"></div>
-                                <span style="font-size: 12px; color: {{ $item[1] ? '#5eead4' : '#6b7280' }}; font-weight: {{ $item[1] ? '600' : '400' }};">{{ $item[0] }}</span>
+                    @foreach([['Dashboard',true],['Clienti',false],['Produse',false],['Facturi',false],['Cheltuieli',false]] as $n)
+                    <div style="display:flex;align-items:center;gap:7px;padding:6px 8px;border-radius:7px;margin-bottom:2px;background:{{ $n[1]?'#f0fdfa':'transparent' }};">
+                        <div style="width:6px;height:6px;border-radius:2px;background:{{ $n[1]?'#0d9488':'#cbd5e1' }};"></div>
+                        <span style="font-size:11px;color:{{ $n[1]?'#0d9488':'#94a3b8' }};font-weight:{{ $n[1]?'600':'400' }};">{{ $n[0] }}</span>
+                    </div>
+                    @endforeach
+                </div>
+                <div style="flex:1;padding:16px;overflow:hidden;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+                        <div>
+                            <p style="font-size:10px;color:#94a3b8;margin:0 0 2px;">Buna ziua</p>
+                            <p style="font-size:14px;font-weight:700;color:#0f172a;margin:0;">Dashboard Financiar</p>
+                        </div>
+                        <div style="width:28px;height:28px;background:#0d9488;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;">R</div>
+                    </div>
+                    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px;">
+                        @foreach([['Venituri','12.500 RON','#059669'],['Cheltuieli','3.200 RON','#ef4444'],['Profit','9.300 RON','#0d9488'],['Restante','2','#f59e0b']] as $k)
+                        <div style="padding:9px;border-radius:9px;background:#fff;border:1px solid #f1f5f9;">
+                            <p style="font-size:9px;color:#94a3b8;margin:0 0 3px;">{{ $k[0] }}</p>
+                            <p style="font-size:11px;font-weight:700;color:{{ $k[2] }};margin:0;">{{ $k[1] }}</p>
+                        </div>
+                        @endforeach
+                    </div>
+                    <div style="padding:12px;border-radius:10px;background:#fff;border:1px solid #f1f5f9;">
+                        <p style="font-size:9px;color:#94a3b8;margin:0 0 8px;">Cash Flow, 6 luni</p>
+                        <div style="display:flex;align-items:flex-end;gap:6px;height:70px;">
+                            @foreach([[30,15],[45,20],[35,25],[60,15],[80,30],[100,20]] as $b)
+                            <div style="flex:1;display:flex;align-items:flex-end;gap:2px;">
+                                <div style="flex:1;height:{{ $b[0] }}%;background:#5eead4;border-radius:2px 2px 0 0;"></div>
+                                <div style="flex:1;height:{{ $b[1] }}%;background:#fca5a5;border-radius:2px 2px 0 0;"></div>
                             </div>
                             @endforeach
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
-                        {{-- Main content --}}
-                        <div style="flex: 1; padding: 20px; overflow: hidden;">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                                <div>
-                                    <p style="font-size: 10px; color: #6b7280; margin-bottom: 4px;">Dashboard Financiar</p>
-                                    <p style="font-size: 16px; font-weight: 700; color: white;">Bună ziua, Raul 👋</p>
-                                </div>
-                                <div style="width: 32px; height: 32px; background: #14b8a6; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;">R</div>
-                            </div>
+{{-- STATS --}}
+<section style="background:#0d9488;padding:40px 28px;">
+    <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:0;text-align:center;">
+        @foreach([
+            ['6 ore','economisite in medie pe luna'],
+            ['40%','facturi incasate mai rapid'],
+            ['2 minute','de la comanda la factura trimisa'],
+            ['0 lei','cost sa incepi, fara card'],
+        ] as $s)
+        <div style="padding:0 20px;{{ !$loop->last ? 'border-right:1px solid rgba(255,255,255,0.2);' : '' }}">
+            <p style="font-size:28px;font-weight:800;color:#fff;margin:0 0 4px;transition:transform .2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform=''">{{ $s[0] }}</p>
+            <p style="font-size:13px;color:#99f6e4;margin:0;">{{ $s[1] }}</p>
+        </div>
+        @endforeach
+    </div>
+</section>
 
-                            {{-- KPIs --}}
-                            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 16px;">
-                                @foreach([
-                                    ['Venituri', '12.500 RON', '#14b8a6'],
-                                    ['Cheltuieli', '3.200 RON', '#ef4444'],
-                                    ['Profit net', '9.300 RON', '#14b8a6'],
-                                    ['Restante', '2', '#f59e0b'],
-                                ] as $kpi)
-                                <div style="padding: 10px; border-radius: 10px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);">
-                                    <p style="font-size: 10px; color: #6b7280; margin-bottom: 4px;">{{ $kpi[0] }}</p>
-                                    <p style="font-size: 13px; font-weight: 700; color: {{ $kpi[2] }};">{{ $kpi[1] }}</p>
-                                </div>
-                                @endforeach
-                            </div>
+{{-- BENEFICII --}}
+<section id="beneficii" style="max-width:1200px;margin:0 auto;padding:80px 28px;">
+    <div style="text-align:center;margin-bottom:56px;">
+        <p style="font-size:13px;font-weight:600;color:#0d9488;text-transform:uppercase;letter-spacing:1px;margin:0 0 10px;">De ce Cashly</p>
+        <h2 style="font-size:clamp(28px,3vw,42px);font-weight:800;color:#0f172a;margin:0 0 14px;letter-spacing:-0.5px;">Controlul complet al afacerii tale,<br>automatizat de la inceput pana la sfarsit</h2>
+        <p style="font-size:16px;color:#64748b;margin:0 auto;max-width:600px;line-height:1.7;">Cashly nu este doar o aplicatie de facturare. Este un sistem integrat care gestioneaza intreaga activitate financiara a firmei tale, exact cum o face un ERP, dar construit special pentru freelanceri si PFA-uri.</p>
+    </div>
 
-                            {{-- Chart --}}
-                            <div style="padding: 14px; border-radius: 10px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);">
-                                <p style="font-size: 10px; color: #6b7280; margin-bottom: 10px;">Cash Flow — ultimele 6 luni</p>
-                                <div style="display: flex; align-items: flex-end; gap: 10px; height: 80px;">
-                                    @foreach([
-                                        [30, 15], [45, 20], [35, 25], [60, 15], [80, 30], [100, 20]
-                                    ] as $bar)
-                                    <div style="flex: 1; display: flex; align-items: flex-end; gap: 2px;">
-                                        <div class="bar-animate" style="flex: 1; height: {{ $bar[0] }}%; background: rgba(20, 184, 166, 0.7); border-radius: 3px 3px 0 0;"></div>
-                                        <div class="bar-animate" style="flex: 1; height: {{ $bar[1] }}%; background: rgba(239, 68, 68, 0.6); border-radius: 3px 3px 0 0;"></div>
-                                    </div>
-                                    @endforeach
-                                </div>
-                                <div style="display: flex; justify-content: space-between; margin-top: 6px;">
-                                    @foreach(['Nov', 'Dec', 'Ian', 'Feb', 'Mar', 'Apr'] as $month)
-                                        <span style="font-size: 10px; color: #4b5563;">{{ $month }}</span>
-                                    @endforeach
-                                </div>
+    <div class="benefits-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px;">
+        @foreach([
+            ['#f0fdfa','#0d9488','M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z','Facturare complet automatizata','Factura generata, numerotata si trimisa pe email fara sa deschizi alt program. Clientul primeste PDF-ul profesional in secunde.'],
+            ['#fef3c7','#d97706','M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9','Reminder-uri automate de plata','Sistemul trimite automat notificari clientilor cu facturi scadente sau restante. Tu nu mai dai telefoane stanjenitoare, banii vin singuri.'],
+            ['#ede9fe','#7c3aed','M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z','Rapoarte financiare in timp real','Dashboard actualizat la fiecare tranzactie. Stii instantaneu cat ai incasat, cat ai cheltuit si care e profitul net, fara calcule manuale.'],
+            ['#f0fdf4','#16a34a','M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z','Export Excel pentru contabil','Cu un singur click exporti toate cheltuielile si veniturile in format Excel. Trimiti fisierul contabilului si gata, nu mai pierzi ore cu strans documente.'],
+        ] as $b)
+        <div class="benefit-card">
+            <div style="width:44px;height:44px;background:{{ $b[0] }};border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;">
+                <svg width="22" height="22" fill="none" stroke="{{ $b[1] }}" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="{{ $b[2] }}"/>
+                </svg>
+            </div>
+            <h3 style="font-size:15px;font-weight:700;color:#0f172a;margin:0 0 8px;">{{ $b[3] }}</h3>
+            <p style="font-size:13px;color:#64748b;line-height:1.65;margin:0;">{{ $b[4] }}</p>
+        </div>
+        @endforeach
+    </div>
+</section>
+
+{{-- CUM FUNCTIONEAZA --}}
+<section id="cum-functioneaza" style="background:#f8fafc;border-top:1px solid #e2e8f0;border-bottom:1px solid #e2e8f0;padding:80px 28px;">
+    <div style="max-width:1200px;margin:0 auto;">
+        <div style="text-align:center;margin-bottom:56px;">
+            <p style="font-size:13px;font-weight:600;color:#0d9488;text-transform:uppercase;letter-spacing:1px;margin:0 0 10px;">Cum functioneaza</p>
+            <h2 style="font-size:clamp(26px,3vw,40px);font-weight:800;color:#0f172a;margin:0 0 14px;letter-spacing:-0.5px;">De la client nou la bani incasati,<br>totul se intampla in Cashly</h2>
+            <p style="font-size:16px;color:#64748b;margin:0 auto;max-width:540px;line-height:1.7;">Fluxul complet de lucru, de la adaugarea clientului pana la incasarea facturii, automatizat pas cu pas.</p>
+        </div>
+
+        <div class="steps-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:24px;position:relative;">
+            <div style="position:absolute;top:28px;left:12%;right:12%;height:2px;background:linear-gradient(90deg,#0d9488,#0891b2);z-index:0;"></div>
+            @foreach([
+                ['1','Adaugi clientul o singura data','Numele, emailul si datele de facturare se salveaza. Toate facturile viitoare se completeaza automat.'],
+                ['2','Creezi factura in 2 minute','Selectezi clientul si serviciile din catalog. Cashly completeaza tot automat si genereaza PDF-ul.'],
+                ['3','Cashly trimite factura','PDF-ul ajunge pe emailul clientului direct din platforma. Numarul de factura se incrementeaza singur.'],
+                ['4','Incasezi si arhivezi automat','Marchezi factura ca platita. Dashboard-ul se actualizeaza instant, documentul e arhivat si regasibil oricand.'],
+            ] as $step)
+            <div style="text-align:center;padding:0 12px;position:relative;z-index:1;">
+                <div style="width:56px;height:56px;background:#0d9488;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:20px;font-weight:800;color:#fff;border:4px solid #f8fafc;">{{ $step[0] }}</div>
+                <h3 style="font-size:14px;font-weight:700;color:#0f172a;margin:0 0 8px;line-height:1.4;">{{ $step[1] }}</h3>
+                <p style="font-size:13px;color:#64748b;line-height:1.6;margin:0;">{{ $step[2] }}</p>
+            </div>
+            @endforeach
+        </div>
+    </div>
+</section>
+
+{{-- FEATURE ROWS --}}
+<section style="max-width:1100px;margin:0 auto;padding:80px 28px;">
+    <div style="text-align:center;margin-bottom:64px;">
+        <p style="font-size:13px;font-weight:600;color:#0d9488;text-transform:uppercase;letter-spacing:1px;margin:0 0 10px;">Functionalitati cheie</p>
+        <h2 style="font-size:clamp(26px,3vw,40px);font-weight:800;color:#0f172a;margin:0;letter-spacing:-0.5px;">Tot ce face Cashly pentru tine</h2>
+    </div>
+
+    @foreach([
+        [
+            'Sistem de facturare cu numerotare automata',
+            'Cel mai mare consumator de timp pentru un freelancer este facturarea manuala. Cashly elimina acest proces complet. Introduci serviciile o singura data in catalog, cu pretul in RON sau EUR. La urmatoarea factura, le selectezi dintr-o lista si campurile se completeaza automat. Numarul de factura urmator din serie e calculat si aplicat automat, fara sa numeri tu nimic. Factura e gata de trimis in mai putin de 2 minute.',
+            ['Numerotare automata serie/an','Autofill din catalogul de servicii','Suport RON si EUR','Trimitere directa pe email','Descarcare PDF instant'],
+            'left',
+            '#f0fdfa',
+            'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z',
+            '#0d9488'
+        ],
+        [
+            'Reminder-uri automate pentru facturi neplatite',
+            'Unul din trei freelanceri pierde bani din cauza facturilor uitiate sau platite cu intarziere. Cashly monitorizeaza continuu statusul fiecarei facturi si trimite automat emailuri de reminder clientilor cu plati restante, la intervalele pe care le setezi tu. Nu mai trebuie sa urmaresti manual cine a platit si cine nu. Nu mai scrii emailuri stanjenitoare. Sistemul se ocupa, tu incasezi la timp.',
+            ['Reminder-uri la scadenta si dupa','Emailuri personalizate cu tonul firmei tale','Marcarea automata a facturilor restante','Notificari in dashboard pentru situatii critice'],
+            'right',
+            '#fff7ed',
+            'M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9',
+            '#d97706'
+        ],
+        [
+            'Gestiunea cheltuielilor cu export pentru contabil',
+            'Inregistrezi fiecare cheltuiala pe categorie, atasezi bonul foto si adaugi o descriere scurta. La final de luna sau trimestru, exporti tot intr-un fisier Excel structurat, gata de trimis contabilului. Nu mai cauti bonuri prin sertare, nu mai rescrii date in foi de calcul. Cashly tine evidenta completa a cheltuielilor firmei tale, cu tot cu bon digital atasat, intr-un loc sigur si mereu accesibil.',
+            ['Categorii predefinite si personalizabile','Bon foto atasat la fiecare cheltuiala','Export Excel complet pentru contabil','Vizualizare cheltuieli pe categorii si perioade'],
+            'left',
+            '#f0fdf4',
+            'M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z',
+            '#16a34a'
+        ],
+    ] as $feature)
+    <div class="feature-row">
+        @if($feature[3] === 'left')
+        <div>
+            <div style="width:48px;height:48px;background:{{ $feature[4] }};border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;">
+                <svg width="24" height="24" fill="none" stroke="{{ $feature[6] }}" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="{{ $feature[5] }}"/>
+                </svg>
+            </div>
+            <h3 style="font-size:22px;font-weight:800;color:#0f172a;margin:0 0 14px;letter-spacing:-0.3px;">{{ $feature[0] }}</h3>
+            <p style="font-size:15px;color:#64748b;line-height:1.8;margin:0 0 24px;">{{ $feature[1] }}</p>
+            <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px;">
+                @foreach($feature[2] as $point)
+                <li style="display:flex;align-items:center;gap:10px;font-size:14px;color:#374151;">
+                    <svg width="16" height="16" fill="none" stroke="{{ $feature[6] }}" stroke-width="2.5" viewBox="0 0 24 24" style="flex-shrink:0;">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    {{ $point }}
+                </li>
+                @endforeach
+            </ul>
+        </div>
+        <div style="background:{{ $feature[4] }};border-radius:20px;padding:40px;display:flex;align-items:center;justify-content:center;min-height:280px;">
+            <svg width="80" height="80" fill="none" stroke="{{ $feature[6] }}" stroke-width="1" viewBox="0 0 24 24" style="opacity:0.3;">
+                <path stroke-linecap="round" stroke-linejoin="round" d="{{ $feature[5] }}"/>
+            </svg>
+        </div>
+        @else
+        <div style="background:{{ $feature[4] }};border-radius:20px;padding:40px;display:flex;align-items:center;justify-content:center;min-height:280px;">
+            <svg width="80" height="80" fill="none" stroke="{{ $feature[6] }}" stroke-width="1" viewBox="0 0 24 24" style="opacity:0.3;">
+                <path stroke-linecap="round" stroke-linejoin="round" d="{{ $feature[5] }}"/>
+            </svg>
+        </div>
+        <div>
+            <div style="width:48px;height:48px;background:{{ $feature[4] }};border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;">
+                <svg width="24" height="24" fill="none" stroke="{{ $feature[6] }}" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="{{ $feature[5] }}"/>
+                </svg>
+            </div>
+            <h3 style="font-size:22px;font-weight:800;color:#0f172a;margin:0 0 14px;letter-spacing:-0.3px;">{{ $feature[0] }}</h3>
+            <p style="font-size:15px;color:#64748b;line-height:1.8;margin:0 0 24px;">{{ $feature[1] }}</p>
+            <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px;">
+                @foreach($feature[2] as $point)
+                <li style="display:flex;align-items:center;gap:10px;font-size:14px;color:#374151;">
+                    <svg width="16" height="16" fill="none" stroke="{{ $feature[6] }}" stroke-width="2.5" viewBox="0 0 24 24" style="flex-shrink:0;">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    {{ $point }}
+                </li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
+    </div>
+    @endforeach
+</section>
+
+{{-- TESTIMONIALE --}}
+<section style="background:#f8fafc;border-top:1px solid #e2e8f0;padding:80px 28px;">
+    <div style="max-width:1200px;margin:0 auto;">
+        <div style="text-align:center;margin-bottom:52px;">
+            <p style="font-size:13px;font-weight:600;color:#0d9488;text-transform:uppercase;letter-spacing:1px;margin:0 0 10px;">Ce spun utilizatorii</p>
+            <h2 style="font-size:clamp(26px,3vw,38px);font-weight:800;color:#0f172a;margin:0;letter-spacing:-0.5px;">Freelanceri care au ales sa lucreze mai smart</h2>
+        </div>
+
+        <div class="testimonials-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;">
+            @foreach([
+                ['Andrei M.','Web Developer, Freelancer','Inainte petreceam aproape o zi pe luna cu facturile. Acum le trimit in 2 minute si am uitat complet ca exista facturi neplatite, le urmareste Cashly automat.','AM'],
+                ['Diana P.','Designer UX, PFA','Cel mai util lucru este exportul pentru contabil. Trimit un fisier Excel si gata, nu mai stau sa caut bonuri si chitante. Mi-a economisit ore intregi la fiecare trimestru.','DP'],
+                ['Mihai R.','Consultant IT, SRL','Aveam clienti care uitau sa plateasca si mi-era jena sa sun. Acum Cashly trimite reminder-ul automat si incasez cu doua saptamani mai devreme decat inainte.','MR'],
+            ] as $t)
+            <div class="testimonial-card">
+                <div style="display:flex;gap:4px;margin-bottom:16px;">
+                    @for($i=0;$i<5;$i++)
+                    <svg width="16" height="16" fill="#f59e0b" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    @endfor
+                </div>
+                <p style="font-size:14px;color:#374151;line-height:1.7;margin:0 0 20px;font-style:italic;">"{{ $t[2] }}"</p>
+                <div style="display:flex;align-items:center;gap:12px;">
+                    <div style="width:40px;height:40px;min-width:40px;background:#0d9488;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;">{{ $t[3] }}</div>
+                    <div>
+                        <p style="font-size:14px;font-weight:600;color:#0f172a;margin:0;">{{ $t[0] }}</p>
+                        <p style="font-size:12px;color:#94a3b8;margin:0;">{{ $t[1] }}</p>
+                    </div>
+                </div>
+            </div>
+            @endforeach
+        </div>
+    </div>
+</section>
+
+{{-- PRICING --}}
+<section id="pricing" style="padding:80px 28px;">
+    <div style="max-width:860px;margin:0 auto;">
+        <div style="text-align:center;margin-bottom:52px;">
+            <p style="font-size:13px;font-weight:600;color:#0d9488;text-transform:uppercase;letter-spacing:1px;margin:0 0 10px;">Preturi</p>
+            <h2 style="font-size:clamp(26px,3vw,40px);font-weight:800;color:#0f172a;margin:0 0 12px;letter-spacing:-0.5px;">Simplu si transparent</h2>
+            <p style="font-size:16px;color:#64748b;margin:0;">Fara costuri ascunse. Fara contract pe termen lung. Anulezi oricand.</p>
+        </div>
+
+        <div style="max-width:480px;margin:0 auto;">
+            <div class="pricing-card" style="background:linear-gradient(160deg,#0d9488 0%,#0891b2 100%);position:relative;display:flex;flex-direction:column;border-radius:1.25rem;overflow:hidden;">
+                <div style="position:absolute;top:-1px;left:50%;transform:translateX(-50%);padding:4px 16px;background:#f59e0b;color:#fff;font-size:11px;font-weight:700;border-radius:0 0 10px 10px;white-space:nowrap;letter-spacing:0.04em;">PRIMA LUNĂ GRATUITĂ</div>
+                <div style="padding:2rem 2rem 1.5rem;">
+                    <h3 style="font-size:20px;font-weight:700;color:#fff;margin:0.5rem 0 4px;">Plan Pro</h3>
+                    <p style="font-size:13px;color:rgba(255,255,255,0.7);margin:0 0 20px;">Acces complet. Fara restricții.</p>
+                    <div style="padding-bottom:20px;margin-bottom:20px;border-bottom:1px solid rgba(255,255,255,0.2);">
+                        <div style="display:flex;align-items:flex-end;gap:6px;">
+                            <span style="font-size:52px;font-weight:800;color:#fff;line-height:1;">19<span style="font-size:32px;">,99</span></span>
+                            <div style="margin-bottom:8px;">
+                                <span style="font-size:16px;font-weight:600;color:rgba(255,255,255,0.85);">RON</span>
+                                <span style="font-size:13px;color:rgba(255,255,255,0.6);display:block;">/lună</span>
                             </div>
                         </div>
+                        <p style="font-size:13px;color:rgba(255,255,255,0.65);margin:8px 0 0;">Prima lună gratuită. Anulezi oricând, fără penalități.</p>
                     </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    {{-- STATS --}}
-    <section style="padding: 64px 0; border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05);">
-        <div style="max-width: 1152px; margin: 0 auto; padding: 0 24px;">
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; text-align: center;">
-                @foreach([
-                    ['2 min', 'Timp mediu de creare factură'],
-                    ['100%', 'Date izolate per utilizator'],
-                    ['RON & EUR', 'Suport multi-valută'],
-                ] as $stat)
-                <div>
-                    <p class="gradient-text" style="font-size: 40px; font-weight: 700; margin-bottom: 8px;">{{ $stat[0] }}</p>
-                    <p style="color: #6b7280; font-size: 14px;">{{ $stat[1] }}</p>
-                </div>
-                @endforeach
-            </div>
-        </div>
-    </section>
-
-    {{-- FEATURES --}}
-    <section id="features" style="padding: 96px 0;">
-        <div style="max-width: 1152px; margin: 0 auto; padding: 0 24px;">
-            <div style="text-align: center; margin-bottom: 64px;">
-                <h2 style="font-size: 40px; font-weight: 700; color: white; margin-bottom: 16px;">Tot ce ai nevoie,<br>nimic în plus</h2>
-                <p style="color: #9ca3af; font-size: 18px;">Construit special pentru freelanceri și PFA-uri din România</p>
-            </div>
-
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;">
-                @foreach([
-                    ['Facturare PDF', 'Creează facturi profesionale cu număr auto-generat și descarcă-le instant ca PDF.', 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z'],
-                    ['Dashboard financiar', 'KPI-uri în timp real: venituri, cheltuieli, profit net și grafice cash flow lunare.', 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z'],
-                    ['Gestiune clienți', 'Portofoliu complet cu statusuri automate: Activ, Prospect, Inactiv.', 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z'],
-                    ['Monitorizare cheltuieli', 'Categorisește cheltuielile și vizualizează distribuția pe grafice interactive.', 'M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z'],
-                    ['Catalog produse', 'Salvează produsele și serviciile cu prețuri în RON sau EUR pentru facturare rapidă.', 'M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4'],
-                    ['Date securizate', 'Arhitectură multi-tenant — datele tale sunt complet izolate de ale altor utilizatori.', 'M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z'],
-                ] as $feature)
-                <div class="feature-card" style="padding: 24px; border-radius: 16px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);">
-                    <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(20, 184, 166, 0.15); display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
-                        <svg style="width: 20px; height: 20px; color: #14b8a6;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $feature[2] }}"/>
-                        </svg>
-                    </div>
-                    <h3 style="font-weight: 600; color: white; margin-bottom: 8px;">{{ $feature[0] }}</h3>
-                    <p style="font-size: 14px; color: #6b7280; line-height: 1.6;">{{ $feature[1] }}</p>
-                </div>
-                @endforeach
-            </div>
-        </div>
-    </section>
-
-    {{-- PRICING --}}
-    <section id="pricing" style="padding: 96px 0; background: rgba(255,255,255,0.02);">
-        <div style="max-width: 1152px; margin: 0 auto; padding: 0 24px;">
-            <div style="text-align: center; margin-bottom: 64px;">
-                <h2 style="font-size: 40px; font-weight: 700; color: white; margin-bottom: 16px;">Prețuri simple</h2>
-                <p style="color: #9ca3af; font-size: 18px;">Fără costuri ascunse. Anulează oricând.</p>
-            </div>
-
-            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px; max-width: 700px; margin: 0 auto;">
-
-                {{-- Basic --}}
-                <div style="padding: 32px; border-radius: 20px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);">
-                    <h3 style="font-weight: 700; color: white; font-size: 20px; margin-bottom: 4px;">Basic</h3>
-                    <p style="color: #6b7280; font-size: 14px; margin-bottom: 24px;">Pentru freelanceri la început</p>
-                    <div style="margin-bottom: 32px;">
-                        <span style="font-size: 48px; font-weight: 700; color: white;">Gratuit</span>
-                    </div>
-                    <ul style="list-style: none; padding: 0; margin-bottom: 32px;">
-                        @foreach(['Până la 5 clienți', '10 facturi/lună', 'Dashboard financiar', 'Generare PDF'] as $feature)
-                        <li style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: #9ca3af; margin-bottom: 12px;">
-                            <svg style="width: 16px; height: 16px; color: #14b8a6; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                            </svg>
-                            {{ $feature }}
+                    <ul style="list-style:none;padding:0;margin:0 0 28px;display:flex;flex-direction:column;gap:11px;">
+                        @foreach(['Facturi nelimitate cu PDF și email','Gestionare clienți și produse','Tracker cheltuieli cu upload bonuri','Rapoarte financiare și TVA','Export CSV / Excel','Notificări automate restanțe'] as $f)
+                        <li style="display:flex;align-items:center;gap:10px;font-size:14px;color:rgba(255,255,255,0.9);">
+                            <svg width="16" height="16" fill="none" stroke="#5eead4" stroke-width="2.5" viewBox="0 0 24 24" style="flex-shrink:0;"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                            {{ $f }}
                         </li>
                         @endforeach
                     </ul>
-                    <a href="{{ route('register') }}"
-                       style="display: block; text-align: center; padding: 12px 24px; border-radius: 10px; font-weight: 500; font-size: 14px; text-decoration: none; color: #14b8a6; border: 1px solid rgba(20, 184, 166, 0.4);">
-                        Începe gratuit
+                    <a href="{{ route('register') }}" style="display:block;text-align:center;padding:14px;border-radius:10px;font-size:15px;font-weight:600;color:#0d9488;background:#fff;transition:opacity .2s;" onmouseover="this.style.opacity='0.92'" onmouseout="this.style.opacity='1'">
+                        Începe luna gratuită
                     </a>
-                </div>
-
-                {{-- Pro --}}
-                <div style="padding: 32px; border-radius: 20px; background: linear-gradient(135deg, rgba(20, 184, 166, 0.2), rgba(6, 182, 212, 0.1)); border: 1px solid rgba(20, 184, 166, 0.4); position: relative;">
-                    <div style="position: absolute; top: 16px; right: 16px; padding: 4px 10px; background: #14b8a6; color: white; font-size: 11px; font-weight: 700; border-radius: 999px;">
-                        Popular
-                    </div>
-                    <h3 style="font-weight: 700; color: white; font-size: 20px; margin-bottom: 4px;">Pro</h3>
-                    <p style="color: #5eead4; font-size: 14px; margin-bottom: 24px;">Pentru afaceri în creștere</p>
-                    <div style="margin-bottom: 32px;">
-                        <span style="font-size: 48px; font-weight: 700; color: white;">49.99</span>
-                        <span style="color: #9ca3af; font-size: 16px;"> RON/lună</span>
-                    </div>
-                    <ul style="list-style: none; padding: 0; margin-bottom: 32px;">
-                        @foreach(['Clienți nelimitați', 'Facturi nelimitate', 'Rapoarte avansate', 'Suport prioritar'] as $feature)
-                        <li style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: #d1d5db; margin-bottom: 12px;">
-                            <svg style="width: 16px; height: 16px; color: #5eead4; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                            </svg>
-                            {{ $feature }}
-                        </li>
-                        @endforeach
-                    </ul>
-                    <a href="{{ route('register') }}"
-                       style="display: block; text-align: center; padding: 12px 24px; background: #14b8a6; color: white; border-radius: 10px; font-weight: 500; font-size: 14px; text-decoration: none; box-shadow: 0 0 20px rgba(20, 184, 166, 0.4);">
-                        Începe Pro
-                    </a>
+                    <p style="text-align:center;font-size:12px;color:rgba(255,255,255,0.5);margin:12px 0 0;">Plată securizată prin Stripe. Fără contract.</p>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    {{-- CTA --}}
-    <section style="padding: 96px 0;">
-        <div style="max-width: 700px; margin: 0 auto; padding: 0 24px; text-align: center;">
-            <h2 style="font-size: 40px; font-weight: 700; color: white; margin-bottom: 24px;">Gata să îți organizezi finanțele?</h2>
-            <p style="color: #9ca3af; font-size: 18px; margin-bottom: 40px;">Alătură-te freelancerilor care au renunțat la Excel.</p>
-            <a href="{{ route('register') }}"
-               style="display: inline-block; padding: 16px 40px; background: #14b8a6; color: white; font-weight: 600; border-radius: 12px; text-decoration: none; font-size: 18px; box-shadow: 0 0 40px rgba(20, 184, 166, 0.4);">
-                Creează cont gratuit
+{{-- FAQ --}}
+<section id="faq" style="background:#f8fafc;border-top:1px solid #e2e8f0;padding:80px 28px;">
+    <div style="max-width:720px;margin:0 auto;">
+        <div style="text-align:center;margin-bottom:48px;">
+            <p style="font-size:13px;font-weight:600;color:#0d9488;text-transform:uppercase;letter-spacing:1px;margin:0 0 10px;">Intrebari frecvente</p>
+            <h2 style="font-size:clamp(24px,3vw,36px);font-weight:800;color:#0f172a;margin:0;letter-spacing:-0.5px;">Ai intrebari? Avem raspunsuri.</h2>
+        </div>
+
+        @foreach([
+            ['Cat costa Cashly?','Cashly costa 19,99 RON pe luna, dupa o prima luna complet gratuita — fara card de credit la inregistrare. Primesti acces la toate functiile: facturi nelimitate, clienti, cheltuieli, rapoarte si export Excel. Poti anula oricand, fara penalitati.'],
+            ['Cum functioneaza reminder-urile automate?','Dupa ce creezi o factura si setezi scadenta, Cashly trimite automat un email de reminder clientului cu cateva zile inainte de scadenta si apoi periodic dupa ce factura a expirat. Tu nu faci nimic, sistemul se ocupa complet.'],
+            ['Pot exporta datele pentru contabilul meu?','Da, cu un singur click exporti toate cheltuielile si veniturile intr-un fisier Excel structurat, gata de trimis contabilului. Exportul include categorii, date, sume si toate detaliile necesare.'],
+            ['Datele mele sunt in siguranta?','Absolut. Fiecare cont Cashly este complet izolat de celelalte. Datele tale nu sunt accesibile niciodata altor utilizatori. Conexiunea este criptata, la fel ca la aplicatiile de online banking, si datele sunt salvate automat zilnic.'],
+            ['Pot folosi Cashly daca am un SRL, nu doar PFA?','Da, Cashly functioneaza pentru orice forma de organizare: PFA, II, SRL, freelancer fara forma legala. Introduci datele firmei tale in setari si acestea apar automat pe toate facturile generate.'],
+            ['Ce se intampla daca depasesc limita planului gratuit?','Vei fi notificat cand te apropii de limita. Poti face upgrade la planul Pro oricand, din sectiunea Setari, fara sa pierzi niciun dato sau document.'],
+        ] as $faq)
+        <div class="faq-item" onclick="this.classList.toggle('open')">
+            <div class="faq-question">
+                <span>{{ $faq[0] }}</span>
+                <span class="faq-icon">+</span>
+            </div>
+            <div class="faq-answer">{{ $faq[1] }}</div>
+        </div>
+        @endforeach
+    </div>
+</section>
+
+{{-- CTA FINAL --}}
+<section style="padding:80px 28px;background:#fff;">
+    <div style="max-width:700px;margin:0 auto;text-align:center;">
+        <h2 style="font-size:clamp(28px,3vw,42px);font-weight:800;color:#0f172a;margin:0 0 16px;letter-spacing:-0.5px;">Incepe sa automatizezi<br>administratia firmei tale.</h2>
+        <p style="font-size:16px;color:#64748b;margin:0 0 8px;line-height:1.7;">Cont creat in 30 de secunde. Prima factura trimisa in mai putin de 2 minute.</p>
+        <p style="font-size:15px;color:#94a3b8;margin:0 0 36px;">Fara card de credit la inregistrare. Prima luna gratuita, apoi 19,99 RON/luna.</p>
+        <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:12px;">
+            <a href="{{ route('register') }}" class="btn-teal" style="font-size:16px;padding:14px 36px;">Creeaza cont gratuit</a>
+            <a href="{{ route('auth.google') }}"
+               style="display:inline-flex;align-items:center;gap:9px;padding:14px 24px;background:#fff;color:#374151;font-size:15px;font-weight:500;border-radius:10px;border:1px solid #e2e8f0;transition:box-shadow .2s;"
+               onmouseover="this.style.boxShadow='0 4px 16px rgba(0,0,0,0.1)'" onmouseout="this.style.boxShadow=''">
+                <svg width="17" height="17" viewBox="0 0 48 48">
+                    <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                    <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                    <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                    <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                </svg>
+                Continua cu Google
             </a>
         </div>
-    </section>
+    </div>
+</section>
 
-    {{-- FOOTER --}}
-    <footer style="padding: 40px 0; border-top: 1px solid rgba(255,255,255,0.05);">
-        <div style="max-width: 1152px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between;">
-            <div style="display: flex; align-items: center; gap: 8px;">
-                <div style="width: 24px; height: 24px; background: #14b8a6; border-radius: 6px;"></div>
-                <span style="color: white; font-weight: 700;">Cashly</span>
-            </div>
-            <p style="font-size: 14px; color: #4b5563;">© {{ date('Y') }} Cashly. Toate drepturile rezervate.</p>
+{{-- FOOTER --}}
+<footer style="background:#f8fafc;border-top:1px solid #e2e8f0;padding:28px;">
+    <div style="max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+        <div style="display:flex;align-items:center;gap:9px;">
+            <div style="width:26px;height:26px;background:#0d9488;border-radius:7px;"></div>
+            <span style="font-weight:800;color:#0d9488;font-size:16px;">Cashly</span>
         </div>
-    </footer>
+        <p style="font-size:13px;color:#94a3b8;margin:0;">© {{ date('Y') }} Cashly. Toate drepturile rezervate.</p>
+    </div>
+</footer>
+
+<script>
+    // FAQ toggle
+    document.querySelectorAll('.faq-item').forEach(item => {
+        item.addEventListener('click', () => {
+            document.querySelectorAll('.faq-item').forEach(other => {
+                if (other !== item) other.classList.remove('open');
+            });
+        });
+    });
+</script>
 
 </body>
 </html>

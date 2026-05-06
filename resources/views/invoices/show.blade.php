@@ -99,6 +99,7 @@
                    class="px-4 py-2 text-sm font-medium text-white bg-teal-600 rounded-lg hover:bg-teal-700">
                     Editează
                 </a>
+                @if(!in_array($invoice->status, ['paid', 'cancelled']))
                 <form method="POST" action="{{ route('invoices.duplicate', $invoice) }}">
                     @csrf
                     <button type="submit"
@@ -106,21 +107,24 @@
                         Duplică
                     </button>
                 </form>
+                @endif
                 <a href="{{ route('invoices.downloadPdf', $invoice) }}"
                    class="px-4 py-2 text-sm font-medium text-white bg-gray-700 rounded-lg hover:bg-gray-800">
                     Descarcă PDF
                 </a>
-                @if($clientEmail)
-                    <button type="button"
-                            onclick="document.getElementById('modal-send-email').style.display='flex'"
-                            class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700">
-                        Trimite pe email
-                    </button>
-                @else
-                    <button type="button" disabled title="Clientul nu are email setat"
-                            class="px-4 py-2 text-sm font-medium text-gray-400 bg-gray-100 rounded-lg cursor-not-allowed">
-                        Trimite pe email
-                    </button>
+                @if(!in_array($invoice->status, ['paid', 'cancelled']))
+                    @if($clientEmail)
+                        <button type="button"
+                                onclick="document.getElementById('modal-send-email').style.display='flex'"
+                                class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700">
+                            Trimite pe email
+                        </button>
+                    @else
+                        <button type="button" disabled title="Clientul nu are email setat"
+                                class="px-4 py-2 text-sm font-medium text-gray-400 bg-gray-100 rounded-lg cursor-not-allowed">
+                            Trimite pe email
+                        </button>
+                    @endif
                 @endif
                 @if($invoice->status === 'draft')
                     <form method="POST" action="{{ route('invoices.markAsSent', $invoice) }}">
@@ -131,12 +135,14 @@
                         </button>
                     </form>
                 @endif
-                @if(!in_array($invoice->status, ['paid', 'cancelled']))
+                @if(in_array($invoice->status, ['sent', 'overdue']))
                     <button type="button"
                             onclick="document.getElementById('modal-paid').style.display='flex'"
                             class="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700">
                         Marchează încasată
                     </button>
+                @endif
+                @if(!in_array($invoice->status, ['paid', 'cancelled']))
                     <button type="button"
                             onclick="document.getElementById('modal-cancel').style.display='flex'"
                             class="px-4 py-2 text-sm font-medium text-red-600 border border-red-300 rounded-lg hover:bg-red-50">
@@ -150,16 +156,6 @@
             </div>
         </div>
 
-        @if(session('success'))
-            <div class="p-3 mb-4 text-sm text-green-700 border border-green-200 rounded-lg bg-green-50">
-                {{ session('success') }}
-            </div>
-        @endif
-        @if(session('error'))
-            <div class="p-3 mb-4 text-sm text-red-700 border border-red-200 rounded-lg bg-red-50">
-                {{ session('error') }}
-            </div>
-        @endif
 
         <div class="p-5 mb-4 bg-white border border-gray-100 rounded-xl shadow-sm">
 

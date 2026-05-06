@@ -10,15 +10,17 @@ class GoogleController extends Controller
 {
     public function redirect()
     {
-        return Socialite::driver('google')->redirect();
+        return Socialite::driver('google')->stateless()->redirect();
     }
 
     public function callback()
     {
-        $googleUser = Socialite::driver('google')->user();
+        $googleUser = Socialite::driver('google')->stateless()->user();
 
         // 1. Cauta userul dupa google_id
         $user = User::where('google_id', $googleUser->getId())->first();
+
+        $accountLinked = false;
 
         if (!$user) {
             // 2. Verifica daca emailul exista deja (cont creat manual)
@@ -30,6 +32,7 @@ class GoogleController extends Controller
                     'google_id' => $googleUser->getId(),
                     'avatar'    => $googleUser->getAvatar(),
                 ]);
+                $accountLinked = true;
             } else {
                 // 3. Creeaza cont nou din Google
                 $user = User::create([
@@ -39,6 +42,7 @@ class GoogleController extends Controller
                     'avatar'            => $googleUser->getAvatar(),
                     'password'          => null,
                     'email_verified_at' => now(),
+                    'trial_ends_at'     => now()->addDays(30),
                 ]);
             }
         }
@@ -47,6 +51,11 @@ class GoogleController extends Controller
         $user->update(['avatar' => $googleUser->getAvatar()]);
 
         Auth::login($user, remember: true);
+
+        if ($accountLinked) {
+            return redirect()->intended(route('dashboard'))
+                ->with('success', 'Contul tău existent a fost conectat cu Google. Poți folosi ambele metode de autentificare.');
+        }
 
         return redirect()->intended(route('dashboard'));
     }

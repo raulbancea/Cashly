@@ -120,6 +120,12 @@ class ClientController extends Controller
     public function destroy(Client $client)
     {
         $this->authorize('delete', $client);
+
+        if ($client->invoices()->exists()) {
+            return redirect()->route('clients.index')
+                ->with('error', 'Nu poți șterge un client care are facturi asociate. Șterge mai întâi facturile.');
+        }
+
         $client->delete();
         return redirect()->route('clients.index')->with('success', 'Client șters!');
     }

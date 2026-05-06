@@ -15,12 +15,6 @@
         </a>
     </div>
 
-    @if(session('success'))
-        <div class="p-3 mb-5 text-sm text-green-700 border border-green-200 rounded-lg bg-green-50">
-            {{ session('success') }}
-        </div>
-    @endif
-
     {{-- Modal confirmare ștergere --}}
     <div id="delete-modal" style="display:none;position:fixed;inset:0;z-index:50;background:rgba(0,0,0,0.4);align-items:center;justify-content:center;">
         <div style="background:#fff;border-radius:1rem;padding:1.5rem;width:100%;max-width:400px;margin:1rem;box-shadow:0 20px 60px rgba(0,0,0,0.2);">
@@ -54,17 +48,10 @@
     </div>
 
     @if($clients->isEmpty())
-        <div class="flex flex-col items-center justify-center py-20 bg-white border border-gray-100 rounded-xl shadow-sm">
-            <div class="flex items-center justify-center w-16 h-16 mb-4 rounded-full bg-teal-50">
-                <svg class="w-8 h-8 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                          d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
-                </svg>
-            </div>
-            <p class="mb-1 text-base font-semibold text-gray-800">Niciun client încă</p>
-            <p class="mb-5 text-sm text-gray-400">Adaugă primul client pentru a emite facturi.</p>
+        <div class="p-10 text-center bg-white border border-gray-100 rounded-xl shadow-sm">
+            <p class="text-sm text-gray-500">Niciun client încă.</p>
             <a href="{{ route('clients.create') }}"
-               class="px-5 py-2 text-sm font-medium text-white bg-teal-600 rounded-lg hover:bg-teal-700">
+               class="inline-block px-4 py-2 mt-3 text-sm text-white bg-teal-600 rounded-lg hover:bg-teal-700">
                 Adaugă primul client
             </a>
         </div>

@@ -3,116 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cashly — Creează cont</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <title>Cashly - Creează cont</title>
+    @vite(['resources/css/app.css'])
+    <style>
+        * { box-sizing: border-box; }
+        body { margin:0; font-family:ui-sans-serif,system-ui,sans-serif; }
+        input:focus { outline:2px solid #0d9488; outline-offset:1px; border-color:#0d9488 !important; }
+        .field { margin-bottom:16px; }
+        .field label { display:block;font-size:13px;font-weight:500;color:#374151;margin-bottom:6px; }
+        .field input { width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:9px;font-size:14px;color:#0f172a;background:#fff; }
+        .row { display:grid;grid-template-columns:1fr 1fr;gap:14px; }
+    </style>
 </head>
-<body style="background-color: #030712; min-height: 100vh; display: flex; flex-direction: column; font-family: sans-serif;">
+<body style="min-height:100vh;display:flex;">
 
-    {{-- Navbar --}}
-    <nav style="border-bottom: 1px solid rgba(255,255,255,0.05); padding: 0 24px; height: 64px; display: flex; align-items: center; justify-content: space-between;">
-        <a href="/" style="display: flex; align-items: center; gap: 8px; text-decoration: none;">
-            <div style="width: 28px; height: 28px; background: #14b8a6; border-radius: 8px;"></div>
-            <span style="color: white; font-weight: 700; font-size: 18px;">Cashly</span>
+    {{-- LEFT PANEL --}}
+    <div style="width:420px;flex-shrink:0;background:linear-gradient(160deg,#0d9488 0%,#0891b2 100%);padding:48px 40px;display:flex;flex-direction:column;justify-content:space-between;">
+        <a href="/" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
+            <div style="width:34px;height:34px;background:rgba(255,255,255,0.2);border-radius:9px;display:flex;align-items:center;justify-content:center;">
+                <svg width="18" height="18" fill="none" stroke="#fff" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+            </div>
+            <span style="font-size:20px;font-weight:800;color:#fff;letter-spacing:-0.5px;">Cashly</span>
         </a>
-        <a href="{{ route('login') }}" style="font-size: 14px; color: #9ca3af; text-decoration: none;">
-            Ai deja cont? Autentifică-te
-        </a>
-    </nav>
 
-    {{-- Form --}}
-    <div style="flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px 24px;">
-        <div style="width: 100%; max-width: 440px;">
+        <div>
+            <h2 style="font-size:28px;font-weight:800;color:#fff;margin:0 0 12px;line-height:1.2;">Începe gratuit,<br>fără card.</h2>
+            <p style="font-size:15px;color:rgba(255,255,255,0.8);margin:0 0 36px;line-height:1.6;">Platforma completă pentru freelanceri și PFA-uri din România.</p>
 
-            <div style="text-align: center; margin-bottom: 32px;">
-                <h1 style="font-size: 28px; font-weight: 700; color: white; margin-bottom: 8px;">Creează cont gratuit</h1>
-                <p style="color: #6b7280; font-size: 14px;">Fără card de credit. Fără angajamente.</p>
+            <div style="display:flex;flex-direction:column;gap:14px;">
+                @foreach(['Cont gratuit, fără card de credit','Facturi PDF în 2 minute','Dashboard financiar complet','Categorii cheltuieli predefinite','Notificări automate pentru scadențe'] as $f)
+                <div style="display:flex;align-items:center;gap:12px;">
+                    <div style="width:22px;height:22px;min-width:22px;background:rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;">
+                        <svg width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                        </svg>
+                    </div>
+                    <span style="font-size:14px;color:rgba(255,255,255,0.9);">{{ $f }}</span>
+                </div>
+                @endforeach
+            </div>
+        </div>
+
+        <p style="font-size:12px;color:rgba(255,255,255,0.5);margin:0;">© {{ date('Y') }} Cashly. Toate drepturile rezervate.</p>
+    </div>
+
+    {{-- RIGHT PANEL --}}
+    <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:40px 24px;background:#f8fafc;overflow-y:auto;">
+        <div style="width:100%;max-width:440px;">
+
+            <div style="margin-bottom:28px;">
+                <h1 style="font-size:26px;font-weight:800;color:#0f172a;margin:0 0 6px;letter-spacing:-0.5px;">Creează cont gratuit</h1>
+                <p style="font-size:14px;color:#64748b;margin:0;">Ai deja cont? <a href="{{ route('login') }}" style="color:#0d9488;font-weight:500;text-decoration:none;">Autentifică-te</a></p>
             </div>
 
-            {{-- Buton Google --}}
+            {{-- Google --}}
             <a href="{{ route('auth.google') }}"
-               style="display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 11px; background: white; color: #111827; font-weight: 600; font-size: 14px; border: none; border-radius: 10px; cursor: pointer; text-decoration: none; margin-bottom: 20px;">
+               style="display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:11px;background:#fff;color:#374151;font-weight:500;font-size:14px;border-radius:10px;text-decoration:none;border:1.5px solid #e2e8f0;margin-bottom:20px;">
                 <svg width="18" height="18" viewBox="0 0 48 48">
                     <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
                     <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
                     <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
                     <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
-                    <path fill="none" d="M0 0h48v48H0z"/>
                 </svg>
                 Înregistrează-te cu Google
             </a>
 
-            {{-- Separator --}}
-            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
-                <div style="flex: 1; height: 1px; background: rgba(255,255,255,0.08);"></div>
-                <span style="font-size: 12px; color: #4b5563;">sau cu email</span>
-                <div style="flex: 1; height: 1px; background: rgba(255,255,255,0.08);"></div>
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
+                <div style="flex:1;height:1px;background:#e2e8f0;"></div>
+                <span style="font-size:12px;color:#94a3b8;">sau cu email</span>
+                <div style="flex:1;height:1px;background:#e2e8f0;"></div>
             </div>
 
-            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 32px;">
-                <form method="POST" action="{{ route('register') }}">
-                    @csrf
+            @if($errors->any())
+                <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:9px;padding:12px;margin-bottom:20px;">
+                    @foreach($errors->all() as $error)
+                        <p style="color:#ef4444;font-size:13px;margin:2px 0;">{{ $error }}</p>
+                    @endforeach
+                </div>
+            @endif
 
-                    @if($errors->any())
-                        <div style="background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); border-radius: 8px; padding: 12px; margin-bottom: 20px;">
-                            @foreach($errors->all() as $error)
-                                <p style="color: #fca5a5; font-size: 13px; margin: 2px 0;">{{ $error }}</p>
-                            @endforeach
-                        </div>
-                    @endif
+            <form method="POST" action="{{ route('register') }}">
+                @csrf
 
-                    <div style="margin-bottom: 16px;">
-                        <label style="display: block; font-size: 13px; font-weight: 500; color: #d1d5db; margin-bottom: 6px;">Nume *</label>
-                        <input type="text" name="name" value="{{ old('name') }}" required
-                               style="width: 100%; padding: 10px 14px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; font-size: 14px; outline: none; box-sizing: border-box;"
-                               placeholder="Numele tău">
+                <div class="row">
+                    <div class="field">
+                        <label>Nume <span style="color:#ef4444;">*</span></label>
+                        <input type="text" name="name" value="{{ old('name') }}" required placeholder="Numele tău">
                     </div>
-
-                    <div style="margin-bottom: 16px;">
-                        <label style="display: block; font-size: 13px; font-weight: 500; color: #d1d5db; margin-bottom: 6px;">Nume firmă</label>
-                        <input type="text" name="company_name" value="{{ old('company_name') }}"
-                               style="width: 100%; padding: 10px 14px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; font-size: 14px; outline: none; box-sizing: border-box;"
-                               placeholder="SC Firma SRL (opțional)">
+                    <div class="field">
+                        <label>Firmă <span style="color:#94a3b8;font-weight:400;">(opțional)</span></label>
+                        <input type="text" name="company_name" value="{{ old('company_name') }}" placeholder="SC Firma SRL">
                     </div>
+                </div>
 
-                    <div style="margin-bottom: 16px;">
-                        <label style="display: block; font-size: 13px; font-weight: 500; color: #d1d5db; margin-bottom: 6px;">CUI / VAT</label>
-                        <input type="text" name="company_vat" value="{{ old('company_vat') }}"
-                               style="width: 100%; padding: 10px 14px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; font-size: 14px; outline: none; box-sizing: border-box;"
-                               placeholder="RO12345678 (opțional)">
+                <div class="field">
+                    <label>CUI / VAT <span style="color:#94a3b8;font-weight:400;">(opțional)</span></label>
+                    <input type="text" name="company_vat" value="{{ old('company_vat') }}" placeholder="RO12345678">
+                </div>
+
+                <div class="field">
+                    <label>Email <span style="color:#ef4444;">*</span></label>
+                    <input type="email" name="email" value="{{ old('email') }}" required placeholder="email@exemplu.ro">
+                </div>
+
+                <div class="row">
+                    <div class="field">
+                        <label>Parolă <span style="color:#ef4444;">*</span></label>
+                        <input type="password" name="password" required placeholder="Min. 8 caractere">
                     </div>
-
-                    <div style="margin-bottom: 16px;">
-                        <label style="display: block; font-size: 13px; font-weight: 500; color: #d1d5db; margin-bottom: 6px;">Email *</label>
-                        <input type="email" name="email" value="{{ old('email') }}" required
-                               style="width: 100%; padding: 10px 14px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; font-size: 14px; outline: none; box-sizing: border-box;"
-                               placeholder="email@exemplu.ro">
+                    <div class="field">
+                        <label>Confirmă parola <span style="color:#ef4444;">*</span></label>
+                        <input type="password" name="password_confirmation" required placeholder="Repetă parola">
                     </div>
+                </div>
 
-                    <div style="margin-bottom: 16px;">
-                        <label style="display: block; font-size: 13px; font-weight: 500; color: #d1d5db; margin-bottom: 6px;">Parolă *</label>
-                        <input type="password" name="password" required
-                               style="width: 100%; padding: 10px 14px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; font-size: 14px; outline: none; box-sizing: border-box;"
-                               placeholder="Minim 8 caractere">
-                    </div>
-
-                    <div style="margin-bottom: 24px;">
-                        <label style="display: block; font-size: 13px; font-weight: 500; color: #d1d5db; margin-bottom: 6px;">Confirmă parola *</label>
-                        <input type="password" name="password_confirmation" required
-                               style="width: 100%; padding: 10px 14px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; font-size: 14px; outline: none; box-sizing: border-box;"
-                               placeholder="Repetă parola">
-                    </div>
-
-                    <button type="submit"
-                            style="width: 100%; padding: 12px; background: #14b8a6; color: white; font-weight: 600; font-size: 15px; border: none; border-radius: 10px; cursor: pointer; box-shadow: 0 0 20px rgba(20, 184, 166, 0.4);">
-                        Creează cont gratuit
-                    </button>
-                </form>
-            </div>
-
-            <p style="text-align: center; margin-top: 24px; font-size: 14px; color: #6b7280;">
-                Ai deja cont?
-                <a href="{{ route('login') }}" style="color: #14b8a6; text-decoration: none;">Autentifică-te</a>
-            </p>
+                <button type="submit"
+                        style="width:100%;padding:12px;background:#0d9488;color:#fff;font-weight:600;font-size:15px;border:none;border-radius:10px;cursor:pointer;margin-top:4px;">
+                    Creează cont gratuit
+                </button>
+            </form>
         </div>
     </div>
 

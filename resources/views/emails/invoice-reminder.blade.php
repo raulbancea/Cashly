@@ -24,7 +24,7 @@
 <body>
     <div class="wrapper">
         <div class="header">
-            <h1>Cashly — Reminder plată</h1>
+            <h1>Cashly: Reminder plată</h1>
             <p>Factura este scadentă în {{ $daysLeft }} {{ $daysLeft === 1 ? 'zi' : 'zile' }}</p>
         </div>
         <div class="body">

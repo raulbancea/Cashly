@@ -51,4 +51,6 @@ class InvoicePolicy
     {
         return $user->id === $invoice->user_id;
     }
+
+
 }

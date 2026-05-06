@@ -222,7 +222,7 @@
                 <div class="invoice-serie">Nr. {{ $invoice->number }}</div>
                 <div class="invoice-meta">
                     Data emiterii: <span>{{ $invoice->issue_date->format('d.m.Y') }}</span><br>
-                    Scadentă: <span>{{ $invoice->due_date ? $invoice->due_date->format('d.m.Y') : '—' }}</span><br>
+                    Scadentă: <span>{{ $invoice->due_date ? $invoice->due_date->format('d.m.Y') : '-' }}</span><br>
                     Monedă: <span>{{ $invoice->currency }}</span>
                 </div>
                 <div>

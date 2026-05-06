@@ -88,7 +88,7 @@
                             </svg>
                             <a href="{{ route('expenses.downloadReceipt', $expense) }}"
                                class="text-sm text-teal-600 hover:underline flex-1 truncate">
-                                Bon atașat — descarcă
+                                Bon atașat, descarcă
                             </a>
                             <label class="flex items-center gap-1.5 text-xs text-red-500 cursor-pointer">
                                 <input type="checkbox" name="remove_receipt" value="1" class="rounded">
@@ -99,7 +99,7 @@
                     <input type="file" name="receipt" accept=".jpg,.jpeg,.png,.pdf"
                            class="w-full text-sm text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0
                                   file:text-sm file:font-medium file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100">
-                    <p class="mt-1 text-xs text-gray-400">JPG, PNG sau PDF — max 5 MB</p>
+                    <p class="mt-1 text-xs text-gray-400">JPG, PNG sau PDF, max 5 MB</p>
                     @error('receipt')
                         <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
                     @enderror

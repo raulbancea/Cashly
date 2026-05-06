@@ -24,7 +24,7 @@
 <body>
     <div class="wrapper">
         <div class="header">
-            <h1>Cashly — Factură restantă</h1>
+            <h1>Cashly: Factură restantă</h1>
             <p>Termenul de plată a fost depășit</p>
         </div>
         <div class="body">

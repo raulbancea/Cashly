@@ -95,6 +95,10 @@
             <div class="p-5 mb-4 bg-white border border-gray-100 rounded-xl shadow-sm">
                 <h3 class="mb-4 text-sm font-semibold text-gray-800">Produse / Servicii</h3>
 
+                <div id="currency-mismatch-warning" class="hidden mb-3 p-2 text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg">
+                    ⚠️ Produsul selectat este în <strong id="product-currency-label"></strong>, dar factura este în <strong id="invoice-currency-label"></strong>. Verifică prețul înainte de salvare.
+                </div>
+
                 <div id="items-container">
                     <div class="grid grid-cols-12 gap-2 mb-2 text-xs font-medium text-gray-500 uppercase">
                         <div class="col-span-5">Descriere</div>
@@ -110,7 +114,7 @@
                             <select name="items[{{ $index }}][product_id]"
                                     class="w-full px-3 py-1 mb-1 text-xs text-gray-500 border border-gray-200 rounded-lg bg-gray-50 focus:outline-none focus:ring-1 focus:ring-teal-400 item-product"
                                     onchange="fillFromProduct(this)">
-                                <option value="">— selectează produs din catalog —</option>
+                                <option value="">Selectează produs din catalog</option>
                                 @foreach($products as $p)
                                     <option value="{{ $p->id }}" {{ $item->product_id == $p->id ? 'selected' : '' }}>
                                         {{ $p->name }}
@@ -199,7 +203,7 @@
         let itemCount = {{ $invoice->items->count() }};
 
         function buildProductOptions() {
-            let opts = '<option value="">— selectează produs din catalog —</option>';
+            let opts = '<option value="">Selectează produs din catalog</option>';
             Object.values(products).forEach(p => {
                 opts += `<option value="${p.id}">${p.name}</option>`;
             });
@@ -209,11 +213,34 @@
         function fillFromProduct(select) {
             const row = select.closest('.item-row');
             const product = products[select.value];
-            if (!product) return;
+            if (!product) {
+                checkCurrencyMismatch();
+                return;
+            }
 
             row.querySelector('.item-description').value = product.name;
             row.querySelector('.item-price').value = parseFloat(product.price);
             row.querySelector('.item-quantity').dispatchEvent(new Event('input'));
+            checkCurrencyMismatch();
+        }
+
+        function checkCurrencyMismatch() {
+            const invoiceCurrency = document.querySelector('select[name="currency"]').value;
+            let mismatchedCurrency = null;
+            document.querySelectorAll('.item-product').forEach(sel => {
+                const p = products[sel.value];
+                if (p && p.currency && p.currency !== invoiceCurrency) {
+                    mismatchedCurrency = p.currency;
+                }
+            });
+            const warning = document.getElementById('currency-mismatch-warning');
+            if (mismatchedCurrency) {
+                document.getElementById('product-currency-label').textContent = mismatchedCurrency;
+                document.getElementById('invoice-currency-label').textContent = invoiceCurrency;
+                warning.classList.remove('hidden');
+            } else {
+                warning.classList.add('hidden');
+            }
         }
 
         function addItem() {
@@ -261,7 +288,12 @@
 
         function removeItem(btn) {
             const rows = document.querySelectorAll('.item-row');
-            if (rows.length === 1) return;
+            if (rows.length === 1) {
+                btn.title = 'Trebuie cel puțin un articol';
+                btn.style.color = '#ef4444';
+                setTimeout(() => { btn.style.color = ''; btn.title = ''; }, 1500);
+                return;
+            }
             btn.closest('.item-row').remove();
             updateGrandTotal();
         }
@@ -312,6 +344,7 @@
         }
 
         document.getElementById('vat-rate').addEventListener('change', updateGrandTotal);
+        document.querySelector('select[name="currency"]').addEventListener('change', checkCurrencyMismatch);
         document.querySelectorAll('.item-row').forEach(row => attachListeners(row));
 
         document.getElementById('issue_date').addEventListener('change', function () {

@@ -41,21 +41,23 @@ class RegisteredUserController extends Controller
         ]);
 
         $user = User::create([
-            'name' => $request->name,
-            'company_name' => $request->company_name,
-            'company_vat' => $request->company_vat,
-            'phone' => $request->phone,
-            'address' => $request->address,
-            'currency' => 'EUR',
-            'plan' => 'free',
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'name'          => $request->name,
+            'company_name'  => $request->company_name,
+            'company_vat'   => $request->company_vat,
+            'phone'         => $request->phone,
+            'address'       => $request->address,
+            'currency'      => 'EUR',
+            'plan'          => 'free',
+            'email'         => $request->email,
+            'password'      => Hash::make($request->password),
+            'trial_ends_at' => now()->addDays(30),
         ]);
 
         event(new Registered($user));
 
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        return redirect(route('dashboard', absolute: false))
+            ->with('success', 'Bun venit pe Cashly, ' . $user->name . '! Contul tău a fost creat cu succes.');
     }
 }

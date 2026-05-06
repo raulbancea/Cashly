@@ -16,7 +16,7 @@
 
         {{-- Logo --}}
         <div class="flex items-center h-16 px-6 border-b border-gray-200">
-            <span class="text-xl font-bold text-teal-600">Cashly</span>
+            <a href="{{ route('dashboard') }}" class="text-xl font-bold text-teal-600 hover:text-teal-700 transition-colors">Cashly</a>
         </div>
 
         {{-- Navigatie --}}
@@ -84,6 +84,16 @@
 
         {{-- Bottom links --}}
         <div class="px-4 py-4 space-y-1 border-t border-gray-200">
+            <a href="{{ route('subscription.index') }}"
+               class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium
+               {{ request()->routeIs('subscription.*') ? 'bg-teal-50 text-teal-700' : 'text-gray-600 hover:bg-gray-50' }}">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+                </svg>
+                Abonament
+            </a>
+
             <a href="{{ route('settings.index') }}"
                class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium
                {{ request()->routeIs('settings.*') ? 'bg-teal-50 text-teal-700' : 'text-gray-600 hover:bg-gray-50' }}">
@@ -116,28 +126,147 @@
         {{-- Header --}}
         <header class="flex items-center justify-between h-16 px-6 bg-white border-b border-gray-200">
             <h1 class="text-lg font-semibold text-gray-800">{{ $title ?? 'Dashboard' }}</h1>
-            <div class="flex items-center gap-3 min-w-0">
-                @if(auth()->user()->avatar)
-                    <img src="{{ Storage::disk('public')->url(auth()->user()->avatar) }}" alt="Avatar"
-                         class="w-8 h-8 rounded-full object-cover border border-gray-200 flex-shrink-0">
-                @else
-                    <div class="flex items-center justify-center w-8 h-8 bg-teal-600 rounded-full flex-shrink-0">
-                        <span class="text-sm font-bold text-white">
-                            {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
-                        </span>
+            {{-- Profile dropdown --}}
+            <div class="relative" id="profile-menu-wrapper">
+                <button onclick="toggleProfileMenu()" id="profile-menu-btn"
+                        class="flex items-center gap-3 min-w-0 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors">
+                    @if(auth()->user()->avatar)
+                        <img src="{{ Storage::disk('public')->url(auth()->user()->avatar) }}" alt="Avatar"
+                             class="w-8 h-8 rounded-full object-cover border border-gray-200 flex-shrink-0">
+                    @else
+                        <div class="flex items-center justify-center w-8 h-8 bg-teal-600 rounded-full flex-shrink-0">
+                            <span class="text-sm font-bold text-white">
+                                {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                            </span>
+                        </div>
+                    @endif
+                    <div class="min-w-0 text-left">
+                        <p class="text-sm font-medium text-gray-700 leading-tight truncate">
+                            {{ auth()->user()->company_name ?? auth()->user()->name }}
+                        </p>
+                        <p class="text-xs text-gray-400 leading-tight truncate">{{ auth()->user()->email }}</p>
                     </div>
-                @endif
-                <div class="min-w-0">
-                    <p class="text-sm font-medium text-gray-700 leading-tight truncate">
-                        {{ auth()->user()->company_name ?? auth()->user()->name }}
-                    </p>
-                    <p class="text-xs text-gray-400 leading-tight truncate">{{ auth()->user()->email }}</p>
+                    <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+
+                {{-- Dropdown panel --}}
+                <div id="profile-menu"
+                     style="display:none;position:absolute;right:0;top:calc(100% + 8px);width:240px;background:#fff;border:1px solid #e5e7eb;border-radius:0.75rem;box-shadow:0 10px 40px rgba(0,0,0,0.12);z-index:100;overflow:hidden;">
+
+                    {{-- User info --}}
+                    <div style="padding:1rem;border-bottom:1px solid #f3f4f6;">
+                        <div style="display:flex;align-items:center;gap:0.75rem;">
+                            @if(auth()->user()->avatar)
+                                <img src="{{ Storage::disk('public')->url(auth()->user()->avatar) }}" alt="Avatar"
+                                     style="width:40px;height:40px;min-width:40px;border-radius:50%;object-fit:cover;border:1px solid #e5e7eb;">
+                            @else
+                                <div style="width:40px;height:40px;min-width:40px;border-radius:50%;background:#0d9488;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                                    <span style="color:#fff;font-size:1rem;font-weight:700;">
+                                        {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                                    </span>
+                                </div>
+                            @endif
+                            <div style="min-width:0;">
+                                <p style="font-size:0.875rem;font-weight:600;color:#111827;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                    {{ auth()->user()->company_name ?? auth()->user()->name }}
+                                </p>
+                                <p style="font-size:0.75rem;color:#9ca3af;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                    {{ auth()->user()->email }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Menu items --}}
+                    <div style="padding:0.5rem;">
+                        <a href="{{ route('profile.edit') }}"
+                           style="display:flex;align-items:center;gap:0.75rem;padding:0.625rem 0.75rem;border-radius:0.5rem;font-size:0.875rem;color:#374151;text-decoration:none;"
+                           onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='transparent'">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                            </svg>
+                            Profilul meu
+                        </a>
+                        <a href="{{ route('settings.index') }}"
+                           style="display:flex;align-items:center;gap:0.75rem;padding:0.625rem 0.75rem;border-radius:0.5rem;font-size:0.875rem;color:#374151;text-decoration:none;"
+                           onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='transparent'">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            </svg>
+                            Setări
+                        </a>
+                    </div>
+
+                    {{-- Logout --}}
+                    <div style="padding:0.5rem;border-top:1px solid #f3f4f6;">
+                        <form method="POST" action="{{ route('logout') }}" style="margin:0;">
+                            @csrf
+                            <button type="submit"
+                                    style="display:flex;align-items:center;gap:0.75rem;padding:0.625rem 0.75rem;border-radius:0.5rem;font-size:0.875rem;color:#ef4444;background:transparent;border:none;cursor:pointer;width:100%;"
+                                    onmouseover="this.style.background='#fef2f2'" onmouseout="this.style.background='transparent'">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                                </svg>
+                                Deconectare
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
+
+            <script>
+                function toggleProfileMenu() {
+                    const menu = document.getElementById('profile-menu');
+                    menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+                }
+                document.addEventListener('click', function(e) {
+                    const wrapper = document.getElementById('profile-menu-wrapper');
+                    if (wrapper && !wrapper.contains(e.target)) {
+                        document.getElementById('profile-menu').style.display = 'none';
+                    }
+                });
+            </script>
         </header>
+
+        {{-- Banner trial / abonament expirat --}}
+        @php $authUser = auth()->user(); @endphp
+        @if($authUser && $authUser->isOnTrial() && $authUser->trialDaysLeft() <= 7)
+            <div style="background:#fffbeb;border-bottom:1px solid #fcd34d;padding:0.5rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;">
+                <p style="font-size:0.8125rem;color:#92400e;">
+                    ⏳ Mai ai <strong>{{ $authUser->trialDaysLeft() }} zile</strong> din perioada gratuită.
+                </p>
+                <a href="{{ route('subscription.index') }}"
+                   style="font-size:0.8125rem;font-weight:600;color:#b45309;white-space:nowrap;text-decoration:underline;">
+                    Abonează-te acum
+                </a>
+            </div>
+        @elseif($authUser && !$authUser->hasActiveSubscription())
+            <div style="background:#fef2f2;border-bottom:1px solid #fca5a5;padding:0.5rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;">
+                <p style="font-size:0.8125rem;color:#991b1b;">
+                    🔒 Trial-ul a expirat. Abonează-te pentru a continua să folosești Cashly.
+                </p>
+                <a href="{{ route('subscription.index') }}"
+                   style="font-size:0.8125rem;font-weight:600;color:#dc2626;white-space:nowrap;text-decoration:underline;">
+                    Abonează-te
+                </a>
+            </div>
+        @endif
 
         {{-- Page content --}}
         <main class="flex-1 p-6 overflow-y-auto">
+            @if(session('success'))
+                <div class="p-3 mb-4 text-sm text-green-700 border border-green-200 rounded-lg bg-green-50">
+                    {{ session('success') }}
+                </div>
+            @endif
+            @if(session('error'))
+                <div class="p-3 mb-4 text-sm text-red-700 border border-red-200 rounded-lg bg-red-50">
+                    {{ session('error') }}
+                </div>
+            @endif
             {{ $slot }}
         </main>
 

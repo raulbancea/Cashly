@@ -181,7 +181,7 @@
                                     {{ $invoice->issue_date->format('d.m.Y') }}
                                 </td>
                                 <td class="px-6 py-3 text-gray-600">
-                                    {{ $invoice->due_date ? $invoice->due_date->format('d.m.Y') : '—' }}
+                                    {{ $invoice->due_date ? $invoice->due_date->format('d.m.Y') : '-' }}
                                 </td>
                                 <td class="px-6 py-3">
                                     <span class="px-2 py-0.5 text-xs font-medium rounded-full

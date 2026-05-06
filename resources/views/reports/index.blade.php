@@ -5,11 +5,11 @@
     <div class="flex items-center justify-between mb-4">
         <div>
             <h2 class="text-xl font-bold text-gray-900">Rapoarte financiare</h2>
-            <p class="text-sm text-gray-500">Sumar anual — {{ $selectedYear }}</p>
+            <p class="text-sm text-gray-500">Sumar anual {{ $selectedYear }}</p>
         </div>
         <form method="GET" action="{{ route('reports.index') }}">
             <select name="an" onchange="this.form.submit()"
-                    class="px-3 py-2 text-sm border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500">
+                    class="py-2 pl-3 pr-8 text-sm border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500">
                 @foreach($availableYears as $year)
                     <option value="{{ $year }}" {{ $year == $selectedYear ? 'selected' : '' }}>{{ $year }}</option>
                 @endforeach
@@ -22,7 +22,7 @@
     @endphp
 
     @if(empty($totale) && empty($monthly))
-        <div class="p-10 text-center bg-white border border-gray-100 rounded-xl shadow-sm">
+        <div class="p-10 text-center bg-white border border-gray-100 shadow-sm rounded-xl">
             <p class="text-gray-400">Nu există date pentru anul {{ $selectedYear }}.</p>
         </div>
     @else
@@ -31,7 +31,7 @@
     @foreach($totale as $currency => $t)
     <div class="grid grid-cols-2 gap-3 mb-4">
 
-        <div class="p-4 bg-white border border-gray-100 rounded-xl shadow-sm">
+        <div class="p-4 bg-white border border-gray-100 shadow-sm rounded-xl">
             <p class="text-xs font-medium tracking-wide text-gray-400 uppercase">Venituri {{ $currency }}</p>
             <p class="mt-1 text-xl font-bold text-gray-900">
                 {{ number_format($t['venituri'], 2, ',', '.') }}
@@ -40,7 +40,7 @@
             <p class="mt-0.5 text-xs text-gray-400">facturi încasate</p>
         </div>
 
-        <div class="p-4 bg-white border border-gray-100 rounded-xl shadow-sm">
+        <div class="p-4 bg-white border border-gray-100 shadow-sm rounded-xl">
             <p class="text-xs font-medium tracking-wide text-gray-400 uppercase">Cheltuieli {{ $currency }}</p>
             <p class="mt-1 text-xl font-bold text-gray-900">
                 {{ number_format($t['cheltuieli'], 2, ',', '.') }}
@@ -49,7 +49,7 @@
             <p class="mt-0.5 text-xs text-gray-400">total cheltuieli</p>
         </div>
 
-        <div class="p-4 bg-white rounded-xl shadow-sm" style="border: 1px solid {{ $t['profit'] >= 0 ? '#99f6e4' : '#fecaca' }}">
+        <div class="p-4 bg-white shadow-sm rounded-xl" style="border: 1px solid {{ $t['profit'] >= 0 ? '#99f6e4' : '#fecaca' }}">
             <p class="text-xs font-medium tracking-wide text-gray-400 uppercase">Profit net {{ $currency }}</p>
             <p class="mt-1 text-xl font-bold {{ $t['profit'] >= 0 ? 'text-teal-600' : 'text-red-500' }}">
                 {{ number_format($t['profit'], 2, ',', '.') }}
@@ -58,7 +58,7 @@
             <p class="mt-0.5 text-xs text-gray-400">venituri − cheltuieli</p>
         </div>
 
-        <div class="p-4 bg-white border border-blue-100 rounded-xl shadow-sm">
+        <div class="p-4 bg-white border border-blue-100 shadow-sm rounded-xl">
             <p class="text-xs font-medium tracking-wide text-gray-400 uppercase">TVA colectat</p>
             <p class="mt-1 text-xl font-bold text-blue-700">
                 {{ number_format($totalVatColectat, 2, ',', '.') }}
@@ -72,9 +72,9 @@
 
     {{-- ── Grafic bar: venituri vs cheltuieli — full width, 300px ───────── --}}
     @foreach($monthly as $currency => $data)
-    <div class="p-5 mb-4 bg-white border border-gray-100 rounded-xl shadow-sm">
+    <div class="p-5 mb-4 bg-white border border-gray-100 shadow-sm rounded-xl">
         <h3 class="mb-4 text-sm font-semibold text-gray-700">
-            Venituri vs Cheltuieli — {{ $selectedYear }}
+            Venituri vs Cheltuieli {{ $selectedYear }}
             <span class="ml-1 px-1.5 py-0.5 text-xs font-medium bg-gray-100 text-gray-500 rounded">{{ $currency }}</span>
         </h3>
         <div style="height: 300px; position: relative;">
@@ -87,9 +87,9 @@
     @if($vatByRate->isNotEmpty())
     @foreach($vatByRate->groupBy('currency') as $currency => $rows)
     @php $totalCurrency = $vatTotalByCurrency[$currency] ?? 0; @endphp
-    <div class="p-5 mb-4 bg-white border border-gray-100 rounded-xl shadow-sm">
+    <div class="p-5 mb-4 bg-white border border-gray-100 shadow-sm rounded-xl">
         <h3 class="mb-4 text-sm font-semibold text-gray-700">
-            TVA colectat pe cotă — {{ $selectedYear }}
+            TVA colectat pe cotă {{ $selectedYear }}
             <span class="ml-1 px-1.5 py-0.5 text-xs font-medium bg-blue-100 text-blue-600 rounded">{{ $currency }}</span>
         </h3>
         <table class="w-full text-sm">
@@ -114,7 +114,7 @@
                     <td class="py-2.5 text-right text-gray-500">
                         @if($totalCurrency > 0)
                             {{ number_format($row['total_vat'] / $totalCurrency * 100, 1) }}%
-                        @else —
+                        @else -
                         @endif
                     </td>
                 </tr>
@@ -140,8 +140,8 @@
     <div class="grid grid-cols-1 gap-4 mb-4 lg:grid-cols-2">
 
         {{-- Tabel cu bare de progres --}}
-        <div class="p-5 bg-white border border-gray-100 rounded-xl shadow-sm">
-            <h3 class="mb-4 text-sm font-semibold text-gray-700">Cheltuieli pe categorie — {{ $selectedYear }}</h3>
+        <div class="p-5 bg-white border border-gray-100 shadow-sm rounded-xl">
+            <h3 class="mb-4 text-sm font-semibold text-gray-700">Cheltuieli pe categorie {{ $selectedYear }}</h3>
             <div class="space-y-3">
                 @php $maxRon = $expensesByCategory->max('ron') ?: 1; @endphp
                 @foreach($expensesByCategory as $cat)
@@ -152,7 +152,7 @@
                                   style="background-color: {{ $cat['color'] }}"></span>
                             <span class="text-sm text-gray-700">{{ $cat['name'] }}</span>
                         </div>
-                        <div class="text-xs font-medium text-gray-700 text-right">
+                        <div class="text-xs font-medium text-right text-gray-700">
                             @if($cat['ron'] > 0)
                                 {{ number_format($cat['ron'], 2, ',', '.') }} RON
                             @endif
@@ -166,7 +166,7 @@
                     </div>
                     @if($cat['ron'] > 0)
                     <div class="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                        <div class="h-full rounded-full transition-all"
+                        <div class="h-full transition-all rounded-full"
                              style="width: {{ min(100, round($cat['ron'] / $maxRon * 100)) }}%; background-color: {{ $cat['color'] }}">
                         </div>
                     </div>
@@ -177,15 +177,15 @@
         </div>
 
         {{-- Doughnut chart cu total în centru --}}
-        <div class="p-5 bg-white border border-gray-100 rounded-xl shadow-sm flex flex-col items-center">
-            <h3 class="mb-4 text-sm font-semibold text-gray-700 self-start">Distribuție cheltuieli (RON)</h3>
+        <div class="flex flex-col items-center p-5 bg-white border border-gray-100 shadow-sm rounded-xl">
+            <h3 class="self-start mb-4 text-sm font-semibold text-gray-700">Distribuție cheltuieli (RON)</h3>
             @if($pieCategories->isNotEmpty())
                 {{-- Wrapper pătrat, max 300px, pentru center text --}}
                 <div class="relative" style="width: 280px; height: 280px;">
                     <canvas id="chartPieExpenses"></canvas>
                     <div id="doughnut-center"
                          class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                        <span class="text-lg font-bold text-gray-900" id="doughnut-total">—</span>
+                        <span class="text-lg font-bold text-gray-900" id="doughnut-total">-</span>
                         <span class="text-xs text-gray-400">RON total</span>
                     </div>
                 </div>
