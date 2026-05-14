@@ -330,7 +330,7 @@ class InvoiceController extends Controller
         foreach ($invoices as $invoice) {
             $sheet->fromArray([
                 $invoice->number,
-                $invoice->client->name ?? '-',
+                $invoice->client?->name ?? '-',
                 $invoice->issue_date->format('d.m.Y'),
                 $invoice->due_date ? $invoice->due_date->format('d.m.Y') : '-',
                 $statusMap[$invoice->status] ?? $invoice->status,

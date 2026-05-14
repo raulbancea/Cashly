@@ -255,6 +255,22 @@
             </div>
         @endif
 
+        {{-- Banner date firmă incomplete --}}
+        @if($authUser && !$authUser->company_name)
+            <div style="background:#eff6ff;border-bottom:1px solid #bfdbfe;padding:0.5rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;">
+                <div style="display:flex;align-items:center;gap:0.5rem;">
+                    <svg width="15" height="15" fill="none" stroke="#2563eb" stroke-width="2" viewBox="0 0 24 24" style="flex-shrink:0;">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <p style="font-size:0.8125rem;color:#1e40af;">Completează datele firmei tale pentru ca facturile generate să fie valabile legal.</p>
+                </div>
+                <a href="{{ route('settings.index') }}#firma"
+                   style="font-size:0.8125rem;font-weight:600;color:#2563eb;white-space:nowrap;text-decoration:underline;">
+                    Completează acum
+                </a>
+            </div>
+        @endif
+
         {{-- Page content --}}
         <main class="flex-1 p-6 overflow-y-auto">
             @if(session('success'))

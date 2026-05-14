@@ -49,8 +49,8 @@ class ReportController extends Controller
             for ($m = 1; $m <= 12; $m++) {
                 $data[] = [
                     'month'    => $monthLabels[$m - 1],
-                    'revenue'  => (float) ($revenueRows->get("{$m}-{$currency}")->total ?? 0),
-                    'expenses' => (float) ($expenseRows->get("{$m}-{$currency}")->total ?? 0),
+                    'revenue'  => (float) ($revenueRows->get("{$m}-{$currency}")?->total ?? 0),
+                    'expenses' => (float) ($expenseRows->get("{$m}-{$currency}")?->total ?? 0),
                 ];
             }
             if (collect($data)->contains(fn($d) => $d['revenue'] > 0 || $d['expenses'] > 0)) {

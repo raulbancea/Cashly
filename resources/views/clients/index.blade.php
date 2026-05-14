@@ -48,11 +48,17 @@
     </div>
 
     @if($clients->isEmpty())
-        <div class="p-10 text-center bg-white border border-gray-100 rounded-xl shadow-sm">
-            <p class="text-sm text-gray-500">Niciun client încă.</p>
+        <div style="padding:48px 24px;text-align:center;background:#fff;border:1px solid #f1f5f9;border-radius:1rem;box-shadow:0 1px 4px rgba(0,0,0,0.04);">
+            <div style="width:56px;height:56px;background:#f0fdfa;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+                <svg width="26" height="26" fill="none" stroke="#0d9488" stroke-width="1.75" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+            </div>
+            <p style="font-size:0.9375rem;font-weight:600;color:#0f172a;margin:0 0 6px;">Niciun client încă</p>
+            <p style="font-size:0.8125rem;color:#94a3b8;margin:0 0 20px;">Adaugă primul client pentru a putea emite facturi și urmări plățile.</p>
             <a href="{{ route('clients.create') }}"
-               class="inline-block px-4 py-2 mt-3 text-sm text-white bg-teal-600 rounded-lg hover:bg-teal-700">
-                Adaugă primul client
+               style="display:inline-block;padding:9px 22px;font-size:0.875rem;font-weight:600;color:#fff;background:#0d9488;border-radius:0.5rem;text-decoration:none;">
+                + Adaugă primul client
             </a>
         </div>
     @else

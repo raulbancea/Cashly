@@ -28,7 +28,7 @@
             <p>Factura este scadentă în {{ $daysLeft }} {{ $daysLeft === 1 ? 'zi' : 'zile' }}</p>
         </div>
         <div class="body">
-            <p class="greeting">Bună ziua, <strong>{{ $invoice->client->name }}</strong>,</p>
+            <p class="greeting">Bună ziua, <strong>{{ $invoice->client?->name ?? 'Client' }}</strong>,</p>
             <p class="note">
                 Vă reamintim că factura de mai jos este scadentă în <strong>{{ $daysLeft }} {{ $daysLeft === 1 ? 'zi' : 'zile' }}</strong>.
                 Vă rugăm să efectuați plata înainte de termenul limită.
@@ -36,7 +36,7 @@
             <div class="reminder-box">
                 <table>
                     <tr><td>Număr factură:</td><td>{{ $invoice->number }}</td></tr>
-                    <tr><td>Scadență:</td><td>{{ $invoice->due_date->format('d.m.Y') }}</td></tr>
+                    <tr><td>Scadență:</td><td>{{ $invoice->due_date?->format('d.m.Y') ?? '-' }}</td></tr>
                     <tr><td>Zile rămase:</td><td>{{ $daysLeft }} {{ $daysLeft === 1 ? 'zi' : 'zile' }}</td></tr>
                     <tr class="total-row">
                         <td>Total de plată:</td>

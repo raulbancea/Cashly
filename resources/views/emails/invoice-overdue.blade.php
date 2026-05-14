@@ -28,7 +28,7 @@
             <p>Termenul de plată a fost depășit</p>
         </div>
         <div class="body">
-            <p class="greeting">Bună ziua, <strong>{{ $invoice->client->name }}</strong>,</p>
+            <p class="greeting">Bună ziua, <strong>{{ $invoice->client?->name ?? 'Client' }}</strong>,</p>
             <p class="note">
                 Vă aducem la cunoștință că factura de mai jos nu a fost achitată până la termenul scadent.
                 Vă rugăm să efectuați plata cât mai curând posibil.
@@ -36,8 +36,8 @@
             <div class="alert-box">
                 <table>
                     <tr><td>Număr factură:</td><td>{{ $invoice->number }}</td></tr>
-                    <tr><td>Data scadenței:</td><td>{{ $invoice->due_date->format('d.m.Y') }}</td></tr>
-                    <tr><td>Zile restante:</td><td>{{ $invoice->due_date->diffInDays(now()) }} zile</td></tr>
+                    <tr><td>Data scadenței:</td><td>{{ $invoice->due_date?->format('d.m.Y') ?? '-' }}</td></tr>
+                    <tr><td>Zile restante:</td><td>{{ $invoice->due_date ? $invoice->due_date->diffInDays(now()) : '-' }} {{ $invoice->due_date ? 'zile' : '' }}</td></tr>
                     <tr class="total-row">
                         <td>Total restant:</td>
                         <td>{{ number_format($invoice->vat_rate ? $invoice->total_with_vat : $invoice->total, 2, ',', '.') }} {{ $invoice->currency }}</td>

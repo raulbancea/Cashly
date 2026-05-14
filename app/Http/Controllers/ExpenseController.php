@@ -149,7 +149,7 @@ class ExpenseController extends Controller
         foreach ($expenses as $expense) {
             $sheet->fromArray([
                 $expense->date->format('d.m.Y'),
-                $expense->category->name ?? '-',
+                $expense->category?->name ?? '-',
                 $expense->description,
                 (float) $expense->amount,
                 $expense->currency,

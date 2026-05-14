@@ -92,18 +92,25 @@
     </form>
 
     @if($expenses->isEmpty())
-        <div class="p-10 text-center bg-white border border-gray-100 shadow-sm rounded-xl">
+        <div style="padding:48px 24px;text-align:center;background:#fff;border:1px solid #f1f5f9;border-radius:1rem;box-shadow:0 1px 4px rgba(0,0,0,0.04);">
+            <div style="width:56px;height:56px;background:#f0fdf4;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+                <svg width="26" height="26" fill="none" stroke="#16a34a" stroke-width="1.75" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
+                </svg>
+            </div>
             @if(request()->hasAny(['category_id', 'an']))
-                <p class="text-sm text-gray-500">Nicio cheltuială găsită pentru filtrele selectate.</p>
+                <p style="font-size:0.9375rem;font-weight:600;color:#0f172a;margin:0 0 6px;">Nicio cheltuială găsită</p>
+                <p style="font-size:0.8125rem;color:#94a3b8;margin:0 0 20px;">Niciun rezultat pentru filtrele selectate. Incearca alte criterii.</p>
                 <a href="{{ route('expenses.index') }}"
-                   class="inline-block px-4 py-2 mt-3 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">
+                   style="display:inline-block;padding:8px 20px;font-size:0.875rem;color:#374151;border:1px solid #d1d5db;border-radius:0.5rem;text-decoration:none;background:#fff;">
                     Resetează filtrele
                 </a>
             @else
-                <p class="text-sm text-gray-500">Nu ai nicio cheltuială înregistrată.</p>
+                <p style="font-size:0.9375rem;font-weight:600;color:#0f172a;margin:0 0 6px;">Nicio cheltuială înregistrată</p>
+                <p style="font-size:0.8125rem;color:#94a3b8;margin:0 0 20px;">Înregistrează cheltuielile firmei și exportă-le oricând pentru contabilul tău.</p>
                 <a href="{{ route('expenses.create') }}"
-                   class="inline-block px-4 py-2 mt-3 text-sm text-white bg-teal-600 rounded-lg hover:bg-teal-700">
-                    Adaugă prima cheltuială
+                   style="display:inline-block;padding:9px 22px;font-size:0.875rem;font-weight:600;color:#fff;background:#0d9488;border-radius:0.5rem;text-decoration:none;">
+                    + Adaugă prima cheltuială
                 </a>
             @endif
         </div>

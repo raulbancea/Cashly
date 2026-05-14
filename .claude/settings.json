@@ -12,7 +12,9 @@
       "Bash(grep -rn \"Expense::\\\\|Invoice::\\\\|Client::\\\\|Product::\" /d/laragon/www/cashly/app/Http/Controllers/*.php)",
       "Bash(grep -rn \"page_url\\\\|paginate\\\\|links\\(\\)\" /d/laragon/www/cashly/app/Http/Controllers/*.php)",
       "Bash(grep -rn \"\\\\->client\\\\|\\\\->invoices\\\\|\\\\->items\" /d/laragon/www/cashly/resources/views/invoices/*.blade.php)",
-      "Bash(awk '/^[[:space:]]*\\\\?\\\\?/||/optional\\\\\\(/ {print FILENAME\":\"NR\":\"$0}' /d/laragon/www/cashly/resources/views/**/*.blade.php)"
+      "Bash(awk '/^[[:space:]]*\\\\?\\\\?/||/optional\\\\\\(/ {print FILENAME\":\"NR\":\"$0}' /d/laragon/www/cashly/resources/views/**/*.blade.php)",
+      "Bash(Get-ChildItem -Path \"d:\\\\laragon\\\\www\\\\cashly\" -Directory)",
+      "Bash(Select-Object Name)"
     ]
   }
 }
