@@ -16,7 +16,7 @@
 
         {{-- Logo --}}
         <div class="flex items-center h-16 px-6 border-b border-gray-200">
-            <a href="{{ route('dashboard') }}" class="text-xl font-bold text-teal-600 hover:text-teal-700 transition-colors">Cashly</a>
+            <a href="{{ url('/') }}" class="text-xl font-bold text-teal-600 hover:text-teal-700 transition-colors">Cashly</a>
         </div>
 
         {{-- Navigatie --}}

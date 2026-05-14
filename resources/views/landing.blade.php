@@ -254,89 +254,174 @@
         <h2 style="font-size:clamp(26px,3vw,40px);font-weight:800;color:#0f172a;margin:0;letter-spacing:-0.5px;">Tot ce face Cashly pentru tine</h2>
     </div>
 
-    @foreach([
-        [
-            'Sistem de facturare cu numerotare automata',
-            'Cel mai mare consumator de timp pentru un freelancer este facturarea manuala. Cashly elimina acest proces complet. Introduci serviciile o singura data in catalog, cu pretul in RON sau EUR. La urmatoarea factura, le selectezi dintr-o lista si campurile se completeaza automat. Numarul de factura urmator din serie e calculat si aplicat automat, fara sa numeri tu nimic. Factura e gata de trimis in mai putin de 2 minute.',
-            ['Numerotare automata serie/an','Autofill din catalogul de servicii','Suport RON si EUR','Trimitere directa pe email','Descarcare PDF instant'],
-            'left',
-            '#f0fdfa',
-            'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z',
-            '#0d9488'
-        ],
-        [
-            'Reminder-uri automate pentru facturi neplatite',
-            'Unul din trei freelanceri pierde bani din cauza facturilor uitiate sau platite cu intarziere. Cashly monitorizeaza continuu statusul fiecarei facturi si trimite automat emailuri de reminder clientilor cu plati restante, la intervalele pe care le setezi tu. Nu mai trebuie sa urmaresti manual cine a platit si cine nu. Nu mai scrii emailuri stanjenitoare. Sistemul se ocupa, tu incasezi la timp.',
-            ['Reminder-uri la scadenta si dupa','Emailuri personalizate cu tonul firmei tale','Marcarea automata a facturilor restante','Notificari in dashboard pentru situatii critice'],
-            'right',
-            '#fff7ed',
-            'M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9',
-            '#d97706'
-        ],
-        [
-            'Gestiunea cheltuielilor cu export pentru contabil',
-            'Inregistrezi fiecare cheltuiala pe categorie, atasezi bonul foto si adaugi o descriere scurta. La final de luna sau trimestru, exporti tot intr-un fisier Excel structurat, gata de trimis contabilului. Nu mai cauti bonuri prin sertare, nu mai rescrii date in foi de calcul. Cashly tine evidenta completa a cheltuielilor firmei tale, cu tot cu bon digital atasat, intr-un loc sigur si mereu accesibil.',
-            ['Categorii predefinite si personalizabile','Bon foto atasat la fiecare cheltuiala','Export Excel complet pentru contabil','Vizualizare cheltuieli pe categorii si perioade'],
-            'left',
-            '#f0fdf4',
-            'M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z',
-            '#16a34a'
-        ],
-    ] as $feature)
+    {{-- Feature 1: Facturare --}}
     <div class="feature-row">
-        @if($feature[3] === 'left')
         <div>
-            <div style="width:48px;height:48px;background:{{ $feature[4] }};border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;">
-                <svg width="24" height="24" fill="none" stroke="{{ $feature[6] }}" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="{{ $feature[5] }}"/>
-                </svg>
+            <div style="width:48px;height:48px;background:#f0fdfa;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;">
+                <svg width="24" height="24" fill="none" stroke="#0d9488" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
             </div>
-            <h3 style="font-size:22px;font-weight:800;color:#0f172a;margin:0 0 14px;letter-spacing:-0.3px;">{{ $feature[0] }}</h3>
-            <p style="font-size:15px;color:#64748b;line-height:1.8;margin:0 0 24px;">{{ $feature[1] }}</p>
+            <h3 style="font-size:22px;font-weight:800;color:#0f172a;margin:0 0 14px;letter-spacing:-0.3px;">Sistem de facturare cu numerotare automata</h3>
+            <p style="font-size:15px;color:#64748b;line-height:1.8;margin:0 0 24px;">Cel mai mare consumator de timp pentru un freelancer este facturarea manuala. Cashly elimina acest proces complet. Introduci serviciile o singura data in catalog, cu pretul in RON sau EUR. La urmatoarea factura, le selectezi dintr-o lista si campurile se completeaza automat. Numarul de factura urmator din serie e calculat si aplicat automat, fara sa numeri tu nimic.</p>
             <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px;">
-                @foreach($feature[2] as $point)
+                @foreach(['Numerotare automata serie/an','Autofill din catalogul de servicii','Suport RON si EUR','Trimitere directa pe email','Descarcare PDF instant'] as $point)
                 <li style="display:flex;align-items:center;gap:10px;font-size:14px;color:#374151;">
-                    <svg width="16" height="16" fill="none" stroke="{{ $feature[6] }}" stroke-width="2.5" viewBox="0 0 24 24" style="flex-shrink:0;">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-                    </svg>
+                    <svg width="16" height="16" fill="none" stroke="#0d9488" stroke-width="2.5" viewBox="0 0 24 24" style="flex-shrink:0;"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
                     {{ $point }}
                 </li>
                 @endforeach
             </ul>
         </div>
-        <div style="background:{{ $feature[4] }};border-radius:20px;padding:40px;display:flex;align-items:center;justify-content:center;min-height:280px;">
-            <svg width="80" height="80" fill="none" stroke="{{ $feature[6] }}" stroke-width="1" viewBox="0 0 24 24" style="opacity:0.3;">
-                <path stroke-linecap="round" stroke-linejoin="round" d="{{ $feature[5] }}"/>
-            </svg>
-        </div>
-        @else
-        <div style="background:{{ $feature[4] }};border-radius:20px;padding:40px;display:flex;align-items:center;justify-content:center;min-height:280px;">
-            <svg width="80" height="80" fill="none" stroke="{{ $feature[6] }}" stroke-width="1" viewBox="0 0 24 24" style="opacity:0.3;">
-                <path stroke-linecap="round" stroke-linejoin="round" d="{{ $feature[5] }}"/>
-            </svg>
-        </div>
-        <div>
-            <div style="width:48px;height:48px;background:{{ $feature[4] }};border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;">
-                <svg width="24" height="24" fill="none" stroke="{{ $feature[6] }}" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="{{ $feature[5] }}"/>
-                </svg>
+        {{-- Mockup factura --}}
+        <div style="background:#f0fdfa;border-radius:20px;padding:28px;min-height:280px;display:flex;align-items:center;justify-content:center;align-self:center;transition:transform .3s,box-shadow .3s;"
+             onmouseover="this.style.transform='translateY(-6px) scale(1.02)';this.style.boxShadow='0 24px 64px rgba(13,148,136,0.15)'"
+             onmouseout="this.style.transform='';this.style.boxShadow=''">
+            <div style="background:#fff;border-radius:14px;padding:24px;box-shadow:0 4px 24px rgba(13,148,136,0.1);width:100%;max-width:320px;">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;">
+                    <div>
+                        <div style="font-size:12px;font-weight:800;color:#0d9488;">CASHLY</div>
+                        <div style="font-size:10px;color:#94a3b8;margin-top:1px;">Factura Fiscala</div>
+                    </div>
+                    <div style="text-align:right;">
+                        <div style="font-size:11px;font-weight:700;color:#0f172a;">#2024-047</div>
+                        <div style="font-size:10px;color:#94a3b8;">15.05.2024</div>
+                        <span style="display:inline-block;margin-top:4px;padding:2px 10px;background:#dcfce7;color:#16a34a;font-size:10px;font-weight:600;border-radius:20px;">Trimisa</span>
+                    </div>
+                </div>
+                <div style="padding:10px 0;border-top:1px solid #f1f5f9;border-bottom:1px solid #f1f5f9;margin-bottom:14px;">
+                    <div style="font-size:9px;color:#94a3b8;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.05em;">Catre</div>
+                    <div style="font-size:12px;font-weight:600;color:#0f172a;">ABC Solutions SRL</div>
+                    <div style="font-size:10px;color:#64748b;">contact@abc-solutions.ro</div>
+                </div>
+                <div style="margin-bottom:14px;display:flex;flex-direction:column;gap:8px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;">
+                        <div>
+                            <div style="font-size:11px;font-weight:500;color:#374151;">Servicii web design</div>
+                            <div style="font-size:10px;color:#94a3b8;">1 x 2.500 RON</div>
+                        </div>
+                        <div style="font-size:11px;font-weight:600;color:#0f172a;">2.500 RON</div>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;">
+                        <div>
+                            <div style="font-size:11px;font-weight:500;color:#374151;">Mentenanta lunara</div>
+                            <div style="font-size:10px;color:#94a3b8;">1 x 500 RON</div>
+                        </div>
+                        <div style="font-size:11px;font-weight:600;color:#0f172a;">500 RON</div>
+                    </div>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:2px solid #f0fdfa;">
+                    <div style="font-size:12px;font-weight:700;color:#0f172a;">TOTAL</div>
+                    <div style="font-size:18px;font-weight:800;color:#0d9488;">3.000 RON</div>
+                </div>
+                <div style="margin-top:14px;padding:10px;background:#f0fdfa;border-radius:8px;display:flex;align-items:center;justify-content:center;gap:6px;">
+                    <svg width="13" height="13" fill="none" stroke="#0d9488" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+                    <span style="font-size:11px;font-weight:600;color:#0d9488;">Trimite pe email</span>
+                </div>
             </div>
-            <h3 style="font-size:22px;font-weight:800;color:#0f172a;margin:0 0 14px;letter-spacing:-0.3px;">{{ $feature[0] }}</h3>
-            <p style="font-size:15px;color:#64748b;line-height:1.8;margin:0 0 24px;">{{ $feature[1] }}</p>
-            <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px;">
-                @foreach($feature[2] as $point)
-                <li style="display:flex;align-items:center;gap:10px;font-size:14px;color:#374151;">
-                    <svg width="16" height="16" fill="none" stroke="{{ $feature[6] }}" stroke-width="2.5" viewBox="0 0 24 24" style="flex-shrink:0;">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-                    </svg>
-                    {{ $point }}
-                </li>
-                @endforeach
-            </ul>
         </div>
-        @endif
     </div>
-    @endforeach
+
+    {{-- Feature 2: Reminder-uri --}}
+    <div class="feature-row">
+        {{-- Mockup notificari --}}
+        <div style="background:#fff7ed;border-radius:20px;padding:28px;min-height:280px;display:flex;align-items:center;justify-content:center;align-self:center;transition:transform .3s,box-shadow .3s;"
+             onmouseover="this.style.transform='translateY(-6px) scale(1.02)';this.style.boxShadow='0 24px 64px rgba(217,119,6,0.15)'"
+             onmouseout="this.style.transform='';this.style.boxShadow=''">
+            <div style="width:100%;max-width:320px;display:flex;flex-direction:column;gap:10px;">
+                <div style="font-size:11px;font-weight:700;color:#92400e;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.05em;">Reminder-uri active</div>
+                @foreach([
+                    ['XYZ Creative SRL','#2024-043 · 1.200 RON','Scadent azi','#fef3c7','#d97706'],
+                    ['Popescu Ion PFA','#2024-041 · 800 RON','Restanta 5 zile','#fef2f2','#ef4444'],
+                    ['Tech Startup SRL','#2024-039 · 3.500 RON','Platita','#f0fdf4','#16a34a'],
+                ] as $r)
+                <div style="background:#fff;border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,0.05);">
+                    <div style="width:34px;height:34px;min-width:34px;background:{{ $r[3] }};border-radius:9px;display:flex;align-items:center;justify-content:center;">
+                        <svg width="16" height="16" fill="none" stroke="{{ $r[4] }}" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                    </div>
+                    <div style="flex:1;min-width:0;">
+                        <div style="font-size:11px;font-weight:600;color:#0f172a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ $r[0] }}</div>
+                        <div style="font-size:10px;color:#94a3b8;">{{ $r[1] }}</div>
+                    </div>
+                    <span style="padding:3px 9px;background:{{ $r[3] }};color:{{ $r[4] }};font-size:9px;font-weight:700;border-radius:20px;white-space:nowrap;">{{ $r[2] }}</span>
+                </div>
+                @endforeach
+                <div style="background:#fff;border-radius:10px;padding:10px 14px;display:flex;align-items:center;gap:8px;border:1px dashed #fed7aa;">
+                    <svg width="14" height="14" fill="none" stroke="#d97706" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <span style="font-size:10px;color:#d97706;font-weight:500;">Urmator reminder in 2 zile · automat</span>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div style="width:48px;height:48px;background:#fff7ed;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;">
+                <svg width="24" height="24" fill="none" stroke="#d97706" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+            </div>
+            <h3 style="font-size:22px;font-weight:800;color:#0f172a;margin:0 0 14px;letter-spacing:-0.3px;">Reminder-uri automate pentru facturi neplatite</h3>
+            <p style="font-size:15px;color:#64748b;line-height:1.8;margin:0 0 24px;">Unul din trei freelanceri pierde bani din cauza facturilor uitate sau platite cu intarziere. Cashly monitorizeaza continuu statusul fiecarei facturi si trimite automat emailuri de reminder clientilor cu plati restante. Nu mai urmaresti manual cine a platit si cine nu. Sistemul se ocupa, tu incasezi la timp.</p>
+            <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px;">
+                @foreach(['Reminder-uri la scadenta si dupa','Emailuri personalizate cu tonul firmei tale','Marcarea automata a facturilor restante','Notificari in dashboard pentru situatii critice'] as $point)
+                <li style="display:flex;align-items:center;gap:10px;font-size:14px;color:#374151;">
+                    <svg width="16" height="16" fill="none" stroke="#d97706" stroke-width="2.5" viewBox="0 0 24 24" style="flex-shrink:0;"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                    {{ $point }}
+                </li>
+                @endforeach
+            </ul>
+        </div>
+    </div>
+
+    {{-- Feature 3: Cheltuieli --}}
+    <div class="feature-row">
+        <div>
+            <div style="width:48px;height:48px;background:#f0fdf4;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;">
+                <svg width="24" height="24" fill="none" stroke="#16a34a" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+            </div>
+            <h3 style="font-size:22px;font-weight:800;color:#0f172a;margin:0 0 14px;letter-spacing:-0.3px;">Gestiunea cheltuielilor cu export pentru contabil</h3>
+            <p style="font-size:15px;color:#64748b;line-height:1.8;margin:0 0 24px;">Inregistrezi fiecare cheltuiala pe categorie, atasezi bonul foto si adaugi o descriere scurta. La final de luna sau trimestru, exporti tot intr-un fisier Excel structurat, gata de trimis contabilului. Nu mai cauti bonuri prin sertare, nu mai rescrii date in foi de calcul. Cashly tine evidenta completa a cheltuielilor firmei tale.</p>
+            <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px;">
+                @foreach(['Categorii predefinite si personalizabile','Bon foto atasat la fiecare cheltuiala','Export Excel complet pentru contabil','Vizualizare cheltuieli pe categorii si perioade'] as $point)
+                <li style="display:flex;align-items:center;gap:10px;font-size:14px;color:#374151;">
+                    <svg width="16" height="16" fill="none" stroke="#16a34a" stroke-width="2.5" viewBox="0 0 24 24" style="flex-shrink:0;"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                    {{ $point }}
+                </li>
+                @endforeach
+            </ul>
+        </div>
+        {{-- Mockup cheltuieli --}}
+        <div style="background:#f0fdf4;border-radius:20px;padding:28px;min-height:280px;display:flex;align-items:center;justify-content:center;align-self:center;transition:transform .3s,box-shadow .3s;"
+             onmouseover="this.style.transform='translateY(-6px) scale(1.02)';this.style.boxShadow='0 24px 64px rgba(22,163,74,0.15)'"
+             onmouseout="this.style.transform='';this.style.boxShadow=''">
+            <div style="width:100%;max-width:320px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+                    <div style="font-size:11px;font-weight:700;color:#166534;text-transform:uppercase;letter-spacing:0.05em;">Cheltuieli Mai 2024</div>
+                    <div style="padding:5px 12px;background:#16a34a;color:#fff;font-size:10px;font-weight:600;border-radius:7px;display:flex;align-items:center;gap:5px;">
+                        <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                        Export Excel
+                    </div>
+                </div>
+                <div style="background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.05);">
+                    @foreach([
+                        ['Software & tools','Adobe CC, Figma','450 RON','#ede9fe','#7c3aed'],
+                        ['Transport','Uber, CFR','120 RON','#fef3c7','#d97706'],
+                        ['Echipamente','Tastatura mecanica','380 RON','#dbeafe','#2563eb'],
+                        ['Marketing','Google Ads','200 RON','#fce7f3','#db2777'],
+                    ] as $exp)
+                    <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid #f0fdf4;">
+                        <div style="width:30px;height:30px;min-width:30px;background:{{ $exp[3] }};border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                            <div style="width:8px;height:8px;border-radius:2px;background:{{ $exp[4] }};"></div>
+                        </div>
+                        <div style="flex:1;min-width:0;">
+                            <div style="font-size:11px;font-weight:600;color:#0f172a;">{{ $exp[0] }}</div>
+                            <div style="font-size:10px;color:#94a3b8;">{{ $exp[1] }}</div>
+                        </div>
+                        <div style="font-size:12px;font-weight:700;color:#374151;">{{ $exp[2] }}</div>
+                    </div>
+                    @endforeach
+                    <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:#f0fdf4;">
+                        <div style="font-size:11px;font-weight:700;color:#166534;">Total luna</div>
+                        <div style="font-size:14px;font-weight:800;color:#16a34a;">1.150 RON</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
 
 {{-- TESTIMONIALE --}}
@@ -425,7 +510,7 @@
         </div>
 
         @foreach([
-            ['Cat costa Cashly?','Cashly costa 19,99 RON pe luna, dupa o prima luna complet gratuita — fara card de credit la inregistrare. Primesti acces la toate functiile: facturi nelimitate, clienti, cheltuieli, rapoarte si export Excel. Poti anula oricand, fara penalitati.'],
+            ['Cat costa Cashly?','Cashly costa 19,99 RON pe luna, dupa o prima luna complet gratuita, fara card de credit la inregistrare. Primesti acces la toate functiile: facturi nelimitate, clienti, cheltuieli, rapoarte si export Excel. Poti anula oricand, fara penalitati.'],
             ['Cum functioneaza reminder-urile automate?','Dupa ce creezi o factura si setezi scadenta, Cashly trimite automat un email de reminder clientului cu cateva zile inainte de scadenta si apoi periodic dupa ce factura a expirat. Tu nu faci nimic, sistemul se ocupa complet.'],
             ['Pot exporta datele pentru contabilul meu?','Da, cu un singur click exporti toate cheltuielile si veniturile intr-un fisier Excel structurat, gata de trimis contabilului. Exportul include categorii, date, sume si toate detaliile necesare.'],
             ['Datele mele sunt in siguranta?','Absolut. Fiecare cont Cashly este complet izolat de celelalte. Datele tale nu sunt accesibile niciodata altor utilizatori. Conexiunea este criptata, la fel ca la aplicatiile de online banking, si datele sunt salvate automat zilnic.'],
@@ -484,6 +569,15 @@
             document.querySelectorAll('.faq-item').forEach(other => {
                 if (other !== item) other.classList.remove('open');
             });
+        });
+    });
+
+    // Smooth scroll fara hash in URL
+    document.querySelectorAll('a[href^="#"]').forEach(link => {
+        link.addEventListener('click', e => {
+            e.preventDefault();
+            const target = document.querySelector(link.getAttribute('href'));
+            if (target) target.scrollIntoView({ behavior: 'smooth' });
         });
     });
 </script>

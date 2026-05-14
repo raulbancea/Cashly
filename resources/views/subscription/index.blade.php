@@ -1,7 +1,7 @@
 <x-cashly-layout>
     <x-slot name="title">Abonament</x-slot>
 
-    <div class="max-w-md mx-auto py-4">
+    <div class="max-w-md py-4 mx-auto">
 
         {{-- Status curent --}}
         @if($user->isOnTrial())
@@ -92,7 +92,7 @@
             </div>
 
             {{-- Action --}}
-            <div style="padding:1.25rem 1.75rem 1.75rem;border-top:1px solid #f3f4f6;display:flex;flex-direction:column;align-items:center;gap:0.625rem;">
+            <div style="padding:1.25rem 1.75rem 1.75rem;display:flex;flex-direction:column;align-items:center;gap:0.625rem;">
                 @if($user->subscription_status === 'active')
                     <a href="{{ route('subscription.portal') }}"
                        style="display:inline-flex;align-items:center;gap:0.5rem;padding:0.625rem 1.5rem;font-size:0.875rem;font-weight:500;color:#374151;border:1px solid #d1d5db;border-radius:0.625rem;background:#fff;text-decoration:none;transition:background .15s;"
@@ -108,7 +108,7 @@
                                 style="display:inline-flex;align-items:center;gap:0.5rem;padding:0.7rem 2rem;font-size:0.9375rem;font-weight:600;color:#fff;background:#0d9488;border:none;border-radius:0.625rem;cursor:pointer;transition:background .15s;"
                                 onmouseover="this.style.background='#0f766e'" onmouseout="this.style.background='#0d9488'">
                             <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
-                            Abonează-te — 19,99 RON/lună
+                            Abonează-te
                         </button>
                     </form>
                     <p style="font-size:0.75rem;color:#9ca3af;margin:0;">Plată securizată prin Stripe. Anulezi oricând.</p>

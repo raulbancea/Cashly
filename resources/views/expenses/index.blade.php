@@ -51,10 +51,10 @@
     </div>
 
     {{-- Filtre --}}
-    <form method="GET" action="{{ route('expenses.index') }}" class="flex flex-wrap items-end gap-3 p-4 mb-4 bg-white border border-gray-100 rounded-xl shadow-sm">
+    <form method="GET" action="{{ route('expenses.index') }}" class="flex flex-wrap items-end gap-3 p-4 mb-4 bg-white border border-gray-100 shadow-sm rounded-xl">
         <div class="flex flex-col gap-1">
             <label class="text-xs font-medium text-gray-500">Categorie</label>
-            <select name="category_id" class="form-select pl-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+            <select name="category_id" class="py-2 pl-3 text-sm border border-gray-300 rounded-lg form-select focus:outline-none focus:ring-2 focus:ring-teal-500">
                 <option value="">Toate categoriile</option>
                 @foreach($categories as $category)
                     <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>
@@ -66,7 +66,7 @@
 
         <div class="flex flex-col gap-1">
             <label class="text-xs font-medium text-gray-500">An</label>
-            <select name="an" class="form-select pl-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+            <select name="an" class="py-2 pl-3 text-sm border border-gray-300 rounded-lg form-select focus:outline-none focus:ring-2 focus:ring-teal-500">
                 <option value="">Toți anii</option>
                 @foreach($ani as $an)
                     <option value="{{ $an }}" {{ request('an') == $an ? 'selected' : '' }}>{{ $an }}</option>
@@ -75,7 +75,7 @@
         </div>
 
         <div class="flex flex-col gap-1">
-            <span class="text-xs font-medium text-gray-500 invisible">_</span>
+            <span class="invisible text-xs font-medium text-gray-500">_</span>
             <div class="flex gap-2">
                 <button type="submit"
                         class="px-3 py-1.5 text-sm font-medium text-white bg-teal-600 rounded-lg hover:bg-teal-700">
@@ -92,7 +92,7 @@
     </form>
 
     @if($expenses->isEmpty())
-        <div class="p-10 text-center bg-white border border-gray-100 rounded-xl shadow-sm">
+        <div class="p-10 text-center bg-white border border-gray-100 shadow-sm rounded-xl">
             @if(request()->hasAny(['category_id', 'an']))
                 <p class="text-sm text-gray-500">Nicio cheltuială găsită pentru filtrele selectate.</p>
                 <a href="{{ route('expenses.index') }}"
@@ -108,7 +108,7 @@
             @endif
         </div>
     @else
-        <div class="overflow-hidden bg-white border border-gray-100 rounded-xl shadow-sm">
+        <div class="overflow-hidden bg-white border border-gray-100 shadow-sm rounded-xl">
             <table class="w-full text-sm">
                 <thead class="bg-gray-50">
                     <tr>
