@@ -7,39 +7,38 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
-/**
- * @extends Factory<User>
- */
+
 class UserFactory extends Factory
 {
-    /**
-     * The current password being used by the factory.
-     */
-    protected static ?string $password;
+    
+    protected static $password;
 
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
-    public function definition(): array
+    
+    public function definition()
     {
         return [
-            'name' => fake()->name(),
-            'email' => fake()->unique()->safeEmail(),
-            'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
-            'remember_token' => Str::random(10),
+            'name'              => fake()->name(),             
+            'email'             => fake()->unique()->safeEmail(), 
+            'email_verified_at' => now(),                      
+            'password'          => static::getPassword(),      
+            'remember_token'    => Str::random(10),            
         ];
     }
 
-    /**
-     * Indicate that the model's email address should be unverified.
-     */
-    public function unverified(): static
+    
+    protected static function getPassword()
     {
-        return $this->state(fn (array $attributes) => [
-            'email_verified_at' => null,
-        ]);
+        if (static::$password === null) {
+            static::$password = Hash::make('password');
+        }
+        return static::$password;
+    }
+
+    
+    public function unverified()
+    {
+        return $this->state(function ($attributes) {
+            return ['email_verified_at' => null];
+        });
     }
 }

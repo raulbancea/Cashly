@@ -8,9 +8,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Concerns\BelongsToUser;
 
+
 class Product extends Model
 {
     use HasFactory, BelongsToUser;
+
+    
     protected $fillable = [
         'user_id',
         'name',
@@ -20,12 +23,14 @@ class Product extends Model
         'description',
     ];
 
-    public function user(): BelongsTo
+    
+    public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    public function invoiceItems(): HasMany
+    
+    public function invoiceItems()
     {
         return $this->hasMany(InvoiceItem::class);
     }

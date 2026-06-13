@@ -1,8 +1,10 @@
+{{-- Template email pentru notificarea de factura restanta (depasit termenul de plata) --}}
 <!DOCTYPE html>
 <html lang="ro">
 <head>
     <meta charset="UTF-8">
     <title>Factură restantă {{ $invoice->number }}</title>
+    {{-- Stiluri inline pentru compatibilitate cu clientii de email --}}
     <style>
         body { font-family: Arial, sans-serif; background: #f9fafb; margin: 0; padding: 0; color: #374151; }
         .wrapper { max-width: 560px; margin: 40px auto; background: #ffffff; border-radius: 12px; overflow: hidden; border: 1px solid #e5e7eb; }
@@ -28,15 +30,17 @@
             <p>Termenul de plată a fost depășit</p>
         </div>
         <div class="body">
-            <p class="greeting">Bună ziua, <strong>{{ $invoice->client?->name ?? 'Client' }}</strong>,</p>
+            {{-- Salut personalizat cu numele clientului --}}
+            <p class="greeting">Bună ziua, <strong>{{ $invoice->client ? $invoice->client->name : 'Client' }}</strong>,</p>
             <p class="note">
                 Vă aducem la cunoștință că factura de mai jos nu a fost achitată până la termenul scadent.
                 Vă rugăm să efectuați plata cât mai curând posibil.
             </p>
+            {{-- Tabel cu detaliile facturii restante --}}
             <div class="alert-box">
                 <table>
                     <tr><td>Număr factură:</td><td>{{ $invoice->number }}</td></tr>
-                    <tr><td>Data scadenței:</td><td>{{ $invoice->due_date?->format('d.m.Y') ?? '-' }}</td></tr>
+                    <tr><td>Data scadenței:</td><td>{{ $invoice->due_date ? $invoice->due_date->format('d.m.Y') : '-' }}</td></tr>
                     <tr><td>Zile restante:</td><td>{{ $invoice->due_date ? $invoice->due_date->diffInDays(now()) : '-' }} {{ $invoice->due_date ? 'zile' : '' }}</td></tr>
                     <tr class="total-row">
                         <td>Total restant:</td>

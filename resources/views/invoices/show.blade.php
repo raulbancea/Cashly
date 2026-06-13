@@ -1,3 +1,4 @@
+{{-- Pagina de detalii a unei facturi --}}
 <x-cashly-layout>
     <x-slot name="title">Factură {{ $invoice->number }}</x-slot>
 
@@ -91,8 +92,8 @@
         {{-- Header --}}
         <div class="flex items-center justify-between mb-4">
             <div>
-                <h2 class="text-xl font-bold text-gray-900">{{ $invoice->number }}</h2>
-                <p class="text-sm text-gray-500">{{ $invoice->client?->name ?? 'Client necunoscut' }}</p>
+                <h2 class="text-xl font-bold text-gray-900 whitespace-nowrap">{{ $invoice->number }}</h2>
+                <p class="text-sm text-gray-500">{{ $invoice->client ? $invoice->client->name : 'Client necunoscut' }}</p>
             </div>
             <div class="flex gap-2 flex-wrap justify-end">
                 <a href="{{ route('invoices.edit', $invoice) }}"
@@ -159,24 +160,32 @@
 
         <div class="p-5 mb-4 bg-white border border-gray-100 rounded-xl shadow-sm">
 
-            {{-- Status + date --}}
-            <div class="grid grid-cols-4 gap-4 mb-6">
+            {{-- Status + date - MOBIL: 2 coloane; DESKTOP: 4 coloane --}}
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                 <div>
                     <p class="mb-1 text-xs text-gray-500">Status</p>
-                    <span class="px-2 py-1 text-xs font-medium rounded-full
+                    @php
+                    if ($invoice->status === 'paid') {
+                        $statusLabel = 'Încasată';
+                    } elseif ($invoice->status === 'draft') {
+                        $statusLabel = 'Draft';
+                    } elseif ($invoice->status === 'sent') {
+                        $statusLabel = 'Trimisă';
+                    } elseif ($invoice->status === 'overdue') {
+                        $statusLabel = 'Restantă';
+                    } elseif ($invoice->status === 'cancelled') {
+                        $statusLabel = 'Anulată';
+                    } else {
+                        $statusLabel = $invoice->status;
+                    }
+                @endphp
+                <span class="px-2 py-1 text-xs font-medium rounded-full
                         {{ $invoice->status === 'paid'      ? 'bg-green-100 text-green-700'   : '' }}
                         {{ $invoice->status === 'draft'     ? 'bg-gray-100 text-gray-600'     : '' }}
                         {{ $invoice->status === 'sent'      ? 'bg-blue-100 text-blue-700'     : '' }}
                         {{ $invoice->status === 'overdue'   ? 'bg-red-100 text-red-700'       : '' }}
                         {{ $invoice->status === 'cancelled' ? 'bg-orange-100 text-orange-700' : '' }}">
-                        {{ match($invoice->status) {
-                            'paid'      => 'Încasată',
-                            'draft'     => 'Draft',
-                            'sent'      => 'Trimisă',
-                            'overdue'   => 'Restantă',
-                            'cancelled' => 'Anulată',
-                            default     => $invoice->status
-                        } }}
+                        {{ $statusLabel }}
                     </span>
                 </div>
                 <div>
@@ -201,8 +210,9 @@
                 @endif
             </div>
 
-            {{-- Linii factura --}}
-            <table class="w-full mb-6 text-sm">
+            {{-- Linii factura - MOBIL: scroll orizontal; DESKTOP: normal --}}
+            <div class="overflow-x-auto">
+            <table class="w-full min-w-[420px] mb-6 text-sm">
                 <thead class="border-gray-200 bg-gray-50 border-y">
                     <tr>
                         <th class="px-4 py-2 font-medium text-left text-gray-600">Descriere</th>
@@ -257,6 +267,7 @@
                     @endif
                 </tfoot>
             </table>
+            </div>{{-- sfarsit overflow-x-auto --}}
 
             @if($invoice->notes)
                 <div class="pt-4 border-t border-gray-100">

@@ -2,23 +2,18 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+
 class User extends Authenticatable
 {
-    /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
+    
     protected $fillable = [
         'name',
         'email',
@@ -40,77 +35,95 @@ class User extends Authenticatable
         'subscription_ends_at',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
+    
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at'   => 'datetime',
-            'password'            => 'hashed',
-            'trial_ends_at'       => 'datetime',
-            'subscription_ends_at' => 'datetime',
-        ];
-    }
+    
+    protected $casts = [
+        'email_verified_at'    => 'datetime',
+        'password'             => 'hashed',
+        'trial_ends_at'        => 'datetime',
+        'subscription_ends_at' => 'datetime',
+    ];
 
-    public function hasActiveSubscription(): bool
+    
+    public function hasActiveSubscription()
     {
-        if ($this->trial_ends_at && $this->trial_ends_at->isFuture()) {
+        
+        if ($this->trial_ends_at !== null && $this->trial_ends_at->isFuture()) {
             return true;
         }
 
-        return $this->stripe_subscription_id !== null
-            && in_array($this->subscription_status, ['active', 'trialing'])
-            && $this->subscription_ends_at !== null
-            && $this->subscription_ends_at->isFuture();
+        
+        if (in_array($this->subscription_status, ['active', 'trialing'])) {
+            if ($this->subscription_ends_at !== null && $this->subscription_ends_at->isFuture()) {
+                return true;
+            }
+        }
+
+        
+        return false;
     }
 
-    public function isOnTrial(): bool
+    
+    public function isOnTrial()
     {
-        return $this->trial_ends_at !== null
-            && $this->trial_ends_at->isFuture()
-            && $this->stripe_subscription_id === null;
+        
+        if ($this->trial_ends_at !== null && $this->trial_ends_at->isFuture() && $this->stripe_subscription_id === null) {
+            return true;
+        }
+
+        return false;
     }
 
-    public function trialDaysLeft(): int
+    
+    public function trialDaysLeft()
     {
-        if (!$this->trial_ends_at) return 0;
-        return max(0, (int) now()->diffInDays($this->trial_ends_at, false));
+        
+        if ($this->trial_ends_at === null) {
+            return 0;
+        }
+
+        
+        $zileDiferenta = (int) now()->diffInDays($this->trial_ends_at, false);
+
+        
+        if ($zileDiferenta < 0) {
+            return 0;
+        }
+
+        return $zileDiferenta;
     }
 
-    public function clients(): HasMany
+    
+    public function clients()
     {
         return $this->hasMany(Client::class);
     }
 
-    public function invoices(): HasMany
+    
+    public function invoices()
     {
         return $this->hasMany(Invoice::class);
     }
 
-    public function products(): HasMany
+    
+    public function products()
     {
         return $this->hasMany(Product::class);
     }
 
-    public function expenses(): HasMany
+    
+    public function expenses()
     {
         return $this->hasMany(Expense::class);
     }
 
-    public function expenseCategories(): HasMany
+    
+    public function expenseCategories()
     {
         return $this->hasMany(ExpenseCategory::class);
     }

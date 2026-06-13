@@ -1,3 +1,4 @@
+{{-- Pagina de succes dupa activarea abonamentului Stripe --}}
 <!DOCTYPE html>
 <html lang="ro">
 <head>
@@ -7,6 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="min-h-screen bg-gray-50 flex items-center justify-center">
+    {{-- Mesajul de confirmare a abonamentului --}}
     <div class="text-center max-w-sm mx-auto p-8">
         <div class="w-16 h-16 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-5">
             <svg class="w-8 h-8 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">

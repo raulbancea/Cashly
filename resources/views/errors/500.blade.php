@@ -1,3 +1,4 @@
+{{-- Pagina de eroare 500 - Eroare interna de server --}}
 <!DOCTYPE html>
 <html lang="ro">
 <head>

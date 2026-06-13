@@ -1,8 +1,10 @@
+{{-- Template email pentru reminder de scadenta al unei facturi --}}
 <!DOCTYPE html>
 <html lang="ro">
 <head>
     <meta charset="UTF-8">
     <title>Reminder scadență {{ $invoice->number }}</title>
+    {{-- Stiluri inline pentru compatibilitate cu clientii de email --}}
     <style>
         body { font-family: Arial, sans-serif; background: #f9fafb; margin: 0; padding: 0; color: #374151; }
         .wrapper { max-width: 560px; margin: 40px auto; background: #ffffff; border-radius: 12px; overflow: hidden; border: 1px solid #e5e7eb; }
@@ -28,15 +30,17 @@
             <p>Factura este scadentă în {{ $daysLeft }} {{ $daysLeft === 1 ? 'zi' : 'zile' }}</p>
         </div>
         <div class="body">
-            <p class="greeting">Bună ziua, <strong>{{ $invoice->client?->name ?? 'Client' }}</strong>,</p>
+            {{-- Salut personalizat cu numele clientului --}}
+            <p class="greeting">Bună ziua, <strong>{{ $invoice->client ? $invoice->client->name : 'Client' }}</strong>,</p>
             <p class="note">
                 Vă reamintim că factura de mai jos este scadentă în <strong>{{ $daysLeft }} {{ $daysLeft === 1 ? 'zi' : 'zile' }}</strong>.
                 Vă rugăm să efectuați plata înainte de termenul limită.
             </p>
+            {{-- Tabel cu detaliile facturii --}}
             <div class="reminder-box">
                 <table>
                     <tr><td>Număr factură:</td><td>{{ $invoice->number }}</td></tr>
-                    <tr><td>Scadență:</td><td>{{ $invoice->due_date?->format('d.m.Y') ?? '-' }}</td></tr>
+                    <tr><td>Scadență:</td><td>{{ $invoice->due_date ? $invoice->due_date->format('d.m.Y') : '-' }}</td></tr>
                     <tr><td>Zile rămase:</td><td>{{ $daysLeft }} {{ $daysLeft === 1 ? 'zi' : 'zile' }}</td></tr>
                     <tr class="total-row">
                         <td>Total de plată:</td>

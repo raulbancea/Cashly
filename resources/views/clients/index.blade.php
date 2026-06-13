@@ -1,3 +1,4 @@
+{{-- Pagina cu lista tuturor clientilor --}}
 <x-cashly-layout>
     <x-slot name="title">Clienți</x-slot>
 
@@ -72,17 +73,20 @@
         <div class="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
             @foreach($clients as $i => $client)
                 @php
+                    // Alegem culoarea avatarului in functie de pozitia clientului in lista
                     $color = $avatarColors[$i % count($avatarColors)];
-                    $statusStyle = match($client->status) {
-                        'active'   => 'background:#dcfce7;color:#15803d',
-                        'prospect' => 'background:#fef9c3;color:#a16207',
-                        default    => 'background:#f3f4f6;color:#6b7280',
-                    };
-                    $statusLabel = match($client->status) {
-                        'active'   => 'Activ',
-                        'prospect' => 'Prospect',
-                        default    => 'Inactiv',
-                    };
+
+                    // Determinam stilul badge-ului de status
+                    if ($client->status === 'active') {
+                        $statusStyle = 'background:#dcfce7;color:#15803d';
+                        $statusLabel = 'Activ';
+                    } elseif ($client->status === 'prospect') {
+                        $statusStyle = 'background:#fef9c3;color:#a16207';
+                        $statusLabel = 'Prospect';
+                    } else {
+                        $statusStyle = 'background:#f3f4f6;color:#6b7280';
+                        $statusLabel = 'Inactiv';
+                    }
                 @endphp
 
                 <div class="bg-white border border-gray-100 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-150">

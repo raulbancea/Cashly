@@ -10,8 +10,8 @@
             <p class="text-sm text-gray-500">Gestionează contul, firma și preferințele tale</p>
         </div>
 
-        {{-- Tab navigation --}}
-        <div class="flex border-b border-gray-200 mb-6">
+        {{-- Tab navigation - overflow-x-auto ca sa nu se rupa pe telefoane mici --}}
+        <div class="flex border-b border-gray-200 mb-6 overflow-x-auto">
             <button onclick="switchTab('profil')" id="tab-profil"
                     class="px-5 py-3 text-sm font-medium border-b-2 -mb-px transition-colors">
                 Profil
@@ -254,7 +254,8 @@
                 {{-- Add category form --}}
                 <div class="pt-4 border-t border-gray-100">
                     <p class="mb-3 text-xs font-medium text-gray-500 uppercase tracking-wide">Adaugă categorie nouă</p>
-                    <form method="POST" action="{{ route('settings.categories.store') }}" class="flex gap-3">
+                    {{-- MOBIL: formular adaugare categorie se impacheteaza pe doua randuri --}}
+                    <form method="POST" action="{{ route('settings.categories.store') }}" class="flex flex-wrap gap-3">
                         @csrf
                         <input type="text" name="name" placeholder="Nume categorie" required
                                class="flex-1 px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">

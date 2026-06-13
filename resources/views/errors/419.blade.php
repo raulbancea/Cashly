@@ -1,3 +1,4 @@
+{{-- Pagina de eroare 419 - Sesiunea a expirat (token CSRF invalid) --}}
 <!DOCTYPE html>
 <html lang="ro">
 <head>

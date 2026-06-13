@@ -1,12 +1,13 @@
 <x-cashly-layout>
     <x-slot name="title">Facturi</x-slot>
 
-    <div class="flex items-center justify-between mb-4">
+    {{-- Header pagina - pe mobil se impacheteaza pe doua randuri --}}
+    <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
         <div>
             <h2 class="text-xl font-bold text-gray-900">Facturi</h2>
             <p class="text-sm text-gray-500">Gestionează și urmărește facturile</p>
         </div>
-        <div class="flex gap-2">
+        <div class="flex gap-2 flex-shrink-0">
             <a href="{{ route('invoices.exportCsv') }}"
                class="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50">
                 Export Excel
@@ -128,8 +129,9 @@
             @endif
         </div>
     @else
-        <div class="overflow-hidden bg-white border border-gray-100 rounded-xl shadow-sm">
-            <table class="w-full text-sm">
+        {{-- MOBIL: tabel cu scroll orizontal ca sa nu se rupa layout-ul --}}
+        <div class="overflow-x-auto bg-white border border-gray-100 rounded-xl shadow-sm">
+            <table class="w-full min-w-[640px] text-sm">
                 <thead class="bg-gray-50">
                     <tr>
                         <th class="px-5 py-2.5 text-left text-xs font-medium text-gray-400 uppercase tracking-wide">Număr</th>
@@ -148,7 +150,7 @@
                                 {{ $invoice->number }}
                             </td>
                             <td class="px-5 py-2.5 text-gray-600">
-                                {{ $invoice->client?->name ?? '-' }}
+                                {{ $invoice->client ? $invoice->client->name : '-' }}
                             </td>
                             <td class="px-5 py-2.5 text-gray-600">
                                 {{ $invoice->issue_date->format('d.m.Y') }}
@@ -158,20 +160,29 @@
                             </td>
                             <td class="px-5 py-2.5">
                                 <div class="flex items-center gap-1.5">
+                                    @php
+                                        // Calculam eticheta statusului pentru afisare in tabel
+                                        if ($invoice->status === 'paid') {
+                                            $lblStatus = 'Încasată';
+                                        } elseif ($invoice->status === 'draft') {
+                                            $lblStatus = 'Draft';
+                                        } elseif ($invoice->status === 'sent') {
+                                            $lblStatus = 'Trimisă';
+                                        } elseif ($invoice->status === 'overdue') {
+                                            $lblStatus = 'Restantă';
+                                        } elseif ($invoice->status === 'cancelled') {
+                                            $lblStatus = 'Anulată';
+                                        } else {
+                                            $lblStatus = $invoice->status;
+                                        }
+                                    @endphp
                                     <span class="px-2 py-1 text-xs font-medium rounded-full
                                         {{ $invoice->status === 'paid'      ? 'bg-green-100 text-green-700'   : '' }}
                                         {{ $invoice->status === 'draft'     ? 'bg-gray-100 text-gray-600'     : '' }}
                                         {{ $invoice->status === 'sent'      ? 'bg-blue-100 text-blue-700'     : '' }}
                                         {{ $invoice->status === 'overdue'   ? 'bg-red-100 text-red-700'       : '' }}
                                         {{ $invoice->status === 'cancelled' ? 'bg-orange-100 text-orange-700' : '' }}">
-                                        {{ match($invoice->status) {
-                                            'paid'      => 'Încasată',
-                                            'draft'     => 'Draft',
-                                            'sent'      => 'Trimisă',
-                                            'overdue'   => 'Restantă',
-                                            'cancelled' => 'Anulată',
-                                            default     => $invoice->status
-                                        } }}
+                                        {{ $lblStatus }}
                                     </span>
                                     @if($invoice->reminder_sent_at)
                                         <span title="Reminder trimis {{ $invoice->reminder_sent_at->format('d.m.Y') }}"

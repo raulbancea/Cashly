@@ -1,10 +1,9 @@
 <x-cashly-layout>
 <x-slot name="title">Dashboard</x-slot>
 
-{{-- Banner facturi restante --}}
 @if($overdueCount > 0)
-<div class="flex items-center gap-3 px-4 py-3 mb-4 bg-red-50 border border-red-200 rounded-xl">
-    <svg class="w-4 h-4 text-red-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<div class="flex items-center gap-3 px-4 py-3 mb-4 border border-red-200 bg-red-50 rounded-xl">
+    <svg class="flex-shrink-0 w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
     </svg>
@@ -13,42 +12,41 @@
         ai <span class="font-semibold">{{ $overdueCount }} {{ $overdueCount === 1 ? 'factură restantă' : 'facturi restante' }}</span> neîncasate.
     </p>
     <a href="{{ route('invoices.index', ['status' => 'overdue']) }}"
-       class="ml-auto flex-shrink-0 px-3 py-1 text-xs font-medium text-red-700 border border-red-300 rounded-lg hover:bg-red-100 whitespace-nowrap">
+       class="flex-shrink-0 px-3 py-1 ml-auto text-xs font-medium text-red-700 border border-red-300 rounded-lg hover:bg-red-100 whitespace-nowrap">
         Vezi facturile
     </a>
 </div>
 @endif
 
-{{-- ── KPI CARDS ── --}}
-<div class="grid grid-cols-4 gap-4 mb-4">
+<div class="grid grid-cols-2 gap-4 mb-4 md:grid-cols-4">
 
-    <div class="bg-white border border-gray-100 rounded-xl p-4 shadow-sm flex items-center gap-4">
-        <div class="w-10 h-10 rounded-xl bg-teal-50 flex items-center justify-center flex-shrink-0">
+    <div class="flex items-center gap-4 p-4 bg-white border border-gray-100 shadow-sm rounded-xl">
+        <div class="flex items-center justify-center flex-shrink-0 w-10 h-10 rounded-xl bg-teal-50">
             <svg class="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
             </svg>
         </div>
         <div class="min-w-0">
-            <p class="text-xs text-gray-400 font-medium uppercase tracking-wide truncate">Încasate luna aceasta</p>
-            <p class="text-xl font-bold text-gray-900 leading-tight">{{ number_format($revenue_ron, 0, ',', '.') }} <span class="text-xs font-normal text-gray-400">RON</span></p>
+            <p class="text-xs font-medium tracking-wide text-gray-400 uppercase truncate">Încasate lunar</p>
+            <p class="text-xl font-bold leading-tight text-gray-900">{{ number_format($revenue_ron, 0, ',', '.') }} <span class="text-xs font-normal text-gray-400">RON</span></p>
             @if($revenue_eur > 0)<p class="text-xs text-gray-400">+ {{ number_format($revenue_eur, 0, ',', '.') }} EUR</p>@endif
         </div>
     </div>
 
-    <div class="bg-white border border-gray-100 rounded-xl p-4 shadow-sm flex items-center gap-4">
-        <div class="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center flex-shrink-0">
+    <div class="flex items-center gap-4 p-4 bg-white border border-gray-100 shadow-sm rounded-xl">
+        <div class="flex items-center justify-center flex-shrink-0 w-10 h-10 rounded-xl bg-orange-50">
             <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
             </svg>
         </div>
         <div class="min-w-0">
-            <p class="text-xs text-gray-400 font-medium uppercase tracking-wide truncate">Cheltuieli luna aceasta</p>
-            <p class="text-xl font-bold text-gray-900 leading-tight">{{ number_format($expenses_ron, 0, ',', '.') }} <span class="text-xs font-normal text-gray-400">RON</span></p>
+            <p class="text-xs font-medium tracking-wide text-gray-400 uppercase truncate">Cheltuieli lunar</p>
+            <p class="text-xl font-bold leading-tight text-gray-900">{{ number_format($expenses_ron, 0, ',', '.') }} <span class="text-xs font-normal text-gray-400">RON</span></p>
             @if($expenses_eur > 0)<p class="text-xs text-gray-400">+ {{ number_format($expenses_eur, 0, ',', '.') }} EUR</p>@endif
         </div>
     </div>
 
-    <div class="bg-white border border-gray-100 rounded-xl p-4 shadow-sm flex items-center gap-4">
+    <div class="flex items-center gap-4 p-4 bg-white border border-gray-100 shadow-sm rounded-xl">
         <div class="w-10 h-10 rounded-xl {{ $profit_ron >= 0 ? 'bg-emerald-50' : 'bg-red-50' }} flex items-center justify-center flex-shrink-0">
             <svg class="w-5 h-5 {{ $profit_ron >= 0 ? 'text-emerald-600' : 'text-red-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 @if($profit_ron >= 0)
@@ -59,21 +57,21 @@
             </svg>
         </div>
         <div class="min-w-0">
-            <p class="text-xs text-gray-400 font-medium uppercase tracking-wide">Profit net</p>
+            <p class="text-xs font-medium tracking-wide text-gray-400 uppercase">Profit net</p>
             <p class="text-xl font-bold leading-tight {{ $profit_ron >= 0 ? 'text-emerald-600' : 'text-red-500' }}">
                 {{ number_format($profit_ron, 0, ',', '.') }} <span class="text-xs font-normal">RON</span>
             </p>
         </div>
     </div>
 
-    <div class="bg-white border border-gray-100 rounded-xl p-4 shadow-sm flex items-center gap-4">
+    <div class="flex items-center gap-4 p-4 bg-white border border-gray-100 shadow-sm rounded-xl">
         <div class="w-10 h-10 rounded-xl {{ $overdueCount > 0 ? 'bg-red-50' : 'bg-gray-50' }} flex items-center justify-center flex-shrink-0">
             <svg class="w-5 h-5 {{ $overdueCount > 0 ? 'text-red-500' : 'text-gray-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
             </svg>
         </div>
         <div class="min-w-0">
-            <p class="text-xs text-gray-400 font-medium uppercase tracking-wide">Facturi restante</p>
+            <p class="text-xs font-medium tracking-wide text-gray-400 uppercase">Facturi restante</p>
             <p class="text-xl font-bold leading-tight {{ $overdueCount > 0 ? 'text-red-500' : 'text-gray-900' }}">{{ $overdueCount }}</p>
             <p class="text-xs text-gray-400">{{ $invoiceStatusCounts['sent'] }} trimise · {{ $invoiceStatusCounts['draft'] }} draft</p>
         </div>
@@ -81,11 +79,9 @@
 
 </div>
 
-{{-- ── GRAFICE ── --}}
-<div class="grid grid-cols-3 gap-4 mb-4">
+<div class="grid grid-cols-1 gap-4 mb-4 md:grid-cols-3">
 
-    {{-- Area chart --}}
-    <div class="col-span-2 bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+    <div class="p-4 bg-white border border-gray-100 shadow-sm md:col-span-2 rounded-xl">
         <div class="flex items-center justify-between mb-3">
             <div>
                 <h3 class="text-sm font-semibold text-gray-800">Cash Flow, ultimele 6 luni</h3>
@@ -101,8 +97,7 @@
         </div>
     </div>
 
-    {{-- Doughnut statusuri --}}
-    <div class="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+    <div class="p-4 bg-white border border-gray-100 shadow-sm rounded-xl">
         <div class="mb-2">
             <h3 class="text-sm font-semibold text-gray-800">Statusuri facturi</h3>
             <p class="text-xs text-gray-400">Distribuție total</p>
@@ -125,7 +120,7 @@
                 @if($invoiceStatusCounts[$key] > 0)
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full flex-shrink-0" style="background:{{ $cfg['color'] }}"></span>
+                        <span class="flex-shrink-0 w-2 h-2 rounded-full" style="background:{{ $cfg['color'] }}"></span>
                         <span class="text-xs text-gray-500">{{ $cfg['label'] }}</span>
                     </div>
                     <span class="text-xs font-semibold text-gray-700">{{ $invoiceStatusCounts[$key] }}</span>
@@ -133,17 +128,16 @@
                 @endif
             @endforeach
             @if($totalInvoices === 0)
-                <p class="text-xs text-gray-400 text-center py-1">Nicio factură</p>
+                <p class="py-1 text-xs text-center text-gray-400">Nicio factură</p>
             @endif
         </div>
     </div>
 </div>
 
-{{-- ── ULTIMELE FACTURI ── --}}
-<div class="bg-white border border-gray-100 rounded-xl shadow-sm overflow-hidden">
+<div class="overflow-hidden bg-white border border-gray-100 shadow-sm rounded-xl">
     <div class="flex items-center justify-between px-5 py-3 border-b border-gray-100">
         <h3 class="text-sm font-semibold text-gray-800">Ultimele facturi</h3>
-        <a href="{{ route('invoices.index') }}" class="text-xs text-teal-600 hover:underline font-medium">Vezi toate →</a>
+        <a href="{{ route('invoices.index') }}" class="text-xs font-medium text-teal-600 hover:underline">Vezi toate →</a>
     </div>
     @if($recentInvoices->isEmpty())
         <div class="px-5 py-6 text-center">
@@ -154,7 +148,8 @@
             </a>
         </div>
     @else
-        <table class="w-full text-sm">
+        <div class="overflow-x-auto">
+        <table class="w-full min-w-[520px] text-sm">
             <thead class="bg-gray-50">
                 <tr>
                     <th class="px-5 py-2.5 text-left text-xs font-medium text-gray-400 uppercase tracking-wide">Număr</th>
@@ -166,26 +161,34 @@
             </thead>
             <tbody class="divide-y divide-gray-50">
                 @foreach($recentInvoices as $inv)
-                <tr class="hover:bg-gray-50 transition-colors">
+                <tr class="transition-colors hover:bg-gray-50">
                     <td class="px-5 py-2.5">
-                        <a href="{{ route('invoices.show', $inv) }}" class="font-medium text-teal-700 hover:underline text-xs">{{ $inv->number }}</a>
+                        <a href="{{ route('invoices.show', $inv) }}" class="text-xs font-medium text-teal-700 hover:underline">{{ $inv->number }}</a>
                     </td>
-                    <td class="px-5 py-2.5 text-xs text-gray-600">{{ $inv->client?->name ?? '-' }}</td>
+                    <td class="px-5 py-2.5 text-xs text-gray-600">{{ $inv->client ? $inv->client->name : '-' }}</td>
                     <td class="px-5 py-2.5 text-xs text-gray-500">{{ $inv->issue_date->format('d.m.Y') }}</td>
                     <td class="px-5 py-2.5">
                         @php
-                            $badgeCls = match($inv->status) {
-                                'paid'      => 'bg-emerald-100 text-emerald-700',
-                                'sent'      => 'bg-blue-100 text-blue-700',
-                                'draft'     => 'bg-gray-100 text-gray-600',
-                                'overdue'   => 'bg-red-100 text-red-700',
-                                'cancelled' => 'bg-orange-100 text-orange-700',
-                                default     => 'bg-gray-100 text-gray-600',
-                            };
-                            $badgeLbl = match($inv->status) {
-                                'paid' => 'Încasată', 'sent' => 'Trimisă', 'draft' => 'Draft',
-                                'overdue' => 'Restantă', 'cancelled' => 'Anulată', default => $inv->status,
-                            };
+                            // Determinam clasa CSS si eticheta badge-ului de status
+                            if ($inv->status === 'paid') {
+                                $badgeCls = 'bg-emerald-100 text-emerald-700';
+                                $badgeLbl = 'Încasată';
+                            } elseif ($inv->status === 'sent') {
+                                $badgeCls = 'bg-blue-100 text-blue-700';
+                                $badgeLbl = 'Trimisă';
+                            } elseif ($inv->status === 'draft') {
+                                $badgeCls = 'bg-gray-100 text-gray-600';
+                                $badgeLbl = 'Draft';
+                            } elseif ($inv->status === 'overdue') {
+                                $badgeCls = 'bg-red-100 text-red-700';
+                                $badgeLbl = 'Restantă';
+                            } elseif ($inv->status === 'cancelled') {
+                                $badgeCls = 'bg-orange-100 text-orange-700';
+                                $badgeLbl = 'Anulată';
+                            } else {
+                                $badgeCls = 'bg-gray-100 text-gray-600';
+                                $badgeLbl = $inv->status;
+                            }
                         @endphp
                         <span class="px-2 py-0.5 text-xs font-medium rounded-full {{ $badgeCls }}">{{ $badgeLbl }}</span>
                     </td>
@@ -197,6 +200,7 @@
                 @endforeach
             </tbody>
         </table>
+        </div>{{-- sfarsit overflow-x-auto --}}
     @endif
 </div>
 

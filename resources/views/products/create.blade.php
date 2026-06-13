@@ -1,16 +1,20 @@
+{{-- Pagina pentru adaugarea unui produs sau serviciu nou --}}
 <x-cashly-layout>
     <x-slot name="title">Adaugă Produs</x-slot>
 
+    {{-- Titlu pagina --}}
     <div class="max-w-2xl">
         <div class="mb-4">
             <h2 class="text-xl font-bold text-gray-900">Adaugă Produs / Serviciu</h2>
             <p class="text-sm text-gray-500">Completează detaliile produsului sau serviciului</p>
         </div>
 
+        {{-- Formular adaugare produs --}}
         <div class="p-5 bg-white border border-gray-100 rounded-xl shadow-sm">
             <form method="POST" action="{{ route('products.store') }}">
                 @csrf
 
+                {{-- Campul pentru denumire --}}
                 <div class="mb-4">
                     <label class="block mb-1 text-sm font-medium text-gray-700">
                         Denumire <span class="text-red-500">*</span>

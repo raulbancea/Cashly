@@ -92,7 +92,9 @@
             TVA colectat pe cotă {{ $selectedYear }}
             <span class="ml-1 px-1.5 py-0.5 text-xs font-medium bg-blue-100 text-blue-600 rounded">{{ $currency }}</span>
         </h3>
-        <table class="w-full text-sm">
+        {{-- MOBIL: scroll orizontal pe tabelul de TVA --}}
+        <div class="overflow-x-auto">
+        <table class="w-full min-w-[400px] text-sm">
             <thead>
                 <tr class="text-xs font-medium tracking-wide text-left text-gray-400 uppercase border-b border-gray-100">
                     <th class="pb-3">Cotă TVA</th>
@@ -131,6 +133,7 @@
                 </tr>
             </tfoot>
         </table>
+        </div>{{-- sfarsit overflow-x-auto --}}
     </div>
     @endforeach
     @endif

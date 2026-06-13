@@ -10,11 +10,14 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
+
 class DemoSeeder extends Seeder
 {
-    public function run(): void
+    
+    public function run()
     {
-        // UserObserver creează automat cele 8 categorii de cheltuieli
+        
+        
         $user = User::create([
             'name'              => 'Andrei Popescu',
             'email'             => 'demo@cashly.ro',
@@ -29,7 +32,7 @@ class DemoSeeder extends Seeder
             'email_verified_at' => now(),
         ]);
 
-        // Clienți
+        
         $techstart = Client::create([
             'user_id' => $user->id,
             'name'    => 'TechStart SRL',
@@ -68,78 +71,195 @@ class DemoSeeder extends Seeder
             'status'  => 'prospect',
         ]);
 
-        // Produse din catalog
-        foreach ([
-            ['name' => 'Dezvoltare website',   'category' => 'Web',          'price' => 2500.00, 'currency' => 'RON'],
-            ['name' => 'Design grafic',         'category' => 'Design',       'price' => 800.00,  'currency' => 'RON'],
-            ['name' => 'Consultanță IT',        'category' => 'Consultanță',  'price' => 150.00,  'currency' => 'RON'],
-            ['name' => 'Mentenanță lunară',     'category' => 'Servicii',     'price' => 500.00,  'currency' => 'RON'],
-        ] as $p) {
-            Product::create(array_merge($p, ['user_id' => $user->id]));
-        }
-
-        // Facturi
-        $invoices = [
-            // PAID - luna 5 în urmă
-            ['client' => $techstart, 'number' => 'CASH-2026-001', 'issue_date' => now()->subMonths(5)->startOfMonth()->addDays(2), 'due_date' => now()->subMonths(5)->startOfMonth()->addDays(32), 'status' => 'paid', 'currency' => 'RON', 'vat_rate' => 19,
-                'items' => [['description' => 'Dezvoltare website corporate', 'quantity' => 1, 'unit_price' => 2500], ['description' => 'Design logo și identitate vizuală', 'quantity' => 1, 'unit_price' => 800]]],
-
-            // PAID - luna 4 în urmă
-            ['client' => $mediapro, 'number' => 'CASH-2026-002', 'issue_date' => now()->subMonths(4)->startOfMonth()->addDays(5), 'due_date' => now()->subMonths(4)->startOfMonth()->addDays(35), 'status' => 'paid', 'currency' => 'RON', 'vat_rate' => 19,
-                'items' => [['description' => 'Campanie social media', 'quantity' => 1, 'unit_price' => 1200], ['description' => 'Creare conținut video', 'quantity' => 4, 'unit_price' => 250]]],
-
-            // PAID - luna 3 în urmă, EUR fără TVA
-            ['client' => $bogdan, 'number' => 'CASH-2026-003', 'issue_date' => now()->subMonths(3)->startOfMonth()->addDays(1), 'due_date' => now()->subMonths(3)->startOfMonth()->addDays(16), 'status' => 'paid', 'currency' => 'EUR', 'vat_rate' => null,
-                'items' => [['description' => 'Consultanță IT - 10 ore', 'quantity' => 10, 'unit_price' => 80]]],
-
-            // PAID - luna 2 în urmă
-            ['client' => $techstart, 'number' => 'CASH-2026-004', 'issue_date' => now()->subMonths(2)->startOfMonth()->addDays(3), 'due_date' => now()->subMonths(2)->startOfMonth()->addDays(33), 'status' => 'paid', 'currency' => 'RON', 'vat_rate' => 19,
-                'items' => [['description' => 'Mentenanță website', 'quantity' => 1, 'unit_price' => 500], ['description' => 'Optimizare SEO', 'quantity' => 1, 'unit_price' => 700]]],
-
-            // OVERDUE - depășit cu 30 zile
-            ['client' => $mediapro, 'number' => 'CASH-2026-005', 'issue_date' => now()->subDays(60), 'due_date' => now()->subDays(30), 'status' => 'overdue', 'currency' => 'RON', 'vat_rate' => 19,
-                'items' => [['description' => 'Campanie email marketing Q1', 'quantity' => 1, 'unit_price' => 1800]]],
-
-            // OVERDUE - EUR
-            ['client' => $euroimport, 'number' => 'CASH-2026-006', 'issue_date' => now()->subDays(45), 'due_date' => now()->subDays(15), 'status' => 'overdue', 'currency' => 'EUR', 'vat_rate' => null,
-                'items' => [['description' => 'Audit tehnic platformă e-commerce', 'quantity' => 1, 'unit_price' => 350], ['description' => 'Raport cu recomandări', 'quantity' => 1, 'unit_price' => 150]]],
-
-            // SENT - scadent peste 20 zile
-            ['client' => $techstart, 'number' => 'CASH-2026-007', 'issue_date' => now()->subDays(10), 'due_date' => now()->addDays(20), 'status' => 'sent', 'currency' => 'RON', 'vat_rate' => 19,
-                'items' => [['description' => 'Mentenanță website - Aprilie', 'quantity' => 1, 'unit_price' => 500], ['description' => 'Actualizare design pagini produse', 'quantity' => 3, 'unit_price' => 200]]],
-
-            // SENT - EUR
-            ['client' => $bogdan, 'number' => 'CASH-2026-008', 'issue_date' => now()->subDays(5), 'due_date' => now()->addDays(25), 'status' => 'sent', 'currency' => 'EUR', 'vat_rate' => null,
-                'items' => [['description' => 'Consultanță IT - 8 ore', 'quantity' => 8, 'unit_price' => 80]]],
-
-            // DRAFT
-            ['client' => $mediapro, 'number' => 'CASH-2026-009', 'issue_date' => now(), 'due_date' => now()->addDays(30), 'status' => 'draft', 'currency' => 'RON', 'vat_rate' => 19,
-                'items' => [['description' => 'Strategie comunicare Q2 2026', 'quantity' => 1, 'unit_price' => 2200]]],
-
-            // CANCELLED
-            ['client' => $euroimport, 'number' => 'CASH-2026-010', 'issue_date' => now()->subMonths(3)->startOfMonth(), 'due_date' => now()->subMonths(3)->startOfMonth()->addDays(30), 'status' => 'cancelled', 'currency' => 'RON', 'vat_rate' => null,
-                'items' => [['description' => 'Consultanță strategică', 'quantity' => 1, 'unit_price' => 1500]]],
+        
+        $produseDemo = [
+            ['name' => 'Dezvoltare website',  'category' => 'Web',         'price' => 2500.00, 'currency' => 'RON'],
+            ['name' => 'Design grafic',        'category' => 'Design',      'price' => 800.00,  'currency' => 'RON'],
+            ['name' => 'Consultanță IT',       'category' => 'Consultanță', 'price' => 150.00,  'currency' => 'RON'],
+            ['name' => 'Mentenanță lunară',    'category' => 'Servicii',    'price' => 500.00,  'currency' => 'RON'],
         ];
 
-        foreach ($invoices as $data) {
-            $total = collect($data['items'])->sum(fn($i) => $i['quantity'] * $i['unit_price']);
-            $vatAmount = $data['vat_rate'] ? round($total * $data['vat_rate'] / 100, 2) : 0;
+        foreach ($produseDemo as $produs) {
+            Product::create([
+                'user_id'  => $user->id,
+                'name'     => $produs['name'],
+                'category' => $produs['category'],
+                'price'    => $produs['price'],
+                'currency' => $produs['currency'],
+            ]);
+        }
 
+        
+        $facturi = [
+            
+            [
+                'client'     => $techstart,
+                'number'     => 'CASH-2026-001',
+                'issue_date' => now()->subMonths(5)->startOfMonth()->addDays(2),
+                'due_date'   => now()->subMonths(5)->startOfMonth()->addDays(32),
+                'status'     => 'paid',
+                'currency'   => 'RON',
+                'vat_rate'   => 19,
+                'items'      => [
+                    ['description' => 'Dezvoltare website corporate',    'quantity' => 1, 'unit_price' => 2500],
+                    ['description' => 'Design logo și identitate vizuală', 'quantity' => 1, 'unit_price' => 800],
+                ],
+            ],
+            
+            [
+                'client'     => $mediapro,
+                'number'     => 'CASH-2026-002',
+                'issue_date' => now()->subMonths(4)->startOfMonth()->addDays(5),
+                'due_date'   => now()->subMonths(4)->startOfMonth()->addDays(35),
+                'status'     => 'paid',
+                'currency'   => 'RON',
+                'vat_rate'   => 19,
+                'items'      => [
+                    ['description' => 'Campanie social media',    'quantity' => 1, 'unit_price' => 1200],
+                    ['description' => 'Creare conținut video',    'quantity' => 4, 'unit_price' => 250],
+                ],
+            ],
+            
+            [
+                'client'     => $bogdan,
+                'number'     => 'CASH-2026-003',
+                'issue_date' => now()->subMonths(3)->startOfMonth()->addDays(1),
+                'due_date'   => now()->subMonths(3)->startOfMonth()->addDays(16),
+                'status'     => 'paid',
+                'currency'   => 'EUR',
+                'vat_rate'   => null,
+                'items'      => [
+                    ['description' => 'Consultanță IT - 10 ore', 'quantity' => 10, 'unit_price' => 80],
+                ],
+            ],
+            
+            [
+                'client'     => $techstart,
+                'number'     => 'CASH-2026-004',
+                'issue_date' => now()->subMonths(2)->startOfMonth()->addDays(3),
+                'due_date'   => now()->subMonths(2)->startOfMonth()->addDays(33),
+                'status'     => 'paid',
+                'currency'   => 'RON',
+                'vat_rate'   => 19,
+                'items'      => [
+                    ['description' => 'Mentenanță website', 'quantity' => 1, 'unit_price' => 500],
+                    ['description' => 'Optimizare SEO',     'quantity' => 1, 'unit_price' => 700],
+                ],
+            ],
+            
+            [
+                'client'     => $mediapro,
+                'number'     => 'CASH-2026-005',
+                'issue_date' => now()->subDays(60),
+                'due_date'   => now()->subDays(30),
+                'status'     => 'overdue',
+                'currency'   => 'RON',
+                'vat_rate'   => 19,
+                'items'      => [
+                    ['description' => 'Campanie email marketing Q1', 'quantity' => 1, 'unit_price' => 1800],
+                ],
+            ],
+            
+            [
+                'client'     => $euroimport,
+                'number'     => 'CASH-2026-006',
+                'issue_date' => now()->subDays(45),
+                'due_date'   => now()->subDays(15),
+                'status'     => 'overdue',
+                'currency'   => 'EUR',
+                'vat_rate'   => null,
+                'items'      => [
+                    ['description' => 'Audit tehnic platformă e-commerce', 'quantity' => 1, 'unit_price' => 350],
+                    ['description' => 'Raport cu recomandări',             'quantity' => 1, 'unit_price' => 150],
+                ],
+            ],
+            
+            [
+                'client'     => $techstart,
+                'number'     => 'CASH-2026-007',
+                'issue_date' => now()->subDays(10),
+                'due_date'   => now()->addDays(20),
+                'status'     => 'sent',
+                'currency'   => 'RON',
+                'vat_rate'   => 19,
+                'items'      => [
+                    ['description' => 'Mentenanță website - Aprilie',       'quantity' => 1, 'unit_price' => 500],
+                    ['description' => 'Actualizare design pagini produse',   'quantity' => 3, 'unit_price' => 200],
+                ],
+            ],
+            
+            [
+                'client'     => $bogdan,
+                'number'     => 'CASH-2026-008',
+                'issue_date' => now()->subDays(5),
+                'due_date'   => now()->addDays(25),
+                'status'     => 'sent',
+                'currency'   => 'EUR',
+                'vat_rate'   => null,
+                'items'      => [
+                    ['description' => 'Consultanță IT - 8 ore', 'quantity' => 8, 'unit_price' => 80],
+                ],
+            ],
+            
+            [
+                'client'     => $mediapro,
+                'number'     => 'CASH-2026-009',
+                'issue_date' => now(),
+                'due_date'   => now()->addDays(30),
+                'status'     => 'draft',
+                'currency'   => 'RON',
+                'vat_rate'   => 19,
+                'items'      => [
+                    ['description' => 'Strategie comunicare Q2 2026', 'quantity' => 1, 'unit_price' => 2200],
+                ],
+            ],
+            
+            [
+                'client'     => $euroimport,
+                'number'     => 'CASH-2026-010',
+                'issue_date' => now()->subMonths(3)->startOfMonth(),
+                'due_date'   => now()->subMonths(3)->startOfMonth()->addDays(30),
+                'status'     => 'cancelled',
+                'currency'   => 'RON',
+                'vat_rate'   => null,
+                'items'      => [
+                    ['description' => 'Consultanță strategică', 'quantity' => 1, 'unit_price' => 1500],
+                ],
+            ],
+        ];
+
+        
+        foreach ($facturi as $date) {
+            
+            $total = 0;
+            foreach ($date['items'] as $item) {
+                $total += $item['quantity'] * $item['unit_price'];
+            }
+
+            
+            if ($date['vat_rate']) {
+                $vatAmount = round($total * $date['vat_rate'] / 100, 2);
+            } else {
+                $vatAmount = 0;
+            }
+
+            
             $invoice = Invoice::create([
                 'user_id'        => $user->id,
-                'client_id'      => $data['client']->id,
-                'number'         => $data['number'],
-                'issue_date'     => $data['issue_date'],
-                'due_date'       => $data['due_date'],
-                'status'         => $data['status'],
-                'currency'       => $data['currency'],
-                'vat_rate'       => $data['vat_rate'],
+                'client_id'      => $date['client']->id,
+                'number'         => $date['number'],
+                'issue_date'     => $date['issue_date'],
+                'due_date'       => $date['due_date'],
+                'status'         => $date['status'],
+                'currency'       => $date['currency'],
+                'vat_rate'       => $date['vat_rate'],
                 'vat_amount'     => $vatAmount,
                 'total'          => $total,
                 'total_with_vat' => $total + $vatAmount,
             ]);
 
-            foreach ($data['items'] as $item) {
+            
+            foreach ($date['items'] as $item) {
                 $invoice->items()->create([
                     'description' => $item['description'],
                     'quantity'    => $item['quantity'],
@@ -149,10 +269,15 @@ class DemoSeeder extends Seeder
             }
         }
 
-        // Cheltuieli - categoriile sunt create de UserObserver
-        $categories = $user->expenseCategories()->get()->keyBy('name');
+        
+        $categorii = $user->expenseCategories()->get();
+        $categoriiIndexate = [];
+        foreach ($categorii as $categorie) {
+            $categoriiIndexate[$categorie->name] = $categorie;
+        }
 
-        $expenses = [
+        
+        $cheltuieli = [
             ['description' => 'Adobe Creative Cloud - abonament lunar', 'amount' => 249.00,  'currency' => 'RON', 'date' => now()->subMonths(5)->addDays(5),  'category' => 'Software / Abonamente'],
             ['description' => 'Uber - deplasare client Cluj',           'amount' => 67.50,   'currency' => 'RON', 'date' => now()->subMonths(4)->addDays(8),  'category' => 'Transport'],
             ['description' => 'Prânz de lucru cu clientul',             'amount' => 145.00,  'currency' => 'RON', 'date' => now()->subMonths(4)->addDays(10), 'category' => 'Masă / Restaurant'],
@@ -167,10 +292,17 @@ class DemoSeeder extends Seeder
             ['description' => 'Internet fibră optică',                  'amount' => 59.99,   'currency' => 'RON', 'date' => now()->subDays(5),                'category' => 'Utilități'],
         ];
 
-        foreach ($expenses as $e) {
+        
+        foreach ($cheltuieli as $e) {
+            
+            $categoryId = null;
+            if (isset($categoriiIndexate[$e['category']])) {
+                $categoryId = $categoriiIndexate[$e['category']]->id;
+            }
+
             Expense::create([
                 'user_id'     => $user->id,
-                'category_id' => $categories->get($e['category'])?->id,
+                'category_id' => $categoryId,
                 'description' => $e['description'],
                 'amount'      => $e['amount'],
                 'currency'    => $e['currency'],

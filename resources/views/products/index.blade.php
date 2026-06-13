@@ -1,7 +1,8 @@
 <x-cashly-layout>
     <x-slot name="title">Produse</x-slot>
 
-    <div class="flex items-center justify-between mb-4">
+    {{-- Header pagina - pe mobil se impacheteaza --}}
+    <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
         <div>
             <h2 class="text-xl font-bold text-gray-900">Produse și Servicii</h2>
             <p class="text-sm text-gray-500">Gestionează catalogul de produse și servicii</p>
@@ -54,8 +55,9 @@
             </a>
         </div>
     @else
-        <div class="overflow-hidden bg-white border border-gray-100 rounded-xl shadow-sm">
-            <table class="w-full text-sm">
+        {{-- MOBIL: tabel cu scroll orizontal ca sa nu se rupa layout-ul --}}
+        <div class="overflow-x-auto bg-white border border-gray-100 rounded-xl shadow-sm">
+            <table class="w-full min-w-[500px] text-sm">
                 <thead class="bg-gray-50">
                     <tr>
                         <th class="px-5 py-2.5 text-left text-xs font-medium text-gray-400 uppercase tracking-wide">Denumire</th>

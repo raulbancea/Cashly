@@ -4,62 +4,115 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+
 class ReportController extends Controller
 {
+    
     public function index(Request $request)
     {
-        $user         = auth()->user();
+        
+        $user = auth()->user();
+
+        
         $selectedYear = (int) $request->get('an', date('Y'));
 
-        // Ani disponibili pentru selector
-        $yearsFromInvoices = $user->invoices()
-            ->selectRaw('YEAR(issue_date) as an')->distinct()->pluck('an');
-        $yearsFromExpenses = $user->expenses()
-            ->selectRaw('YEAR(date) as an')->distinct()->pluck('an');
+        
+        $aniDinFacturi = $user->invoices()
+            ->selectRaw('YEAR(issue_date) as an')
+            ->distinct()
+            ->pluck('an');
 
-        $availableYears = $yearsFromInvoices
-            ->merge($yearsFromExpenses)
-            ->push($selectedYear)
-            ->unique()
-            ->sortDesc()
-            ->values();
+        
+        $aniDinCheltuieli = $user->expenses()
+            ->selectRaw('YEAR(date) as an')
+            ->distinct()
+            ->pluck('an');
 
-        // ── 1. Date lunare pentru graficul bar ────────────────────────────────
+        
+        $availableYears = $aniDinFacturi->merge($aniDinCheltuieli);
+        
+        $availableYears->push($selectedYear);
+        $availableYears = $availableYears->unique()->sortDesc()->values();
+
+        
         $monthLabels = ['Ian', 'Feb', 'Mar', 'Apr', 'Mai', 'Iun',
                         'Iul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-        $revenueRows = $user->invoices()
+        
+        $revenueRowsRaw = $user->invoices()
             ->where('status', 'paid')
             ->whereYear('issue_date', $selectedYear)
             ->selectRaw('MONTH(issue_date) as month, currency, SUM(total_with_vat) as total')
             ->groupBy('month', 'currency')
-            ->get()
-            ->keyBy(fn($r) => $r->month . '-' . $r->currency);
+            ->get();
 
-        $expenseRows = $user->expenses()
+        
+        $revenueRows = [];
+        foreach ($revenueRowsRaw as $row) {
+            $cheie = $row->month . '-' . $row->currency;
+            $revenueRows[$cheie] = $row;
+        }
+
+        
+        $expenseRowsRaw = $user->expenses()
             ->whereYear('date', $selectedYear)
             ->selectRaw('MONTH(date) as month, currency, SUM(amount) as total')
             ->groupBy('month', 'currency')
-            ->get()
-            ->keyBy(fn($r) => $r->month . '-' . $r->currency);
+            ->get();
 
+        
+        $expenseRows = [];
+        foreach ($expenseRowsRaw as $row) {
+            $cheie = $row->month . '-' . $row->currency;
+            $expenseRows[$cheie] = $row;
+        }
+
+        
         $monthly = [];
         foreach (['RON', 'EUR'] as $currency) {
             $data = [];
+
+            
             for ($m = 1; $m <= 12; $m++) {
+                $cheie = $m . '-' . $currency;
+
+                
+                if (isset($revenueRows[$cheie])) {
+                    $venit = (float) $revenueRows[$cheie]->total;
+                } else {
+                    $venit = 0;
+                }
+
+                
+                if (isset($expenseRows[$cheie])) {
+                    $cheltuiala = (float) $expenseRows[$cheie]->total;
+                } else {
+                    $cheltuiala = 0;
+                }
+
                 $data[] = [
                     'month'    => $monthLabels[$m - 1],
-                    'revenue'  => (float) ($revenueRows->get("{$m}-{$currency}")?->total ?? 0),
-                    'expenses' => (float) ($expenseRows->get("{$m}-{$currency}")?->total ?? 0),
+                    'revenue'  => $venit,
+                    'expenses' => $cheltuiala,
                 ];
             }
-            if (collect($data)->contains(fn($d) => $d['revenue'] > 0 || $d['expenses'] > 0)) {
+
+            
+            $areDate = false;
+            foreach ($data as $linie) {
+                if ($linie['revenue'] > 0 || $linie['expenses'] > 0) {
+                    $areDate = true;
+                    break;
+                }
+            }
+
+            if ($areDate) {
                 $monthly[$currency] = $data;
             }
         }
 
-        // ── 2. TVA colectat per cotă și monedă (doar facturi paid) ───────────
-        $vatByRate = $user->invoices()
+        
+        $vatRawData = $user->invoices()
             ->where('status', 'paid')
             ->whereYear('issue_date', $selectedYear)
             ->whereNotNull('vat_rate')
@@ -68,38 +121,96 @@ class ReportController extends Controller
             ->groupBy('vat_rate', 'currency')
             ->orderBy('currency')
             ->orderBy('vat_rate')
-            ->get()
-            ->map(fn($r) => [
-                'cota'            => (int) round((float) $r->vat_rate),
-                'currency'        => $r->currency,
-                'total_vat'       => (float) $r->total_vat,
-                'numar_facturi'   => (int) $r->numar_facturi,
-            ]);
+            ->get();
 
-        $vatTotalByCurrency = $vatByRate->groupBy('currency')->map(fn($rows) => $rows->sum('total_vat'));
-        $totalVatColectat = $vatByRate->sum('total_vat');
+        
+        $vatByRateArray = [];
+        foreach ($vatRawData as $r) {
+            $vatByRateArray[] = [
+                'cota'          => (int) round((float) $r->vat_rate),
+                'currency'      => $r->currency,
+                'total_vat'     => (float) $r->total_vat,
+                'numar_facturi' => (int) $r->numar_facturi,
+            ];
+        }
+        
+        $vatByRate = collect($vatByRateArray);
 
-        // ── 3. Cheltuieli grupate pe categorie (pentru pie chart) ─────────────
-        $allExpenses = $user->expenses()
+        
+        $vatTotalByCurrency = [];
+        foreach ($vatByRateArray as $rand) {
+            $moneda = $rand['currency'];
+            if (!isset($vatTotalByCurrency[$moneda])) {
+                $vatTotalByCurrency[$moneda] = 0;
+            }
+            $vatTotalByCurrency[$moneda] += $rand['total_vat'];
+        }
+
+        
+        $totalVatColectat = 0;
+        foreach ($vatByRateArray as $rand) {
+            $totalVatColectat += $rand['total_vat'];
+        }
+
+        
+        $toateCheltuielile = $user->expenses()
             ->whereYear('date', $selectedYear)
             ->with('category')
             ->get();
 
-        $expensesByCategory = $allExpenses
-            ->groupBy(fn($e) => $e->category?->name ?? 'Fără categorie')
-            ->map(fn($group, $name) => [
-                'name'  => $name,
-                'color' => $group->first()->category?->color ?? '#94a3b8',
-                'ron'   => round($group->where('currency', 'RON')->sum('amount'), 2),
-                'eur'   => round($group->where('currency', 'EUR')->sum('amount'), 2),
-            ])
-            ->sortByDesc('ron')
-            ->values();
+        
+        $cheltuieliPeCategorie = [];
+        foreach ($toateCheltuielile as $cheltuiala) {
+            
+            
+            if ($cheltuiala->category !== null) {
+                $numeCategorie   = $cheltuiala->category->name;
+                $culoareCategorie = $cheltuiala->category->color;
+            } else {
+                $numeCategorie   = 'Fara categorie';
+                $culoareCategorie = '#94a3b8';
+            }
 
-        // ── 4. Totale anuale ──────────────────────────────────────────────────
+            
+            if (!isset($cheltuieliPeCategorie[$numeCategorie])) {
+                $cheltuieliPeCategorie[$numeCategorie] = [
+                    'name'  => $numeCategorie,
+                    'color' => $culoareCategorie,
+                    'ron'   => 0,
+                    'eur'   => 0,
+                ];
+            }
+
+            
+            if ($cheltuiala->currency === 'RON') {
+                $cheltuieliPeCategorie[$numeCategorie]['ron'] += (float) $cheltuiala->amount;
+            } else {
+                $cheltuieliPeCategorie[$numeCategorie]['eur'] += (float) $cheltuiala->amount;
+            }
+        }
+
+        
+        $expensesByCategoryArray = [];
+        foreach ($cheltuieliPeCategorie as $categorie) {
+            $categorie['ron'] = round($categorie['ron'], 2);
+            $categorie['eur'] = round($categorie['eur'], 2);
+            $expensesByCategoryArray[] = $categorie;
+        }
+
+        
+        usort($expensesByCategoryArray, function ($a, $b) {
+            if ($b['ron'] > $a['ron']) {
+                return 1;
+            } else {
+                return -1;
+            }
+        });
+        $expensesByCategory = collect($expensesByCategoryArray);
+
+        
         $totale = [];
         foreach (['RON', 'EUR'] as $currency) {
-            $venituri   = (float) $user->invoices()
+            $venituri = (float) $user->invoices()
                 ->where('status', 'paid')
                 ->whereYear('issue_date', $selectedYear)
                 ->where('currency', $currency)
@@ -110,6 +221,7 @@ class ReportController extends Controller
                 ->where('currency', $currency)
                 ->sum('amount');
 
+            
             if ($venituri > 0 || $cheltuieli > 0) {
                 $totale[$currency] = [
                     'venituri'   => $venituri,
@@ -119,6 +231,7 @@ class ReportController extends Controller
             }
         }
 
+        
         return view('reports.index', compact(
             'selectedYear',
             'availableYears',

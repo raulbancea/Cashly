@@ -9,15 +9,15 @@
 <body class="font-sans bg-gray-50">
 
 <div class="flex items-center justify-center min-h-screen p-6">
-    <div class="text-center max-w-md">
+    <div class="max-w-md text-center">
 
         <div class="mb-6">
             <span style="font-size:7rem;font-weight:800;color:#e2e8f0;line-height:1;display:block;">403</span>
-            <div class="w-16 h-1 bg-teal-500 rounded-full mx-auto -mt-3"></div>
+            <div class="w-16 h-1 mx-auto -mt-3 bg-teal-500 rounded-full"></div>
         </div>
 
         <h1 class="mb-2 text-2xl font-bold text-gray-900">Acces interzis</h1>
-        <p class="mb-8 text-sm text-gray-500 leading-relaxed">
+        <p class="mb-8 text-sm leading-relaxed text-gray-500">
             Nu ai permisiunea să accesezi această resursă. Dacă crezi că e o eroare, contactează administratorul.
         </p>
 

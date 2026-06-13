@@ -12,6 +12,8 @@ use App\Models\Concerns\BelongsToUser;
 class Client extends Model
 {
     use HasFactory, BelongsToUser;
+
+    
     protected $fillable = [
         'user_id',
         'name',
@@ -24,12 +26,14 @@ class Client extends Model
         'status',
     ];
 
-    public function user(): BelongsTo
+    
+    public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    public function invoices(): HasMany
+    
+    public function invoices()
     {
         return $this->hasMany(Invoice::class);
     }

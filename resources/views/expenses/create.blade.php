@@ -1,16 +1,20 @@
+{{-- Pagina pentru adaugarea unei cheltuieli noi --}}
 <x-cashly-layout>
     <x-slot name="title">Adaugă Cheltuială</x-slot>
 
+    {{-- Titlu pagina --}}
     <div class="max-w-2xl">
         <div class="mb-4">
             <h2 class="text-xl font-bold text-gray-900">Adaugă Cheltuială</h2>
             <p class="text-sm text-gray-500">Înregistrează o cheltuială nouă</p>
         </div>
 
+        {{-- Formular adaugare cheltuiala --}}
         <div class="p-5 bg-white border border-gray-100 rounded-xl shadow-sm">
             <form method="POST" action="{{ route('expenses.store') }}" enctype="multipart/form-data">
                 @csrf
 
+                {{-- Campul pentru descriere --}}
                 <div class="mb-4">
                     <label class="block mb-1 text-sm font-medium text-gray-700">
                         Descriere <span class="text-red-500">*</span>

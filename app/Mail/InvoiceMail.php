@@ -11,35 +11,52 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
+
 class InvoiceMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public function __construct(public Invoice $invoice) {}
+    
+    public $invoice;
 
-    public function envelope(): Envelope
+    
+    public function __construct(Invoice $invoice)
+    {
+        $this->invoice = $invoice;
+    }
+
+    
+    public function envelope()
     {
         return new Envelope(
-            subject: "Factură {$this->invoice->number} de la Cashly",
+            subject: 'Factură ' . $this->invoice->number . ' de la Cashly',
         );
     }
 
-    public function content(): Content
+    
+    public function content()
     {
         return new Content(
             view: 'emails.invoice',
         );
     }
 
-    public function attachments(): array
+    
+    public function attachments()
     {
+        
         $pdfService = app(PdfService::class);
-        $pdf = $pdfService->generateInvoicePdf($this->invoice);
+        $pdf        = $pdfService->generateInvoicePdf($this->invoice);
         $pdfContent = $pdf->output();
 
+        
+        $numeFisier = 'Factura-' . $this->invoice->number . '.pdf';
+
+        
         return [
-            Attachment::fromData(fn () => $pdfContent, "Factura-{$this->invoice->number}.pdf")
-                ->withMime('application/pdf'),
+            Attachment::fromData(function () use ($pdfContent) {
+                return $pdfContent;
+            }, $numeFisier)->withMime('application/pdf'),
         ];
     }
 }

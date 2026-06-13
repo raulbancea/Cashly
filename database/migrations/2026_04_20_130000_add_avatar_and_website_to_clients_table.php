@@ -4,17 +4,20 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+
 return new class extends Migration
 {
-    public function up(): void
+    
+    public function up()
     {
         Schema::table('clients', function (Blueprint $table) {
-            $table->string('website')->nullable()->after('address');
-            $table->string('avatar')->nullable()->after('website');
+            $table->string('website')->nullable()->after('address'); 
+            $table->string('avatar')->nullable()->after('website');  
         });
     }
 
-    public function down(): void
+    
+    public function down()
     {
         Schema::table('clients', function (Blueprint $table) {
             $table->dropColumn(['website', 'avatar']);

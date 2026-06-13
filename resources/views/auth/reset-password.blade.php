@@ -7,17 +7,24 @@
     @vite(['resources/css/app.css'])
     <style>
         * { box-sizing: border-box; }
-        body { margin:0; font-family:ui-sans-serif,system-ui,sans-serif; }
+        body { margin:0; font-family:ui-sans-serif,system-ui,sans-serif; overflow-x:hidden; }
         input:focus { outline:2px solid #0d9488; outline-offset:1px; border-color:#0d9488 !important; }
         .field { margin-bottom:18px; }
         .field label { display:block;font-size:13px;font-weight:500;color:#374151;margin-bottom:6px; }
         .field input { width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:9px;font-size:14px;color:#0f172a;background:#fff; }
+        /* DESKTOP: panoul stang este flex container */
+        .auth-left { display: flex; }
+        /* MOBIL: ascundem panoul stang */
+        @media (max-width:640px) {
+            .auth-left { display:none !important; }
+            .auth-right { padding:32px 20px !important; }
+        }
     </style>
 </head>
 <body style="min-height:100vh;display:flex;">
 
-    {{-- LEFT PANEL --}}
-    <div style="width:420px;flex-shrink:0;background:linear-gradient(160deg,#0d9488 0%,#0891b2 100%);padding:48px 40px;display:flex;flex-direction:column;justify-content:space-between;">
+    {{-- LEFT PANEL - ascuns pe mobil cu clasa auth-left --}}
+    <div class="auth-left" style="width:420px;flex-shrink:0;background:linear-gradient(160deg,#0d9488 0%,#0891b2 100%);padding:48px 40px;flex-direction:column;justify-content:space-between;">
         <a href="/" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
             <div style="width:34px;height:34px;background:rgba(255,255,255,0.2);border-radius:9px;display:flex;align-items:center;justify-content:center;">
                 <svg width="18" height="18" fill="none" stroke="#fff" stroke-width="2" viewBox="0 0 24 24">
@@ -48,8 +55,8 @@
         <p style="font-size:12px;color:rgba(255,255,255,0.5);margin:0;">© {{ date('Y') }} Cashly. Toate drepturile rezervate.</p>
     </div>
 
-    {{-- RIGHT PANEL --}}
-    <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:40px 24px;background:#f8fafc;">
+    {{-- RIGHT PANEL - pe mobil ocupa tot ecranul --}}
+    <div class="auth-right" style="flex:1;display:flex;align-items:center;justify-content:center;padding:40px 24px;background:#f8fafc;">
         <div style="width:100%;max-width:420px;">
 
             <div style="margin-bottom:32px;">

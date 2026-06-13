@@ -1,8 +1,8 @@
 <x-cashly-layout>
     <x-slot name="title">{{ $client->name }}</x-slot>
 
-    {{-- Header --}}
-    <div class="flex items-start justify-between mb-4">
+    {{-- Header - pe mobil se impacheteaza butoanele sub titlu --}}
+    <div class="flex flex-wrap items-start justify-between gap-3 mb-4">
         <div>
             <div class="flex items-center gap-3">
                 @if($client->avatar)
@@ -98,7 +98,8 @@
                 </div>
             @else
                 @foreach($kpi as $currency => $valori)
-                    <div class="grid grid-cols-3 gap-4 {{ !$loop->first ? 'mt-4' : '' }}">
+                    {{-- MOBIL: 2 coloane; DESKTOP: 3 coloane pentru KPI-urile clientului --}}
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4 {{ !$loop->first ? 'mt-4' : '' }}">
                         {{-- Total facturat --}}
                         <div class="p-5 bg-white border border-gray-100 rounded-xl shadow-sm">
                             <p class="mb-1 text-xs font-medium tracking-wide text-gray-500 uppercase">Total facturat</p>

@@ -1,3 +1,4 @@
+{{-- Pagina de landing (pagina principala publica a aplicatiei) --}}
 <!DOCTYPE html>
 <html lang="ro">
 <head>
@@ -7,7 +8,8 @@
     @vite(['resources/css/app.css'])
     <style>
         * { box-sizing: border-box; }
-        body { margin:0; font-family:ui-sans-serif,system-ui,sans-serif; background:#fff; color:#0f172a; }
+        /* overflow-x:hidden previne scroll-ul lateral pe mobil */
+        body { margin:0; font-family:ui-sans-serif,system-ui,sans-serif; background:#fff; color:#0f172a; overflow-x:hidden; }
 
         @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
         .f1 { animation: fadeUp .6s ease .05s both; }
@@ -51,10 +53,26 @@
             .pricing-grid { grid-template-columns:1fr !important; }
             .testimonials-grid { grid-template-columns:1fr !important; }
         }
+        /* MOBIL: doua coloane pentru statistici, doua coloane pentru pasi */
         @media (max-width:600px) {
             .benefits-grid { grid-template-columns:1fr !important; }
             .nav-links { display:none !important; }
+            /* Pasii "Cum functioneaza" - 2 coloane pe mobil */
             .steps-grid { grid-template-columns:1fr 1fr !important; }
+            /* Statisticile - 2 coloane pe mobil, nu 4 */
+            .stats-grid { grid-template-columns:1fr 1fr !important; gap:0 !important; }
+            /* Eliminam border-right de pe toate celulele stats pe mobil */
+            .stats-grid > div { border-right:none !important; border-bottom:1px solid rgba(255,255,255,0.15); padding:16px 12px !important; }
+            /* Ultimele doua celule (randul 2) nu au border-bottom */
+            .stats-grid > div:nth-child(3),
+            .stats-grid > div:nth-child(4) { border-bottom:none; }
+            /* Adaugam separator vertical in mijloc la fiecare rand */
+            .stats-grid > div:nth-child(odd) { border-right:1px solid rgba(255,255,255,0.2) !important; }
+            /* Ascundem linia decorativa dintre pasi pe mobil - nu mai are sens la 2 col */
+            .steps-line { display:none !important; }
+            /* Reducere padding sectiuni pe mobil */
+            .hero-section { padding:48px 20px 0 !important; }
+            .section-pad { padding:56px 20px !important; }
         }
     </style>
 </head>
@@ -175,16 +193,17 @@
     </div>
 </section>
 
-{{-- STATS --}}
+{{-- STATS - MOBIL: 2x2 grid; DESKTOP: 4 coloane --}}
 <section style="background:#0d9488;padding:40px 28px;">
-    <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:0;text-align:center;">
+    <div class="stats-grid" style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:0;text-align:center;">
         @foreach([
             ['6 ore','economisite in medie pe luna'],
             ['40%','facturi incasate mai rapid'],
             ['2 minute','de la comanda la factura trimisa'],
             ['0 lei','cost sa incepi, fara card'],
         ] as $s)
-        <div style="padding:0 20px;{{ !$loop->last ? 'border-right:1px solid rgba(255,255,255,0.2);' : '' }}">
+        {{-- MOBIL: padding mai mic si fara border-right pe ultimul din rand --}}
+        <div style="padding:12px 16px;{{ !$loop->last ? 'border-right:1px solid rgba(255,255,255,0.2);' : '' }}">
             <p style="font-size:28px;font-weight:800;color:#fff;margin:0 0 4px;transition:transform .2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform=''">{{ $s[0] }}</p>
             <p style="font-size:13px;color:#99f6e4;margin:0;">{{ $s[1] }}</p>
         </div>
@@ -229,8 +248,9 @@
             <p style="font-size:16px;color:#64748b;margin:0 auto;max-width:540px;line-height:1.7;">Fluxul complet de lucru, de la adaugarea clientului pana la incasarea facturii, automatizat pas cu pas.</p>
         </div>
 
+        {{-- MOBIL: 2x2 grid; DESKTOP: 4 coloane cu linie decorativa intre pasi --}}
         <div class="steps-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:24px;position:relative;">
-            <div style="position:absolute;top:28px;left:12%;right:12%;height:2px;background:linear-gradient(90deg,#0d9488,#0891b2);z-index:0;"></div>
+            <div class="steps-line" style="position:absolute;top:28px;left:12%;right:12%;height:2px;background:linear-gradient(90deg,#0d9488,#0891b2);z-index:0;"></div>
             @foreach([
                 ['1','Adaugi clientul o singura data','Numele, emailul si datele de facturare se salveaza. Toate facturile viitoare se completeaza automat.'],
                 ['2','Creezi factura in 2 minute','Selectezi clientul si serviciile din catalog. Cashly completeaza tot automat si genereaza PDF-ul.'],

@@ -8,21 +8,26 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Concerns\BelongsToUser;
 
+
 class ExpenseCategory extends Model
 {
     use HasFactory, BelongsToUser;
+
+    
     protected $fillable = [
         'user_id',
         'name',
         'color',
     ];
 
-    public function user(): BelongsTo
+    
+    public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    public function expenses(): HasMany
+    
+    public function expenses()
     {
         return $this->hasMany(Expense::class);
     }

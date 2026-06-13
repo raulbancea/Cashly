@@ -7,9 +7,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Concerns\BelongsToUser;
 
+
 class Expense extends Model
 {
     use HasFactory, BelongsToUser;
+
+    
     protected $fillable = [
         'user_id',
         'category_id',
@@ -20,17 +23,20 @@ class Expense extends Model
         'receipt_path',
     ];
 
+    
     protected $casts = [
-        'date' => 'date',
+        'date'   => 'date',
         'amount' => 'decimal:2',
     ];
 
-    public function user(): BelongsTo
+    
+    public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    public function category(): BelongsTo
+    
+    public function category()
     {
         return $this->belongsTo(ExpenseCategory::class);
     }

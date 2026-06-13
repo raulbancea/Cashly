@@ -1,22 +1,33 @@
+{{-- Pagina pentru crearea unei facturi noi --}}
 <x-cashly-layout>
     <x-slot name="title">Factură Nouă</x-slot>
 
+    {{-- Titlu pagina --}}
     <div class="max-w-4xl">
         <div class="mb-4">
             <h2 class="text-xl font-bold text-gray-900">Crează Factură Nouă</h2>
             <p class="text-sm text-gray-500">Completează detaliile facturii</p>
         </div>
 
+        {{-- Formular creare factura noua --}}
         <form method="POST" action="{{ route('invoices.store') }}">
             @csrf
 
             @if($errors->any())
-                <div class="p-3 mb-4 text-sm text-red-700 border border-red-200 rounded-lg bg-red-50">
-                    <ul class="list-disc list-inside">
-                        @foreach($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
+                <div class="p-4 mb-4 rounded-xl border border-red-200 bg-white shadow-sm flex gap-3">
+                    <div class="flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center" style="background-color: #fee2e2;">
+                        <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-sm font-semibold text-gray-800 mb-1">Câmpuri invalide</p>
+                        <ul class="text-sm text-gray-500 space-y-0.5">
+                            @foreach($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
                 </div>
             @endif
 
@@ -55,7 +66,8 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-4 gap-4">
+                {{-- MOBIL: 2 coloane pentru date; DESKTOP: 4 coloane --}}
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div>
                         <label class="block mb-1 text-sm font-medium text-gray-700">
                             Data emiterii <span class="text-red-500">*</span>
@@ -102,7 +114,9 @@
                     ⚠️ Produsul selectat este în <strong id="product-currency-label"></strong>, dar factura este în <strong id="invoice-currency-label"></strong>. Verifică prețul înainte de salvare.
                 </div>
 
-                <div id="items-container">
+                {{-- MOBIL: scroll orizontal pe items; DESKTOP: normal --}}
+                <div class="overflow-x-auto -mx-5 px-5">
+                <div id="items-container" style="min-width:460px;">
                     <div class="grid grid-cols-12 gap-2 mb-2 text-xs font-medium text-gray-500 uppercase">
                         <div class="col-span-5">Descriere</div>
                         <div class="col-span-2 text-right">Cantitate</div>
@@ -146,6 +160,9 @@
                         </div>
                     </div>
                 </div>
+
+                </div>{{-- sfarsit items-container --}}
+                </div>{{-- sfarsit overflow-x-auto --}}
 
                 <div class="flex items-center justify-between pt-4 mt-4 border-t border-gray-100">
                     <button type="button" onclick="addItem()"

@@ -225,17 +225,23 @@
                     Scadentă: <span>{{ $invoice->due_date ? $invoice->due_date->format('d.m.Y') : '-' }}</span><br>
                     Monedă: <span>{{ $invoice->currency }}</span>
                 </div>
+                @php
+                    if ($invoice->status === 'paid') {
+                        $statusPdf = 'Încasată';
+                    } elseif ($invoice->status === 'draft') {
+                        $statusPdf = 'Draft';
+                    } elseif ($invoice->status === 'sent') {
+                        $statusPdf = 'Trimisă';
+                    } elseif ($invoice->status === 'overdue') {
+                        $statusPdf = 'Restantă';
+                    } elseif ($invoice->status === 'cancelled') {
+                        $statusPdf = 'Anulată';
+                    } else {
+                        $statusPdf = $invoice->status;
+                    }
+                @endphp
                 <div>
-                    <span class="badge badge-{{ $invoice->status }}">
-                        {{ match($invoice->status) {
-                            'paid'      => 'Încasată',
-                            'draft'     => 'Draft',
-                            'sent'      => 'Trimisă',
-                            'overdue'   => 'Restantă',
-                            'cancelled' => 'Anulată',
-                            default     => $invoice->status
-                        } }}
-                    </span>
+                    <span class="badge badge-{{ $invoice->status }}">{{ $statusPdf }}</span>
                 </div>
             </td>
         </tr>
@@ -262,17 +268,18 @@
             </td>
             <td class="party-cell party-cumparator">
                 <div class="party-label party-label-buyer">Cumpărător</div>
-                <div class="party-name">{{ $invoice->client?->name ?? 'Client necunoscut' }}</div>
-                @if($invoice->client?->cui)
+                {{-- Afisam datele clientului daca exista --}}
+                <div class="party-name">{{ $invoice->client ? $invoice->client->name : 'Client necunoscut' }}</div>
+                @if($invoice->client && $invoice->client->cui)
                     <div class="party-detail">CUI / CIF: <strong>{{ $invoice->client->cui }}</strong></div>
                 @endif
-                @if($invoice->client?->address)
+                @if($invoice->client && $invoice->client->address)
                     <div class="party-detail">Adresă: {{ $invoice->client->address }}</div>
                 @endif
-                @if($invoice->client?->phone)
+                @if($invoice->client && $invoice->client->phone)
                     <div class="party-detail">Telefon: {{ $invoice->client->phone }}</div>
                 @endif
-                @if($invoice->client?->email)
+                @if($invoice->client && $invoice->client->email)
                     <div class="party-detail">Email: {{ $invoice->client->email }}</div>
                 @endif
             </td>

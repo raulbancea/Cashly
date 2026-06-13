@@ -1,12 +1,15 @@
+{{-- Pagina pentru editarea unei cheltuieli existente --}}
 <x-cashly-layout>
     <x-slot name="title">Editează Cheltuială</x-slot>
 
+    {{-- Titlu pagina --}}
     <div class="max-w-2xl">
         <div class="mb-4">
             <h2 class="text-xl font-bold text-gray-900">Editează Cheltuială</h2>
             <p class="text-sm text-gray-500">{{ $expense->description }}</p>
         </div>
 
+        {{-- Formular editare cheltuiala --}}
         <div class="p-5 bg-white border border-gray-100 rounded-xl shadow-sm">
             <form method="POST" action="{{ route('expenses.update', $expense) }}" enctype="multipart/form-data">
                 @csrf

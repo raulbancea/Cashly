@@ -30,7 +30,7 @@
                 <div>
                     <p style="font-size:0.875rem;font-weight:600;color:#166534;margin:0 0 2px;">Abonament activ</p>
                     <p style="font-size:0.8125rem;color:#15803d;margin:0;">
-                        Următoarea plată pe <strong>{{ $user->subscription_ends_at?->format('d.m.Y') }}</strong>.
+                        Următoarea plată pe <strong>{{ $user->subscription_ends_at ? $user->subscription_ends_at->format('d.m.Y') : '' }}</strong>.
                     </p>
                 </div>
             </div>
