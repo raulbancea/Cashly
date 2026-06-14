@@ -1,8 +1,6 @@
-{{-- Pagina de detalii a unei facturi --}}
 <x-cashly-layout>
     <x-slot name="title">Factură {{ $invoice->number }}</x-slot>
 
-    {{-- Modal: Marchează încasată --}}
     <div id="modal-paid" style="display:none;position:fixed;inset:0;z-index:50;background:rgba(0,0,0,0.4);align-items:center;justify-content:center;">
         <div style="background:#fff;border-radius:1rem;padding:1.5rem;width:100%;max-width:400px;margin:1rem;box-shadow:0 20px 60px rgba(0,0,0,0.2);">
             <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
@@ -25,7 +23,6 @@
         </div>
     </div>
 
-    {{-- Modal: Anulează factura --}}
     <div id="modal-cancel" style="display:none;position:fixed;inset:0;z-index:50;background:rgba(0,0,0,0.4);align-items:center;justify-content:center;">
         <div style="background:#fff;border-radius:1rem;padding:1.5rem;width:100%;max-width:400px;margin:1rem;box-shadow:0 20px 60px rgba(0,0,0,0.2);">
             <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
@@ -48,7 +45,6 @@
         </div>
     </div>
 
-    {{-- Modal: Trimite pe email --}}
     @if($clientEmail)
     <div id="modal-send-email" class="fixed inset-0 z-50 items-center justify-center bg-black/40" style="display:none">
         <div class="w-full max-w-sm p-6 bg-white rounded-xl shadow-lg mx-4">
@@ -89,7 +85,6 @@
 
     <div class="max-w-6xl">
 
-        {{-- Header --}}
         <div class="flex items-center justify-between mb-4">
             <div>
                 <h2 class="text-xl font-bold text-gray-900 whitespace-nowrap">{{ $invoice->number }}</h2>
@@ -157,10 +152,8 @@
             </div>
         </div>
 
-
         <div class="p-5 mb-4 bg-white border border-gray-100 rounded-xl shadow-sm">
 
-            {{-- Status + date - MOBIL: 2 coloane; DESKTOP: 4 coloane --}}
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                 <div>
                     <p class="mb-1 text-xs text-gray-500">Status</p>
@@ -210,7 +203,6 @@
                 @endif
             </div>
 
-            {{-- Linii factura - MOBIL: scroll orizontal; DESKTOP: normal --}}
             <div class="overflow-x-auto">
             <table class="w-full min-w-[420px] mb-6 text-sm">
                 <thead class="border-gray-200 bg-gray-50 border-y">
@@ -267,7 +259,7 @@
                     @endif
                 </tfoot>
             </table>
-            </div>{{-- sfarsit overflow-x-auto --}}
+            </div>
 
             @if($invoice->notes)
                 <div class="pt-4 border-t border-gray-100">

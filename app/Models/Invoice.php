@@ -9,13 +9,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Concerns\BelongsToUser;
 
-
 class Invoice extends Model
 {
-    
+
     use HasFactory, BelongsToUser, SoftDeletes;
 
-    
     protected $fillable = [
         'user_id',
         'client_id',
@@ -33,7 +31,6 @@ class Invoice extends Model
         'reminder_sent_at',
     ];
 
-    
     protected $casts = [
         'issue_date'       => 'date',
         'due_date'         => 'date',
@@ -44,26 +41,21 @@ class Invoice extends Model
         'reminder_sent_at' => 'datetime',
     ];
 
-    
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    
     public function client()
     {
         return $this->belongsTo(Client::class);
     }
 
-    
     public function items()
     {
         return $this->hasMany(InvoiceItem::class);
     }
 
-    
-    
     public function getEffectiveTotalAttribute()
     {
         if ($this->vat_rate) {

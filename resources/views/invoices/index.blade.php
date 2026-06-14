@@ -1,7 +1,6 @@
 <x-cashly-layout>
     <x-slot name="title">Facturi</x-slot>
 
-    {{-- Header pagina - pe mobil se impacheteaza pe doua randuri --}}
     <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
         <div>
             <h2 class="text-xl font-bold text-gray-900">Facturi</h2>
@@ -19,7 +18,6 @@
         </div>
     </div>
 
-    {{-- Modal confirmare ștergere --}}
     <div id="delete-modal" style="display:none;position:fixed;inset:0;z-index:50;background:rgba(0,0,0,0.4);align-items:center;justify-content:center;">
         <div style="background:#fff;border-radius:1rem;padding:1.5rem;width:100%;max-width:400px;margin:1rem;box-shadow:0 20px 60px rgba(0,0,0,0.2);">
             <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
@@ -51,8 +49,6 @@
         </div>
     </div>
 
-
-    {{-- Filtre --}}
     <form method="GET" action="{{ route('invoices.index') }}" class="flex flex-wrap items-end gap-3 p-4 mb-4 bg-white border border-gray-100 rounded-xl shadow-sm">
         <div class="flex flex-col gap-1">
             <label class="text-xs font-medium text-gray-500">Status</label>
@@ -129,7 +125,6 @@
             @endif
         </div>
     @else
-        {{-- MOBIL: tabel cu scroll orizontal ca sa nu se rupa layout-ul --}}
         <div class="overflow-x-auto bg-white border border-gray-100 rounded-xl shadow-sm">
             <table class="w-full min-w-[640px] text-sm">
                 <thead class="bg-gray-50">

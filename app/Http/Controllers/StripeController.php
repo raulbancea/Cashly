@@ -11,36 +11,31 @@ use Stripe\Exception\SignatureVerificationException;
 use Stripe\Stripe;
 use Stripe\Webhook;
 
-
 class StripeController extends Controller
 {
-    
+
     public function index()
     {
         return view('subscription.index', ['user' => auth()->user()]);
     }
 
-    
     public function checkout()
     {
-        
+
         $user = auth()->user();
 
-        
         Stripe::setApiKey(config('services.stripe.secret'));
 
-        
         if ($user->stripe_customer_id) {
-            
+
             $customerEmail = null;
             $customerId    = $user->stripe_customer_id;
         } else {
-            
+
             $customerEmail = $user->email;
             $customerId    = null;
         }
 
-        
         $session = CheckoutSession::create([
             'mode'                 => 'subscription',
             'payment_method_types' => ['card'],
@@ -55,48 +50,39 @@ class StripeController extends Controller
             'metadata'       => ['user_id' => $user->id],
         ]);
 
-        
         return redirect($session->url);
     }
 
-    
     public function success()
     {
         return view('subscription.success');
     }
 
-    
     public function portal()
     {
-        
+
         $user = auth()->user();
 
-        
         if (!$user->stripe_customer_id) {
             abort(404);
         }
 
-        
         Stripe::setApiKey(config('services.stripe.secret'));
 
-        
         $session = PortalSession::create([
             'customer'   => $user->stripe_customer_id,
             'return_url' => route('subscription.index'),
         ]);
 
-        
         return redirect($session->url);
     }
 
-    
     public function webhook(Request $request)
     {
-        
+
         $payload   = $request->getContent();
         $sigHeader = $request->header('Stripe-Signature');
 
-        
         try {
             $event = Webhook::constructEvent(
                 $payload,
@@ -104,14 +90,12 @@ class StripeController extends Controller
                 config('services.stripe.webhook_secret')
             );
         } catch (SignatureVerificationException $e) {
-            
+
             return response('Invalid signature', 400);
         }
 
-        
         $object = $event->data->object;
 
-        
         if ($event->type === 'checkout.session.completed') {
             $this->handleCheckoutCompleted($object);
         } elseif ($event->type === 'customer.subscription.created') {
@@ -122,45 +106,38 @@ class StripeController extends Controller
             $this->handleSubscriptionDeleted($object);
         }
 
-        
         return response('OK', 200);
     }
 
-    
     private function handleCheckoutCompleted($session)
     {
-        
+
         if ($session->mode !== 'subscription') {
             return;
         }
 
-        
         if (isset($session->metadata->user_id)) {
             $userId = $session->metadata->user_id;
         } else {
             $userId = null;
         }
 
-        
         if ($userId !== null) {
             $user = User::find($userId);
         } else {
             $user = null;
         }
 
-        
         if ($user !== null) {
             $user->update(['stripe_customer_id' => $session->customer]);
         }
     }
 
-    
     private function handleSubscriptionUpdated($subscription)
     {
-        
+
         $user = User::where('stripe_customer_id', $subscription->customer)->first();
 
-        
         if ($user !== null) {
             $user->update([
                 'stripe_subscription_id' => $subscription->id,
@@ -170,13 +147,11 @@ class StripeController extends Controller
         }
     }
 
-    
     private function handleSubscriptionDeleted($subscription)
     {
-        
+
         $user = User::where('stripe_customer_id', $subscription->customer)->first();
 
-        
         if ($user !== null) {
             $user->update([
                 'subscription_status'  => 'canceled',

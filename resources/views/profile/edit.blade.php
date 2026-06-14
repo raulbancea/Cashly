@@ -9,7 +9,6 @@
             <p class="text-sm text-gray-500">Gestionează informațiile contului tău</p>
         </div>
 
-        {{-- ── Avatar ───────────────────────────────────────────────────── --}}
         <div class="p-5 bg-white border border-gray-100 rounded-xl shadow-sm">
             <h3 class="mb-1 text-sm font-semibold text-gray-800">Fotografie de profil</h3>
             <p class="mb-5 text-xs text-gray-400">JPG, PNG sau WebP, max 2 MB.</p>
@@ -56,7 +55,6 @@
             </div>
         </div>
 
-        {{-- ── Informații profil ─────────────────────────────────────────── --}}
         <div class="p-5 bg-white border border-gray-100 rounded-xl shadow-sm">
             <h3 class="mb-1 text-sm font-semibold text-gray-800">Informații cont</h3>
             <p class="mb-5 text-xs text-gray-400">Actualizează numele și adresa de email.</p>
@@ -111,7 +109,6 @@
             </form>
         </div>
 
-        {{-- ── Schimbare parolă ─────────────────────────────────────────── --}}
         @if(!$user->google_id)
         <div class="p-5 bg-white border border-gray-100 rounded-xl shadow-sm">
             <h3 class="mb-1 text-sm font-semibold text-gray-800">Schimbă parola</h3>
@@ -172,7 +169,6 @@
         </div>
         @endif
 
-        {{-- ── Ștergere cont ────────────────────────────────────────────── --}}
         <div class="p-6 bg-white border border-red-100 rounded-xl shadow-sm">
             <h3 class="mb-1 text-sm font-semibold text-red-700">Șterge contul</h3>
             <p class="mb-5 text-xs text-gray-400">
@@ -187,7 +183,6 @@
 
     </div>
 
-    {{-- Modal confirmare ștergere cont --}}
     <div id="modal-delete-account"
          class="fixed inset-0 z-50 items-center justify-center bg-black/40"
          style="display: none;">

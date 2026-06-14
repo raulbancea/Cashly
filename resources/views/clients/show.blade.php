@@ -1,11 +1,10 @@
 <x-cashly-layout>
     <x-slot name="title">{{ $client->name }}</x-slot>
 
-    {{-- Header - pe mobil se impacheteaza butoanele sub titlu --}}
     <div class="flex flex-wrap items-start justify-between gap-3 mb-4">
         <div>
             <div class="flex items-center gap-3">
-                @if($client->avatar)
+                @if($client->avatar && Storage::disk('public')->exists($client->avatar))
                     <img src="{{ Storage::disk('public')->url($client->avatar) }}"
                          alt="{{ $client->name }}"
                          class="w-10 h-10 rounded-full object-cover flex-shrink-0">
@@ -29,7 +28,7 @@
         <div class="flex gap-2">
             <a href="{{ route('clients.index') }}"
                class="px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50">
-                ← Înapoi la clienți
+                Înapoi la clienți
             </a>
             <a href="{{ route('clients.edit', $client) }}"
                class="px-4 py-2 text-sm font-medium text-white bg-teal-600 rounded-lg hover:bg-teal-700">
@@ -40,7 +39,6 @@
 
     <div class="grid grid-cols-1 gap-4 mb-4 lg:grid-cols-3">
 
-        {{-- Date contact --}}
         <div class="p-5 bg-white border border-gray-100 rounded-xl shadow-sm">
             <h3 class="mb-4 text-xs font-semibold tracking-wide text-gray-400 uppercase">Date contact</h3>
             <div class="space-y-3">
@@ -90,7 +88,6 @@
             </div>
         </div>
 
-        {{-- KPI-uri --}}
         <div class="lg:col-span-2">
             @if(empty($kpi))
                 <div class="flex items-center justify-center h-full p-6 bg-white border border-gray-200 rounded-xl">
@@ -98,9 +95,7 @@
                 </div>
             @else
                 @foreach($kpi as $currency => $valori)
-                    {{-- MOBIL: 2 coloane; DESKTOP: 3 coloane pentru KPI-urile clientului --}}
                     <div class="grid grid-cols-2 md:grid-cols-3 gap-4 {{ !$loop->first ? 'mt-4' : '' }}">
-                        {{-- Total facturat --}}
                         <div class="p-5 bg-white border border-gray-100 rounded-xl shadow-sm">
                             <p class="mb-1 text-xs font-medium tracking-wide text-gray-500 uppercase">Total facturat</p>
                             <p class="text-2xl font-bold text-gray-900">
@@ -110,7 +105,6 @@
                             <p class="mt-1 text-xs text-gray-400">{{ $valori['total_count'] }} facturi</p>
                         </div>
 
-                        {{-- Total incasat --}}
                         <div class="p-5 bg-white border border-green-100 rounded-xl">
                             <p class="mb-1 text-xs font-medium tracking-wide text-gray-500 uppercase">Încasat</p>
                             <p class="text-2xl font-bold text-green-700">
@@ -122,7 +116,6 @@
                             </p>
                         </div>
 
-                        {{-- Total restant --}}
                         <div class="p-5 bg-white rounded-xl" style="border: 1px solid {{ $valori['total_restant'] > 0 ? '#fecaca' : '#e5e7eb' }}">
                             <p class="mb-1 text-xs font-medium tracking-wide text-gray-500 uppercase">Neîncasat</p>
                             <p class="text-2xl font-bold {{ $valori['total_restant'] > 0 ? 'text-red-600' : 'text-gray-400' }}">
@@ -139,7 +132,6 @@
         </div>
     </div>
 
-    {{-- Tabel facturi --}}
     <div class="bg-white border border-gray-100 rounded-xl shadow-sm">
         <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
             <h3 class="text-sm font-semibold text-gray-800">Facturi emise</h3>

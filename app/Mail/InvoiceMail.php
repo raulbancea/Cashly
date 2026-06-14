@@ -11,21 +11,17 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-
 class InvoiceMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    
     public $invoice;
 
-    
     public function __construct(Invoice $invoice)
     {
         $this->invoice = $invoice;
     }
 
-    
     public function envelope()
     {
         return new Envelope(
@@ -33,7 +29,6 @@ class InvoiceMail extends Mailable
         );
     }
 
-    
     public function content()
     {
         return new Content(
@@ -41,18 +36,15 @@ class InvoiceMail extends Mailable
         );
     }
 
-    
     public function attachments()
     {
-        
+
         $pdfService = app(PdfService::class);
         $pdf        = $pdfService->generateInvoicePdf($this->invoice);
         $pdfContent = $pdf->output();
 
-        
         $numeFisier = 'Factura-' . $this->invoice->number . '.pdf';
 
-        
         return [
             Attachment::fromData(function () use ($pdfContent) {
                 return $pdfContent;

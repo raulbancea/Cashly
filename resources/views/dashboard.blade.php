@@ -137,7 +137,7 @@
 <div class="overflow-hidden bg-white border border-gray-100 shadow-sm rounded-xl">
     <div class="flex items-center justify-between px-5 py-3 border-b border-gray-100">
         <h3 class="text-sm font-semibold text-gray-800">Ultimele facturi</h3>
-        <a href="{{ route('invoices.index') }}" class="text-xs font-medium text-teal-600 hover:underline">Vezi toate →</a>
+        <a href="{{ route('invoices.index') }}" class="text-xs font-medium text-teal-600 hover:underline">Vezi toate</a>
     </div>
     @if($recentInvoices->isEmpty())
         <div class="px-5 py-6 text-center">
@@ -200,7 +200,7 @@
                 @endforeach
             </tbody>
         </table>
-        </div>{{-- sfarsit overflow-x-auto --}}
+        </div>
     @endif
 </div>
 

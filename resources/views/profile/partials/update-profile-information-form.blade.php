@@ -1,4 +1,3 @@
-{{-- Sectiunea pentru actualizarea informatiilor de profil --}}
 <section>
     <header>
         <h2 class="text-lg font-medium text-gray-900">
@@ -10,30 +9,25 @@
         </p>
     </header>
 
-    {{-- Formular ascuns pentru retrimis email de verificare --}}
     <form id="send-verification" method="post" action="{{ route('verification.send') }}">
         @csrf
     </form>
 
-    {{-- Formularul principal de actualizare profil --}}
     <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6">
         @csrf
         @method('patch')
 
-        {{-- Campul pentru nume --}}
         <div>
             <x-input-label for="name" :value="'Nume'" />
             <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $user->name)" required autofocus autocomplete="name" />
             <x-input-error class="mt-2" :messages="$errors->get('name')" />
         </div>
 
-        {{-- Campul pentru email --}}
         <div>
             <x-input-label for="email" :value="'Email'" />
             <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $user->email)" required autocomplete="username" />
             <x-input-error class="mt-2" :messages="$errors->get('email')" />
 
-            {{-- Avertisment daca emailul nu este verificat --}}
             @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
                 <div>
                     <p class="text-sm mt-2 text-gray-800">
@@ -53,7 +47,6 @@
             @endif
         </div>
 
-        {{-- Buton salvare si mesaj de confirmare --}}
         <div class="flex items-center gap-4">
             <x-primary-button>Salvează</x-primary-button>
 

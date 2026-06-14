@@ -3,7 +3,6 @@
 
     <div class="max-w-md py-4 mx-auto">
 
-        {{-- Status curent --}}
         @if($user->isOnTrial())
             @php $urgent = $user->trialDaysLeft() <= 7; @endphp
             <div style="padding:1rem 1.25rem;margin-bottom:1.5rem;border-radius:0.875rem;border:1px solid {{ $urgent ? '#fcd34d' : '#6ee7b7' }};background:{{ $urgent ? '#fffbeb' : '#f0fdf4' }};display:flex;align-items:center;gap:0.875rem;">
@@ -58,10 +57,8 @@
             </div>
         @endif
 
-        {{-- Card plan --}}
         <div style="background:#fff;border:1px solid #e5e7eb;border-radius:1rem;overflow:hidden;box-shadow:0 1px 8px rgba(0,0,0,0.06);">
 
-            {{-- Header card --}}
             <div style="padding:1.75rem 1.75rem 1.5rem;background:linear-gradient(135deg,#0d9488 0%,#0891b2 100%);">
                 <p style="font-size:0.75rem;font-weight:600;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:0.08em;margin:0 0 0.5rem;">Plan Pro</p>
                 <div style="display:flex;align-items:flex-end;gap:0.25rem;">
@@ -72,7 +69,6 @@
                 <p style="font-size:0.8125rem;color:rgba(255,255,255,0.65);margin:0.5rem 0 0;">Prima lună gratuită, anulezi oricând.</p>
             </div>
 
-            {{-- Features --}}
             <div style="padding:1.25rem 1.75rem;">
                 <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:0.625rem;">
                     @foreach([
@@ -91,7 +87,6 @@
                 </ul>
             </div>
 
-            {{-- Action --}}
             <div style="padding:1.25rem 1.75rem 1.75rem;display:flex;flex-direction:column;align-items:center;gap:0.625rem;">
                 @if($user->subscription_status === 'active')
                     <a href="{{ route('subscription.portal') }}"
@@ -116,9 +111,6 @@
             </div>
         </div>
 
-        <p style="margin-top:1.25rem;text-align:center;font-size:0.8125rem;color:#9ca3af;">
-            <a href="{{ route('dashboard') }}" style="color:#6b7280;text-decoration:none;" onmouseover="this.style.color='#374151'" onmouseout="this.style.color='#6b7280'">← Înapoi la dashboard</a>
-        </p>
 
     </div>
 </x-cashly-layout>

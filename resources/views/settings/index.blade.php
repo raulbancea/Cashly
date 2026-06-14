@@ -4,13 +4,11 @@
 
     <div class="max-w-3xl">
 
-        {{-- Page header --}}
         <div class="mb-6">
             <h2 class="text-xl font-bold text-gray-900">Setări</h2>
             <p class="text-sm text-gray-500">Gestionează contul, firma și preferințele tale</p>
         </div>
 
-        {{-- Tab navigation - overflow-x-auto ca sa nu se rupa pe telefoane mici --}}
         <div class="flex border-b border-gray-200 mb-6 overflow-x-auto">
             <button onclick="switchTab('profil')" id="tab-profil"
                     class="px-5 py-3 text-sm font-medium border-b-2 -mb-px transition-colors">
@@ -26,15 +24,22 @@
             </button>
         </div>
 
-        {{-- ── FORM: Profil + Firmă (submit together) ── --}}
         <form method="POST" action="{{ route('settings.update') }}" enctype="multipart/form-data">
             @csrf
             @method('PUT')
 
-            {{-- ══ TAB: PROFIL ══ --}}
+            @if($errors->any())
+                <div class="p-3 mb-4 text-sm text-red-700 border border-red-200 rounded-lg bg-red-50">
+                    <ul class="list-disc list-inside space-y-0.5">
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
             <div id="panel-profil" class="tab-panel space-y-5">
 
-                {{-- Avatar card --}}
                 <div class="p-5 bg-white border border-gray-100 rounded-xl shadow-sm">
                     <h3 class="mb-1 text-sm font-semibold text-gray-800">Fotografie de profil</h3>
                     <p class="mb-4 text-xs text-gray-400">Avatarul tău apare în bara laterală și pe pagina de clienți.</p>
@@ -59,7 +64,6 @@
                     </div>
                 </div>
 
-                {{-- Name + phone --}}
                 <div class="p-5 bg-white border border-gray-100 rounded-xl shadow-sm">
                     <h3 class="mb-4 text-sm font-semibold text-gray-800">Informații personale</h3>
 
@@ -100,10 +104,8 @@
                 </div>
             </div>
 
-            {{-- ══ TAB: FIRMĂ & FACTURĂ ══ --}}
             <div id="panel-firma" class="tab-panel space-y-5" style="display:none;">
 
-                {{-- Date firmă --}}
                 <div class="p-5 bg-white border border-gray-100 rounded-xl shadow-sm">
                     <h3 class="mb-4 text-sm font-semibold text-gray-800">Date firmă</h3>
 
@@ -126,8 +128,8 @@
                             <label class="block mb-1 text-xs font-medium text-gray-500 uppercase tracking-wide">Monedă implicită</label>
                             <select name="currency"
                                     class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
-                                <option value="RON" {{ old('currency', $user->currency) === 'RON' ? 'selected' : '' }}>🇷🇴 RON – Leu românesc</option>
-                                <option value="EUR" {{ old('currency', $user->currency) === 'EUR' ? 'selected' : '' }}>🇪🇺 EUR – Euro</option>
+                                <option value="RON" {{ old('currency', $user->currency) === 'RON' ? 'selected' : '' }}>🇷🇴 RON - Leu românesc</option>
+                                <option value="EUR" {{ old('currency', $user->currency) === 'EUR' ? 'selected' : '' }}>🇪🇺 EUR - Euro</option>
                             </select>
                         </div>
 
@@ -140,7 +142,6 @@
                     </div>
                 </div>
 
-                {{-- Date bancare --}}
                 <div class="p-5 bg-white border border-gray-100 rounded-xl shadow-sm">
                     <h3 class="mb-1 text-sm font-semibold text-gray-800">Date bancare</h3>
                     <p class="mb-4 text-xs text-gray-400">Apar pe facturile PDF generate.</p>
@@ -153,7 +154,6 @@
                     </div>
                 </div>
 
-                {{-- Logo firmă --}}
                 <div class="p-5 bg-white border border-gray-100 rounded-xl shadow-sm">
                     <h3 class="mb-1 text-sm font-semibold text-gray-800">Logo firmă</h3>
                     <p class="mb-4 text-xs text-gray-400">Apare în colțul stânga al facturii PDF. Format PNG sau JPG, max 2 MB.</p>
@@ -189,12 +189,10 @@
 
         </form>
 
-        {{-- ══ TAB: CATEGORII ══ --}}
         <div id="panel-categorii" class="tab-panel space-y-5" style="display:none;">
 
-            {{-- Delete category modal --}}
-            <div id="cat-delete-modal" style="display:none;position:fixed;inset:0;z-index:50;background:rgba(0,0,0,0.4);align-items:center;justify-content:center;">
-                <div style="background:#fff;border-radius:1rem;padding:1.5rem;width:100%;max-width:380px;margin:1rem;box-shadow:0 20px 60px rgba(0,0,0,0.2);">
+            <div id="cat-delete-modal" style="display:none;position:fixed;inset:0;z-index:50;background:rgba(0,0,0,0.4);align-items:center;justify-content:center;" aria-hidden="true">
+                <div role="dialog" aria-modal="true" aria-label="Șterge categorie" style="background:#fff;border-radius:1rem;padding:1.5rem;width:100%;max-width:380px;margin:1rem;box-shadow:0 20px 60px rgba(0,0,0,0.2);">
                     <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
                         <div style="width:40px;height:40px;min-width:40px;border-radius:50%;background:#fef2f2;display:flex;align-items:center;justify-content:center;">
                             <svg width="20" height="20" fill="none" stroke="#ef4444" stroke-width="2" viewBox="0 0 24 24">
@@ -226,7 +224,6 @@
                 </div>
             </div>
 
-            {{-- Categories list --}}
             <div class="p-5 bg-white border border-gray-100 rounded-xl shadow-sm">
                 <h3 class="mb-1 text-sm font-semibold text-gray-800">Categorii cheltuieli</h3>
                 <p class="mb-4 text-xs text-gray-400">Folosite pentru a clasifica cheltuielile tale.</p>
@@ -251,10 +248,8 @@
                     </div>
                 @endif
 
-                {{-- Add category form --}}
                 <div class="pt-4 border-t border-gray-100">
                     <p class="mb-3 text-xs font-medium text-gray-500 uppercase tracking-wide">Adaugă categorie nouă</p>
-                    {{-- MOBIL: formular adaugare categorie se impacheteaza pe doua randuri --}}
                     <form method="POST" action="{{ route('settings.categories.store') }}" class="flex flex-wrap gap-3">
                         @csrf
                         <input type="text" name="name" placeholder="Nume categorie" required

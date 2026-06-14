@@ -4,49 +4,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cashly – {{ $title ?? 'Dashboard' }}</title>
+    <title>Cashly - {{ $title ?? 'Dashboard' }}</title>
+    <link rel="icon" type="image/png" href="/logo.png">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="font-sans bg-gray-50">
 
-{{-- =====================================================
-     OVERLAY MOBIL
-     Apare in spatele sidebar-ului cand e deschis pe mobil.
-     Pe DESKTOP: nu apare niciodata (md:hidden).
-     ===================================================== --}}
 <div id="sidebar-overlay"
      class="fixed inset-0 z-20 bg-black bg-opacity-50 hidden md:hidden"
      onclick="inchideMeniu()">
 </div>
 
-{{-- Container principal: sidebar + continut --}}
 <div class="flex h-screen overflow-hidden">
 
-    {{-- =====================================================
-         SIDEBAR (meniu lateral)
-
-         Pe MOBIL:
-           - pozitionat fix (nu ocupa spatiu in layout)
-           - ascuns in stanga cu -translate-x-full
-           - apare la click pe butonul hamburger din header
-
-         Pe DESKTOP (md si mai mare):
-           - pozitionat relativ (ocupa spatiu in flex row)
-           - mereu vizibil (translate-x-0)
-         ===================================================== --}}
     <aside id="sidebar"
            class="fixed inset-y-0 left-0 z-30 flex flex-col w-64 bg-white border-r border-gray-200
                   -translate-x-full transition-transform duration-300 ease-in-out
                   md:relative md:translate-x-0">
 
-        {{-- Logo + buton inchidere (butonul X e vizibil doar pe mobil) --}}
         <div class="flex items-center justify-between h-16 px-6 border-b border-gray-200 flex-shrink-0">
-            <a href="{{ url('/') }}" class="text-xl font-bold text-teal-600 hover:text-teal-700 transition-colors">
-                Cashly
+            <a href="{{ url('/') }}" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
+                <img src="/logo.png" alt="Cashly" class="h-8 w-auto">
+                <span class="text-xl font-bold text-teal-600">Cashly</span>
             </a>
 
-            {{-- Buton X pentru inchiderea meniului pe mobil --}}
-            {{-- Pe DESKTOP: ascuns cu md:hidden --}}
             <button onclick="inchideMeniu()"
                     class="p-1 rounded-lg text-gray-400 hover:bg-gray-100 md:hidden"
                     aria-label="Inchide meniu">
@@ -56,10 +37,8 @@
             </button>
         </div>
 
-        {{-- Linkuri de navigatie principale --}}
         <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
 
-            {{-- Link Dashboard --}}
             <a href="{{ route('dashboard') }}"
                onclick="inchideMeniu()"
                class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium
@@ -71,7 +50,6 @@
                 Dashboard
             </a>
 
-            {{-- Link Clienti --}}
             <a href="{{ route('clients.index') }}"
                onclick="inchideMeniu()"
                class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium
@@ -83,7 +61,6 @@
                 Clienți
             </a>
 
-            {{-- Link Produse --}}
             <a href="{{ route('products.index') }}"
                onclick="inchideMeniu()"
                class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium
@@ -95,7 +72,6 @@
                 Produse
             </a>
 
-            {{-- Link Facturi --}}
             <a href="{{ route('invoices.index') }}"
                onclick="inchideMeniu()"
                class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium
@@ -107,7 +83,6 @@
                 Facturi
             </a>
 
-            {{-- Link Cheltuieli --}}
             <a href="{{ route('expenses.index') }}"
                onclick="inchideMeniu()"
                class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium
@@ -119,7 +94,6 @@
                 Cheltuieli
             </a>
 
-            {{-- Link Rapoarte --}}
             <a href="{{ route('reports.index') }}"
                onclick="inchideMeniu()"
                class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium
@@ -132,10 +106,8 @@
             </a>
         </nav>
 
-        {{-- Linkuri de jos: Abonament, Setari, Logout --}}
         <div class="px-4 py-4 space-y-1 border-t border-gray-200 flex-shrink-0">
 
-            {{-- Link Abonament --}}
             <a href="{{ route('subscription.index') }}"
                onclick="inchideMeniu()"
                class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium
@@ -147,7 +119,6 @@
                 Abonament
             </a>
 
-            {{-- Link Setari --}}
             <a href="{{ route('settings.index') }}"
                onclick="inchideMeniu()"
                class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium
@@ -160,7 +131,6 @@
                 Setări
             </a>
 
-            {{-- Buton Logout --}}
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
                 <button type="submit"
@@ -169,31 +139,17 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                               d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
                     </svg>
-                    Logout
+                    Deconectare
                 </button>
             </form>
         </div>
 
     </aside>
-    {{-- Sfarsit SIDEBAR --}}
 
-    {{-- =====================================================
-         ZONA PRINCIPALA DE CONTINUT
-         Pe mobil: ocupa toata latimea (sidebar-ul e fixed/overlay)
-         Pe desktop: ocupa spatiul ramas dupa sidebar
-         ===================================================== --}}
     <div class="flex flex-col flex-1 overflow-hidden min-w-0">
 
-        {{-- =====================================================
-             HEADER (bara de sus)
-             Contine:
-               - Pe MOBIL: buton hamburger (stanga) + titlu pagina + avatar
-               - Pe DESKTOP: titlu pagina (stanga) + avatar (dreapta)
-             ===================================================== --}}
         <header class="flex items-center h-16 px-4 md:px-6 bg-white border-b border-gray-200 gap-3 flex-shrink-0">
 
-            {{-- Buton HAMBURGER - vizibil DOAR pe mobil --}}
-            {{-- Pe DESKTOP: ascuns cu md:hidden --}}
             <button onclick="deschideMeniu()"
                     class="p-2 rounded-lg text-gray-500 hover:bg-gray-100 md:hidden flex-shrink-0"
                     aria-label="Deschide meniu">
@@ -202,21 +158,15 @@
                 </svg>
             </button>
 
-            {{-- Titlul paginii --}}
-            {{-- Pe MOBIL: ascuns ca sa nu aglomereze bara --}}
-            {{-- Pe DESKTOP: vizibil --}}
             <h1 class="text-lg font-semibold text-gray-800 flex-1 hidden md:block">{{ $title ?? 'Dashboard' }}</h1>
 
-            {{-- Titlu scurt pe mobil (in loc de titlul complet) --}}
             <h1 class="text-base font-semibold text-gray-800 flex-1 md:hidden truncate">{{ $title ?? 'Dashboard' }}</h1>
 
-            {{-- Dropdown profil utilizator --}}
             <div class="relative flex-shrink-0" id="profile-menu-wrapper">
                 <button onclick="toggleProfileMenu()" id="profile-menu-btn"
                         class="flex items-center gap-2 min-w-0 px-2 md:px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors">
 
-                    {{-- Avatar utilizator (poza sau initiale) --}}
-                    @if(auth()->user()->avatar)
+                    @if(auth()->user()->avatar && Storage::disk('public')->exists(auth()->user()->avatar))
                         <img src="{{ Storage::disk('public')->url(auth()->user()->avatar) }}" alt="Avatar"
                              class="w-8 h-8 rounded-full object-cover border border-gray-200 flex-shrink-0">
                     @else
@@ -227,7 +177,6 @@
                         </div>
                     @endif
 
-                    {{-- Numele si emailul - vizibil DOAR pe desktop --}}
                     <div class="min-w-0 text-left hidden md:block">
                         <p class="text-sm font-medium text-gray-700 leading-tight truncate max-w-32">
                             {{ auth()->user()->company_name ?? auth()->user()->name }}
@@ -235,20 +184,17 @@
                         <p class="text-xs text-gray-400 leading-tight truncate max-w-32">{{ auth()->user()->email }}</p>
                     </div>
 
-                    {{-- Sageata dropdown - vizibila DOAR pe desktop --}}
                     <svg class="w-4 h-4 text-gray-400 flex-shrink-0 hidden md:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                     </svg>
                 </button>
 
-                {{-- Panoul dropdown al profilului --}}
                 <div id="profile-menu"
                      style="display:none;position:absolute;right:0;top:calc(100% + 8px);width:240px;background:#fff;border:1px solid #e5e7eb;border-radius:0.75rem;box-shadow:0 10px 40px rgba(0,0,0,0.12);z-index:100;overflow:hidden;">
 
-                    {{-- Sectiunea cu informatiile utilizatorului --}}
                     <div style="padding:1rem;border-bottom:1px solid #f3f4f6;">
                         <div style="display:flex;align-items:center;gap:0.75rem;">
-                            @if(auth()->user()->avatar)
+                            @if(auth()->user()->avatar && Storage::disk('public')->exists(auth()->user()->avatar))
                                 <img src="{{ Storage::disk('public')->url(auth()->user()->avatar) }}" alt="Avatar"
                                      style="width:40px;height:40px;min-width:40px;border-radius:50%;object-fit:cover;border:1px solid #e5e7eb;">
                             @else
@@ -269,7 +215,6 @@
                         </div>
                     </div>
 
-                    {{-- Linkuri din dropdown --}}
                     <div style="padding:0.5rem;">
                         <a href="{{ route('profile.edit') }}"
                            style="display:flex;align-items:center;gap:0.75rem;padding:0.625rem 0.75rem;border-radius:0.5rem;font-size:0.875rem;color:#374151;text-decoration:none;"
@@ -290,7 +235,6 @@
                         </a>
                     </div>
 
-                    {{-- Buton de deconectare din dropdown --}}
                     <div style="padding:0.5rem;border-top:1px solid #f3f4f6;">
                         <form method="POST" action="{{ route('logout') }}" style="margin:0;">
                             @csrf
@@ -306,18 +250,11 @@
                     </div>
                 </div>
             </div>
-            {{-- Sfarsit dropdown profil --}}
 
         </header>
-        {{-- Sfarsit HEADER --}}
 
-        {{-- =====================================================
-             BANNERE DE AVERTIZARE
-             Apar sub header daca e necesar (trial, abonament expirat etc.)
-             ===================================================== --}}
         @php $authUser = auth()->user(); @endphp
 
-        {{-- Banner: trial aproape de expirare --}}
         @if($authUser && $authUser->isOnTrial() && $authUser->trialDaysLeft() <= 7)
             <div style="background:#fffbeb;border-bottom:1px solid #fcd34d;padding:0.5rem 1rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
                 <p style="font-size:0.8125rem;color:#92400e;">
@@ -329,7 +266,6 @@
                 </a>
             </div>
         @elseif($authUser && !$authUser->hasActiveSubscription())
-            {{-- Banner: trial expirat --}}
             <div style="background:#fef2f2;border-bottom:1px solid #fca5a5;padding:0.5rem 1rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
                 <p style="font-size:0.8125rem;color:#991b1b;">
                     🔒 Trial-ul a expirat. Abonează-te pentru a continua să folosești Cashly.
@@ -341,7 +277,6 @@
             </div>
         @endif
 
-        {{-- Banner: date firma incomplete --}}
         @if($authUser && !$authUser->company_name)
             <div style="background:#eff6ff;border-bottom:1px solid #bfdbfe;padding:0.5rem 1rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
                 <div style="display:flex;align-items:center;gap:0.5rem;">
@@ -357,44 +292,27 @@
             </div>
         @endif
 
-        {{-- =====================================================
-             CONTINUTUL PAGINII
-             Padding mai mic pe mobil (p-4) si mai mare pe desktop (md:p-6)
-             ===================================================== --}}
         <main class="flex-1 p-4 md:p-6 overflow-y-auto">
 
-            {{-- Mesaj de succes din sesiune --}}
             @if(session('success'))
                 <div class="p-3 mb-4 text-sm text-green-700 border border-green-200 rounded-lg bg-green-50">
                     {{ session('success') }}
                 </div>
             @endif
 
-            {{-- Mesaj de eroare din sesiune --}}
             @if(session('error'))
                 <div class="p-3 mb-4 text-sm text-red-700 border border-red-200 rounded-lg bg-red-50">
                     {{ session('error') }}
                 </div>
             @endif
 
-            {{-- Continutul specific al fiecarei pagini --}}
             {{ $slot }}
         </main>
-        {{-- Sfarsit CONTINUT --}}
 
     </div>
-    {{-- Sfarsit ZONA PRINCIPALA --}}
 
 </div>
-{{-- Sfarsit container principal --}}
 
-{{-- =====================================================
-     JAVASCRIPT PENTRU MENIUL MOBIL
-
-     deschideMeniu() - deschide sidebar-ul pe mobil
-     inchideMeniu()  - inchide sidebar-ul pe mobil
-     toggleProfileMenu() - deschide/inchide dropdown-ul de profil
-     ===================================================== --}}
 <script>
     // Deschide sidebar-ul pe mobil
     // Elimina clasa -translate-x-full si arata overlay-ul

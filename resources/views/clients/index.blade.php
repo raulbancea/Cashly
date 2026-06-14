@@ -1,4 +1,3 @@
-{{-- Pagina cu lista tuturor clientilor --}}
 <x-cashly-layout>
     <x-slot name="title">Clienți</x-slot>
 
@@ -16,9 +15,8 @@
         </a>
     </div>
 
-    {{-- Modal confirmare ștergere --}}
-    <div id="delete-modal" style="display:none;position:fixed;inset:0;z-index:50;background:rgba(0,0,0,0.4);align-items:center;justify-content:center;">
-        <div style="background:#fff;border-radius:1rem;padding:1.5rem;width:100%;max-width:400px;margin:1rem;box-shadow:0 20px 60px rgba(0,0,0,0.2);">
+    <div id="delete-modal" style="display:none;position:fixed;inset:0;z-index:50;background:rgba(0,0,0,0.4);align-items:center;justify-content:center;" aria-hidden="true">
+        <div role="dialog" aria-modal="true" aria-labelledby="modal-title" style="background:#fff;border-radius:1rem;padding:1.5rem;width:100%;max-width:400px;margin:1rem;box-shadow:0 20px 60px rgba(0,0,0,0.2);">
             <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
                 <div style="width:40px;height:40px;min-width:40px;border-radius:50%;background:#fef2f2;display:flex;align-items:center;justify-content:center;">
                     <svg width="20" height="20" fill="none" stroke="#ef4444" stroke-width="2" viewBox="0 0 24 24">
@@ -94,7 +92,7 @@
                     <div class="p-5">
                         <div class="flex items-center gap-3 mb-3">
                             <div style="width:40px;height:40px;min-width:40px;border-radius:50%;overflow:hidden;flex-shrink:0;">
-                                @if($client->avatar)
+                                @if($client->avatar && Storage::disk('public')->exists($client->avatar))
                                     <img src="{{ Storage::disk('public')->url($client->avatar) }}"
                                          alt="{{ $client->name }}"
                                          style="width:100%;height:100%;object-fit:cover;display:block;">
@@ -129,7 +127,6 @@
                         </div>
                     </div>
 
-                    {{-- Footer --}}
                     <div class="flex items-center justify-between px-5 py-2.5 border-t border-gray-50">
                         <span class="text-xs text-gray-400">
                             {{ $client->invoices_count }} {{ $client->invoices_count === 1 ? 'factură' : 'facturi' }}

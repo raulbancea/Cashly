@@ -1,15 +1,12 @@
-{{-- Pagina pentru editarea unui produs sau serviciu existent --}}
 <x-cashly-layout>
     <x-slot name="title">Editează Produs</x-slot>
 
-    {{-- Titlu pagina --}}
     <div class="max-w-2xl">
         <div class="mb-4">
             <h2 class="text-xl font-bold text-gray-900">Editează Produs</h2>
             <p class="text-sm text-gray-500">{{ $product->name }}</p>
         </div>
 
-        {{-- Formular editare produs --}}
         <div class="p-5 bg-white border border-gray-100 rounded-xl shadow-sm">
             <form method="POST" action="{{ route('products.update', $product) }}">
                 @csrf

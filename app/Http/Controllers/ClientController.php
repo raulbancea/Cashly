@@ -4,29 +4,27 @@ namespace App\Http\Controllers;
 
 use App\Models\Client;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-
 
 class ClientController extends Controller
 {
-    
+
     public function index()
     {
-        
-        $clients = auth()->user()->clients()->withCount('invoices')->latest()->paginate(15);
+
+        $clients = Auth::user()->clients()->withCount('invoices')->latest()->paginate(15);
         return view('clients.index', compact('clients'));
     }
 
-    
     public function create()
     {
         return view('clients.create');
     }
 
-    
     public function store(Request $request)
     {
-        
+
         $validated = $request->validate([
             'name'    => 'required|string|max:255',
             'cui'     => 'nullable|string|max:50',
@@ -38,35 +36,29 @@ class ClientController extends Controller
             'avatar'  => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
-        
         $avatarPath = null;
         if ($request->hasFile('avatar')) {
-            
-            $avatarPath = $request->file('avatar')->store('client-avatars/' . auth()->id(), 'public');
+
+            $avatarPath = $request->file('avatar')->store('client-avatars/' . Auth::id(), 'public');
         }
 
-        
         $dateClient = $validated;
         $dateClient['avatar'] = $avatarPath;
-        auth()->user()->clients()->create($dateClient);
+        Auth::user()->clients()->create($dateClient);
 
-        
         return redirect()->route('clients.index')->with('success', 'Client adăugat cu succes!');
     }
 
-    
     public function show(Client $client)
     {
-        
+
         $this->authorize('view', $client);
 
-        
         $invoices = $client->invoices()->latest()->paginate(20);
 
-        
         $kpi = [];
         foreach (['RON', 'EUR'] as $currency) {
-            
+
             $row = $client->invoices()
                 ->where('currency', $currency)
                 ->selectRaw("
@@ -79,7 +71,6 @@ class ClientController extends Controller
                 ")
                 ->first();
 
-            
             if ($row !== null && $row->total_facturat > 0) {
                 $kpi[$currency] = [
                     'total_facturat'  => (float) $row->total_facturat,
@@ -92,25 +83,21 @@ class ClientController extends Controller
             }
         }
 
-        
         return view('clients.show', compact('client', 'invoices', 'kpi'));
     }
 
-    
     public function edit(Client $client)
     {
-        
+
         $this->authorize('update', $client);
         return view('clients.edit', compact('client'));
     }
 
-    
     public function update(Request $request, Client $client)
     {
-        
+
         $this->authorize('update', $client);
 
-        
         $validated = $request->validate([
             'name'           => 'required|string|max:255',
             'cui'            => 'nullable|string|max:50',
@@ -123,44 +110,38 @@ class ClientController extends Controller
             'remove_avatar'  => 'nullable|boolean',
         ]);
 
-        
         if ($request->boolean('remove_avatar') && $client->avatar) {
-            
+
             Storage::disk('public')->delete($client->avatar);
             $validated['avatar'] = null;
         } elseif ($request->hasFile('avatar')) {
-            
+
             if ($client->avatar) {
                 Storage::disk('public')->delete($client->avatar);
             }
-            
-            $validated['avatar'] = $request->file('avatar')->store('client-avatars/' . auth()->id(), 'public');
+
+            $validated['avatar'] = $request->file('avatar')->store('client-avatars/' . Auth::id(), 'public');
         } else {
-            
+
             unset($validated['avatar']);
         }
 
-        
         unset($validated['remove_avatar']);
 
-        
         $client->update($validated);
         return redirect()->route('clients.index')->with('success', 'Client actualizat!');
     }
 
-    
     public function destroy(Client $client)
     {
-        
+
         $this->authorize('delete', $client);
 
-        
         if ($client->invoices()->exists()) {
             return redirect()->route('clients.index')
                 ->with('error', 'Nu poți șterge un client care are facturi asociate. Șterge mai întâi facturile.');
         }
 
-        
         $client->delete();
         return redirect()->route('clients.index')->with('success', 'Client șters!');
     }

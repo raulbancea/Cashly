@@ -20,7 +20,6 @@
                 </div>
             @endif
 
-            {{-- Avatar --}}
             <div class="p-5 mb-4 bg-white border border-gray-100 rounded-xl shadow-sm">
                 <h3 class="mb-4 text-sm font-semibold text-gray-800">Fotografie / Logo client</h3>
                 <div class="flex items-center gap-5">
@@ -41,7 +40,6 @@
                 </div>
             </div>
 
-            {{-- Date principale --}}
             <div class="p-5 mb-4 bg-white border border-gray-100 rounded-xl shadow-sm">
                 <h3 class="mb-4 text-sm font-semibold text-gray-800">Date principale</h3>
 
@@ -70,7 +68,6 @@
                 </div>
             </div>
 
-            {{-- Contact --}}
             <div class="p-5 mb-4 bg-white border border-gray-100 rounded-xl shadow-sm">
                 <h3 class="mb-4 text-sm font-semibold text-gray-800">Date de contact</h3>
 

@@ -23,7 +23,6 @@
 </head>
 <body style="min-height:100vh;display:flex;">
 
-    {{-- LEFT PANEL - ascuns pe mobil cu clasa auth-left --}}
     <div class="auth-left" style="width:420px;flex-shrink:0;background:linear-gradient(160deg,#0d9488 0%,#0891b2 100%);padding:48px 40px;flex-direction:column;justify-content:space-between;">
         <a href="/" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
             <div style="width:34px;height:34px;background:rgba(255,255,255,0.2);border-radius:9px;display:flex;align-items:center;justify-content:center;">
@@ -55,7 +54,6 @@
         <p style="font-size:12px;color:rgba(255,255,255,0.5);margin:0;">© {{ date('Y') }} Cashly. Toate drepturile rezervate.</p>
     </div>
 
-    {{-- RIGHT PANEL - pe mobil ocupa tot ecranul --}}
     <div class="auth-right" style="flex:1;display:flex;align-items:center;justify-content:center;padding:40px 24px;background:#f8fafc;">
         <div style="width:100%;max-width:420px;">
 

@@ -47,7 +47,8 @@
       "PowerShell(& \"D:\\\\laragon\\\\bin\\\\mysql\\\\mysql-8.4.3-winx64\\\\bin\\\\mysql.exe\" -u root cashly -e \"SELECT id, email, subscription_status, subscription_ends_at, trial_ends_at FROM users;\")",
       "PowerShell(& \"D:\\\\laragon\\\\bin\\\\mysql\\\\mysql-8.4.3-winx64\\\\bin\\\\mysql.exe\" -u root cashly -e \"UPDATE users SET subscription_status = 'active', subscription_ends_at = '2027-06-02 00:00:00' WHERE email = 'raul.bancea@gmail.com';\")",
       "PowerShell(& \"D:\\\\laragon\\\\bin\\\\mysql\\\\mysql-8.4.3-winx64\\\\bin\\\\mysql.exe\" -u root cashly -e \"SELECT email, subscription_status, subscription_ends_at FROM users WHERE email = 'raul.bancea@gmail.com';\")",
-      "Bash(xargs wc -l)"
+      "Bash(xargs wc -l)",
+      "Bash(python -c ' *)"
     ]
   }
 }

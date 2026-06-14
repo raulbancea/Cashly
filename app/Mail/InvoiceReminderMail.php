@@ -9,25 +9,20 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-
 class InvoiceReminderMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    
     public $invoice;
 
-    
     public $daysLeft;
 
-    
     public function __construct(Invoice $invoice, $daysLeft)
     {
         $this->invoice  = $invoice;
         $this->daysLeft = $daysLeft;
     }
 
-    
     public function envelope()
     {
         return new Envelope(
@@ -35,7 +30,6 @@ class InvoiceReminderMail extends Mailable
         );
     }
 
-    
     public function content()
     {
         return new Content(view: 'emails.invoice-reminder');

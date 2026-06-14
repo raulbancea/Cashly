@@ -1,4 +1,3 @@
-{{-- Sectiunea pentru stergerea contului --}}
 <section class="space-y-6">
     <header>
         <h2 class="text-lg font-medium text-gray-900">
@@ -11,13 +10,11 @@
         </p>
     </header>
 
-    {{-- Buton care deschide modalul de confirmare --}}
     <x-danger-button
         x-data=""
         x-on:click.prevent="$dispatch('open-modal', 'confirm-user-deletion')"
     >Șterge contul</x-danger-button>
 
-    {{-- Modal de confirmare stergere cont --}}
     <x-modal name="confirm-user-deletion" :show="$errors->userDeletion->isNotEmpty()" focusable>
         <form method="post" action="{{ route('profile.destroy') }}" class="p-6">
             @csrf
@@ -32,7 +29,6 @@
                 Introdu parola pentru a confirma stergerea contului.
             </p>
 
-            {{-- Campul pentru parola de confirmare --}}
             <div class="mt-6">
                 <x-input-label for="password" value="Parolă" class="sr-only" />
 
@@ -47,7 +43,6 @@
                 <x-input-error :messages="$errors->userDeletion->get('password')" class="mt-2" />
             </div>
 
-            {{-- Butoane anulare si confirmare stergere --}}
             <div class="mt-6 flex justify-end">
                 <x-secondary-button x-on:click="$dispatch('close')">
                     Anulează

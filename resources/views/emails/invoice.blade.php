@@ -1,11 +1,9 @@
-{{-- Template email pentru trimiterea unei facturi clientului --}}
 <!DOCTYPE html>
 <html lang="ro">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Factură {{ $invoice->number }}</title>
-    {{-- Stiluri inline pentru compatibilitate maxima cu clientii de email --}}
     <style>
         body { font-family: Arial, sans-serif; background: #f9fafb; margin: 0; padding: 0; color: #374151; }
         .wrapper { max-width: 560px; margin: 40px auto; background: #ffffff; border-radius: 12px; overflow: hidden; border: 1px solid #e5e7eb; }

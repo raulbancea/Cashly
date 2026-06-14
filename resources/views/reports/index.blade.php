@@ -1,7 +1,6 @@
 <x-cashly-layout>
     <x-slot name="title">Rapoarte {{ $selectedYear }}</x-slot>
 
-    {{-- ── Header + selector an ──────────────────────────────────────────── --}}
     <div class="flex items-center justify-between mb-4">
         <div>
             <h2 class="text-xl font-bold text-gray-900">Rapoarte financiare</h2>
@@ -27,7 +26,6 @@
         </div>
     @else
 
-    {{-- ── KPI cards — grid-cols-2, compacte ─────────────────────────────── --}}
     @foreach($totale as $currency => $t)
     <div class="grid grid-cols-2 gap-3 mb-4">
 
@@ -70,7 +68,6 @@
     </div>
     @endforeach
 
-    {{-- ── Grafic bar: venituri vs cheltuieli — full width, 300px ───────── --}}
     @foreach($monthly as $currency => $data)
     <div class="p-5 mb-4 bg-white border border-gray-100 shadow-sm rounded-xl">
         <h3 class="mb-4 text-sm font-semibold text-gray-700">
@@ -83,7 +80,6 @@
     </div>
     @endforeach
 
-    {{-- ── TVA colectat per cotă și monedă ────────────────────────────── --}}
     @if($vatByRate->isNotEmpty())
     @foreach($vatByRate->groupBy('currency') as $currency => $rows)
     @php $totalCurrency = $vatTotalByCurrency[$currency] ?? 0; @endphp
@@ -92,7 +88,6 @@
             TVA colectat pe cotă {{ $selectedYear }}
             <span class="ml-1 px-1.5 py-0.5 text-xs font-medium bg-blue-100 text-blue-600 rounded">{{ $currency }}</span>
         </h3>
-        {{-- MOBIL: scroll orizontal pe tabelul de TVA --}}
         <div class="overflow-x-auto">
         <table class="w-full min-w-[400px] text-sm">
             <thead>
@@ -133,16 +128,14 @@
                 </tr>
             </tfoot>
         </table>
-        </div>{{-- sfarsit overflow-x-auto --}}
+        </div>
     </div>
     @endforeach
     @endif
 
-    {{-- ── Cheltuieli pe categorie: bare + doughnut side-by-side ──────────── --}}
     @if($expensesByCategory->isNotEmpty())
     <div class="grid grid-cols-1 gap-4 mb-4 lg:grid-cols-2">
 
-        {{-- Tabel cu bare de progres --}}
         <div class="p-5 bg-white border border-gray-100 shadow-sm rounded-xl">
             <h3 class="mb-4 text-sm font-semibold text-gray-700">Cheltuieli pe categorie {{ $selectedYear }}</h3>
             <div class="space-y-3">
@@ -179,11 +172,9 @@
             </div>
         </div>
 
-        {{-- Doughnut chart cu total în centru --}}
         <div class="flex flex-col items-center p-5 bg-white border border-gray-100 shadow-sm rounded-xl">
             <h3 class="self-start mb-4 text-sm font-semibold text-gray-700">Distribuție cheltuieli (RON)</h3>
             @if($pieCategories->isNotEmpty())
-                {{-- Wrapper pătrat, max 300px, pentru center text --}}
                 <div class="relative" style="width: 280px; height: 280px;">
                     <canvas id="chartPieExpenses"></canvas>
                     <div id="doughnut-center"
@@ -202,7 +193,7 @@
     </div>
     @endif
 
-    @endif {{-- end has data --}}
+    @endif 
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>

@@ -5,14 +5,12 @@ namespace App\Observers;
 use App\Models\User;
 use App\Models\ExpenseCategory;
 
-
-
 class UserObserver
 {
-    
+
     public function created(User $user)
     {
-        
+
         $defaults = [
             ['name' => 'Transport',             'color' => '#3b82f6'],
             ['name' => 'Masă / Restaurant',     'color' => '#f97316'],
@@ -24,7 +22,6 @@ class UserObserver
             ['name' => 'Altele',                'color' => '#6b7280'],
         ];
 
-        
         foreach ($defaults as $category) {
             ExpenseCategory::create([
                 'user_id' => $user->id,

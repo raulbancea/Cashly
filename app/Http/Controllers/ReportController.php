@@ -4,41 +4,34 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-
 class ReportController extends Controller
 {
-    
+
     public function index(Request $request)
     {
-        
+
         $user = auth()->user();
 
-        
         $selectedYear = (int) $request->get('an', date('Y'));
 
-        
         $aniDinFacturi = $user->invoices()
             ->selectRaw('YEAR(issue_date) as an')
             ->distinct()
             ->pluck('an');
 
-        
         $aniDinCheltuieli = $user->expenses()
             ->selectRaw('YEAR(date) as an')
             ->distinct()
             ->pluck('an');
 
-        
         $availableYears = $aniDinFacturi->merge($aniDinCheltuieli);
-        
+
         $availableYears->push($selectedYear);
         $availableYears = $availableYears->unique()->sortDesc()->values();
 
-        
         $monthLabels = ['Ian', 'Feb', 'Mar', 'Apr', 'Mai', 'Iun',
                         'Iul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-        
         $revenueRowsRaw = $user->invoices()
             ->where('status', 'paid')
             ->whereYear('issue_date', $selectedYear)
@@ -46,44 +39,37 @@ class ReportController extends Controller
             ->groupBy('month', 'currency')
             ->get();
 
-        
         $revenueRows = [];
         foreach ($revenueRowsRaw as $row) {
             $cheie = $row->month . '-' . $row->currency;
             $revenueRows[$cheie] = $row;
         }
 
-        
         $expenseRowsRaw = $user->expenses()
             ->whereYear('date', $selectedYear)
             ->selectRaw('MONTH(date) as month, currency, SUM(amount) as total')
             ->groupBy('month', 'currency')
             ->get();
 
-        
         $expenseRows = [];
         foreach ($expenseRowsRaw as $row) {
             $cheie = $row->month . '-' . $row->currency;
             $expenseRows[$cheie] = $row;
         }
 
-        
         $monthly = [];
         foreach (['RON', 'EUR'] as $currency) {
             $data = [];
 
-            
             for ($m = 1; $m <= 12; $m++) {
                 $cheie = $m . '-' . $currency;
 
-                
                 if (isset($revenueRows[$cheie])) {
                     $venit = (float) $revenueRows[$cheie]->total;
                 } else {
                     $venit = 0;
                 }
 
-                
                 if (isset($expenseRows[$cheie])) {
                     $cheltuiala = (float) $expenseRows[$cheie]->total;
                 } else {
@@ -97,7 +83,6 @@ class ReportController extends Controller
                 ];
             }
 
-            
             $areDate = false;
             foreach ($data as $linie) {
                 if ($linie['revenue'] > 0 || $linie['expenses'] > 0) {
@@ -111,7 +96,6 @@ class ReportController extends Controller
             }
         }
 
-        
         $vatRawData = $user->invoices()
             ->where('status', 'paid')
             ->whereYear('issue_date', $selectedYear)
@@ -123,7 +107,6 @@ class ReportController extends Controller
             ->orderBy('vat_rate')
             ->get();
 
-        
         $vatByRateArray = [];
         foreach ($vatRawData as $r) {
             $vatByRateArray[] = [
@@ -133,10 +116,9 @@ class ReportController extends Controller
                 'numar_facturi' => (int) $r->numar_facturi,
             ];
         }
-        
+
         $vatByRate = collect($vatByRateArray);
 
-        
         $vatTotalByCurrency = [];
         foreach ($vatByRateArray as $rand) {
             $moneda = $rand['currency'];
@@ -146,23 +128,19 @@ class ReportController extends Controller
             $vatTotalByCurrency[$moneda] += $rand['total_vat'];
         }
 
-        
         $totalVatColectat = 0;
         foreach ($vatByRateArray as $rand) {
             $totalVatColectat += $rand['total_vat'];
         }
 
-        
         $toateCheltuielile = $user->expenses()
             ->whereYear('date', $selectedYear)
             ->with('category')
             ->get();
 
-        
         $cheltuieliPeCategorie = [];
         foreach ($toateCheltuielile as $cheltuiala) {
-            
-            
+
             if ($cheltuiala->category !== null) {
                 $numeCategorie   = $cheltuiala->category->name;
                 $culoareCategorie = $cheltuiala->category->color;
@@ -171,7 +149,6 @@ class ReportController extends Controller
                 $culoareCategorie = '#94a3b8';
             }
 
-            
             if (!isset($cheltuieliPeCategorie[$numeCategorie])) {
                 $cheltuieliPeCategorie[$numeCategorie] = [
                     'name'  => $numeCategorie,
@@ -181,7 +158,6 @@ class ReportController extends Controller
                 ];
             }
 
-            
             if ($cheltuiala->currency === 'RON') {
                 $cheltuieliPeCategorie[$numeCategorie]['ron'] += (float) $cheltuiala->amount;
             } else {
@@ -189,7 +165,6 @@ class ReportController extends Controller
             }
         }
 
-        
         $expensesByCategoryArray = [];
         foreach ($cheltuieliPeCategorie as $categorie) {
             $categorie['ron'] = round($categorie['ron'], 2);
@@ -197,7 +172,6 @@ class ReportController extends Controller
             $expensesByCategoryArray[] = $categorie;
         }
 
-        
         usort($expensesByCategoryArray, function ($a, $b) {
             if ($b['ron'] > $a['ron']) {
                 return 1;
@@ -207,7 +181,6 @@ class ReportController extends Controller
         });
         $expensesByCategory = collect($expensesByCategoryArray);
 
-        
         $totale = [];
         foreach (['RON', 'EUR'] as $currency) {
             $venituri = (float) $user->invoices()
@@ -221,7 +194,6 @@ class ReportController extends Controller
                 ->where('currency', $currency)
                 ->sum('amount');
 
-            
             if ($venituri > 0 || $cheltuieli > 0) {
                 $totale[$currency] = [
                     'venituri'   => $venituri,
@@ -231,7 +203,6 @@ class ReportController extends Controller
             }
         }
 
-        
         return view('reports.index', compact(
             'selectedYear',
             'availableYears',

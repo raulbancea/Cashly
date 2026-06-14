@@ -21,14 +21,12 @@
                 </div>
             @endif
 
-            {{-- Avatar --}}
             <div class="p-5 mb-4 bg-white border border-gray-100 rounded-xl shadow-sm">
                 <h3 class="mb-4 text-sm font-semibold text-gray-800">Fotografie / Logo client</h3>
                 <div class="flex items-center gap-5">
-                    {{-- Preview --}}
                     <div id="avatar-wrapper"
                          style="width:64px;height:64px;min-width:64px;border-radius:50%;overflow:hidden;flex-shrink:0;">
-                        @if($client->avatar)
+                        @if($client->avatar && Storage::disk('public')->exists($client->avatar))
                             <img id="avatar-img"
                                  src="{{ Storage::disk('public')->url($client->avatar) }}"
                                  alt="{{ $client->name }}"
@@ -61,7 +59,6 @@
                 </div>
             </div>
 
-            {{-- Date principale --}}
             <div class="p-5 mb-4 bg-white border border-gray-100 rounded-xl shadow-sm">
                 <h3 class="mb-4 text-sm font-semibold text-gray-800">Date principale</h3>
 
@@ -90,7 +87,6 @@
                 </div>
             </div>
 
-            {{-- Contact --}}
             <div class="p-5 mb-4 bg-white border border-gray-100 rounded-xl shadow-sm">
                 <h3 class="mb-4 text-sm font-semibold text-gray-800">Date de contact</h3>
 

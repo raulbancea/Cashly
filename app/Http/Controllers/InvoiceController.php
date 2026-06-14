@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Storage;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
-
 class InvoiceController extends Controller
 {
 
@@ -23,7 +22,6 @@ class InvoiceController extends Controller
 
         $query = auth()->user()->invoices()->with('client');
 
-
         if ($request->filled('status')) {
             $statusuriPermise = ['draft', 'sent', 'paid', 'overdue', 'cancelled'];
             if (in_array($request->status, $statusuriPermise)) {
@@ -31,22 +29,17 @@ class InvoiceController extends Controller
             }
         }
 
-
         if ($request->filled('client_id')) {
             $query->where('client_id', $request->client_id);
         }
-
 
         if ($request->filled('an')) {
             $query->whereYear('issue_date', $request->an);
         }
 
-
         $invoices = $query->latest()->paginate(15)->withQueryString();
 
-
         $clients = auth()->user()->clients()->orderBy('name')->get();
-
 
         $ani = auth()->user()->invoices()
             ->selectRaw('YEAR(issue_date) as an')
@@ -57,21 +50,17 @@ class InvoiceController extends Controller
         return view('invoices.index', compact('invoices', 'clients', 'ani'));
     }
 
-
     public function create()
     {
 
         $clients = auth()->user()->clients()->where('status', 'active')->get();
 
-
         $products = auth()->user()->products()->get();
-
 
         $nextNumber = $this->generateInvoiceNumber();
 
         return view('invoices.create', compact('clients', 'products', 'nextNumber'));
     }
-
 
     public function store(Request $request)
     {
@@ -112,8 +101,6 @@ class InvoiceController extends Controller
             'items.*.unit_price.min'       => 'Prețul unitar trebuie să fie cel puțin 0.01.',
         ]);
 
-
-
         $invoice = DB::transaction(function () use ($validated) {
 
             $invoice = auth()->user()->invoices()->create([
@@ -130,7 +117,6 @@ class InvoiceController extends Controller
                 'total_with_vat' => 0,
             ]);
 
-
             $total = 0;
             foreach ($validated['items'] as $item) {
                 $itemTotal = $item['quantity'] * $item['unit_price'];
@@ -145,7 +131,6 @@ class InvoiceController extends Controller
                 ]);
             }
 
-
             if (isset($validated['vat_rate']) && $validated['vat_rate'] !== null) {
                 $vatRate   = $validated['vat_rate'];
                 $vatAmount = round($total * $vatRate / 100, 2);
@@ -153,7 +138,6 @@ class InvoiceController extends Controller
                 $vatRate   = null;
                 $vatAmount = 0;
             }
-
 
             $invoice->update([
                 'total'          => $total,
@@ -167,12 +151,10 @@ class InvoiceController extends Controller
         return redirect()->route('invoices.show', $invoice)->with('success', 'Factura a fost creata cu succes!');
     }
 
-
     public function show(Invoice $invoice)
     {
         $this->authorize('view', $invoice);
         $invoice->load('client', 'items');
-
 
         $clientEmail = null;
         if ($invoice->client !== null) {
@@ -182,12 +164,10 @@ class InvoiceController extends Controller
         return view('invoices.show', compact('invoice', 'clientEmail'));
     }
 
-
     public function edit(Invoice $invoice)
     {
         $this->authorize('update', $invoice);
         $invoice->load('client', 'items');
-
 
         $clients = auth()->user()->clients()
             ->where(function ($q) use ($invoice) {
@@ -199,7 +179,6 @@ class InvoiceController extends Controller
 
         return view('invoices.edit', compact('invoice', 'clients', 'products'));
     }
-
 
     public function update(Request $request, Invoice $invoice)
     {
@@ -256,7 +235,6 @@ class InvoiceController extends Controller
                 ]);
             }
 
-
             if (isset($validated['vat_rate']) && $validated['vat_rate'] !== null) {
                 $vatRate   = $validated['vat_rate'];
                 $vatAmount = round($total * $vatRate / 100, 2);
@@ -278,7 +256,6 @@ class InvoiceController extends Controller
             ]);
         });
 
-
         if ($invoice->pdf_path !== null) {
             if (Storage::exists($invoice->pdf_path)) {
                 Storage::delete($invoice->pdf_path);
@@ -289,16 +266,13 @@ class InvoiceController extends Controller
         return redirect()->route('invoices.show', $invoice)->with('success', 'Factura a fost actualizata cu succes!');
     }
 
-
     public function destroy(Invoice $invoice)
     {
         $this->authorize('delete', $invoice);
 
-
         if ($invoice->status === 'paid') {
             abort(403, 'Facturile incasate nu pot fi sterse.');
         }
-
 
         $invoice->items()->delete();
         $invoice->delete();
@@ -306,11 +280,9 @@ class InvoiceController extends Controller
         return redirect()->route('invoices.index')->with('success', 'Factura a fost stearsa!');
     }
 
-
     public function markAsSent(Invoice $invoice)
     {
         $this->authorize('markAsSent', $invoice);
-
 
         if ($invoice->status !== 'draft') {
             abort(403);
@@ -321,11 +293,9 @@ class InvoiceController extends Controller
         return redirect()->back()->with('success', 'Factura a fost marcata ca trimisa!');
     }
 
-
     public function markAsPaid(Invoice $invoice)
     {
         $this->authorize('markAsPaid', $invoice);
-
 
         if ($invoice->status === 'paid' || $invoice->status === 'cancelled') {
             abort(403);
@@ -336,11 +306,9 @@ class InvoiceController extends Controller
         return redirect()->back()->with('success', 'Factura a fost marcata ca incasata!');
     }
 
-
     public function markAsCancelled(Invoice $invoice)
     {
         $this->authorize('markAsCancelled', $invoice);
-
 
         if ($invoice->status === 'paid') {
             abort(403, 'Facturile incasate nu pot fi anulate.');
@@ -351,12 +319,10 @@ class InvoiceController extends Controller
         return redirect()->back()->with('success', 'Factura a fost anulata!');
     }
 
-
     private function generateInvoiceNumber()
     {
         $anulCurent = date('Y');
         $prefix     = 'CASH-' . $anulCurent . '-';
-
 
         $ultimaFactura = Invoice::withoutGlobalScope('user')
             ->where('user_id', Auth::id())
@@ -365,7 +331,6 @@ class InvoiceController extends Controller
             ->lockForUpdate()
             ->max('number');
 
-
         if ($ultimaFactura !== null) {
             $numarVechi  = (int) substr($ultimaFactura, strlen($prefix));
             $numarNou    = $numarVechi + 1;
@@ -373,15 +338,12 @@ class InvoiceController extends Controller
             $numarNou = 1;
         }
 
-
         return $prefix . str_pad($numarNou, 3, '0', STR_PAD_LEFT);
     }
-
 
     public function duplicate(Invoice $invoice)
     {
         $this->authorize('duplicate', $invoice);
-
 
         if ($invoice->status === 'paid' || $invoice->status === 'cancelled') {
             abort(403, 'Facturile incasate sau anulate nu pot fi duplicate.');
@@ -396,7 +358,6 @@ class InvoiceController extends Controller
             $new->status     = 'draft';
             $new->issue_date = today();
 
-
             if ($invoice->issue_date !== null && $invoice->due_date !== null) {
                 $zileDiferenta = $invoice->issue_date->diffInDays($invoice->due_date);
             } else {
@@ -405,7 +366,6 @@ class InvoiceController extends Controller
             $new->due_date = today()->addDays($zileDiferenta);
 
             $new->save();
-
 
             foreach ($invoice->items as $item) {
                 $new->items()->create($item->only(['description', 'quantity', 'unit_price', 'total', 'product_id']));
@@ -418,13 +378,11 @@ class InvoiceController extends Controller
             ->with('success', 'Factura a fost duplicata ca ' . $newInvoice->number . '. Verifica si salveaza.');
     }
 
-
     public function sendEmail(Invoice $invoice)
     {
         $this->authorize('sendEmail', $invoice);
 
         $invoice->load('client', 'items', 'user');
-
 
         if ($invoice->client === null) {
             return redirect()->back()->with('error', 'Clientul nu are adresa de email setata.');
@@ -434,9 +392,7 @@ class InvoiceController extends Controller
             return redirect()->back()->with('error', 'Clientul nu are adresa de email setata.');
         }
 
-
         Mail::to($invoice->client->email)->send(new InvoiceMail($invoice));
-
 
         if ($invoice->status === 'draft' || $invoice->status === 'sent') {
             $invoice->update(['status' => 'sent']);
@@ -445,11 +401,9 @@ class InvoiceController extends Controller
         return redirect()->back()->with('success', 'Factura a fost trimisa pe email la ' . $invoice->client->email . '.');
     }
 
-
     public function downloadPdf(Invoice $invoice, PdfService $pdfService)
     {
         $this->authorize('downloadPdf', $invoice);
-
 
         if ($invoice->pdf_path === null || !Storage::exists($invoice->pdf_path)) {
             $path = $pdfService->savePdf($invoice);
@@ -459,22 +413,18 @@ class InvoiceController extends Controller
         return Storage::download($invoice->pdf_path, 'factura-' . $invoice->number . '.pdf');
     }
 
-
     public function exportCsv()
     {
 
         $invoices = Invoice::where('user_id', Auth::id())->with('client')->latest()->lazy(100);
 
-
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
         $sheet->setTitle('Facturi');
 
-
         $headers = ['Numar', 'Client', 'Data emiterii', 'Scadenta', 'Status', 'Subtotal', 'TVA', 'Total cu TVA', 'Moneda'];
         $sheet->fromArray($headers, null, 'A1');
         $sheet->getStyle('A1:I1')->getFont()->setBold(true);
-
 
         $statusMap = [
             'draft'     => 'Draft',
@@ -483,7 +433,6 @@ class InvoiceController extends Controller
             'overdue'   => 'Restanta',
             'cancelled' => 'Anulata',
         ];
-
 
         $rand = 2;
         foreach ($invoices as $invoice) {
@@ -494,13 +443,11 @@ class InvoiceController extends Controller
                 $numeClient = '-';
             }
 
-
             if ($invoice->due_date !== null) {
                 $dataScadenta = $invoice->due_date->format('d.m.Y');
             } else {
                 $dataScadenta = '-';
             }
-
 
             if (isset($statusMap[$invoice->status])) {
                 $statusRo = $statusMap[$invoice->status];
@@ -522,7 +469,6 @@ class InvoiceController extends Controller
 
             $rand++;
         }
-
 
         foreach (range('A', 'I') as $col) {
             $sheet->getColumnDimension($col)->setAutoSize(true);

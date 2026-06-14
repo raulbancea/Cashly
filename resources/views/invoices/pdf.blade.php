@@ -187,7 +187,6 @@
 <body>
 <div class="page">
 
-    {{-- ════ HEADER ════ --}}
     <table class="header-table">
         <tr>
             <td class="logo-cell">
@@ -249,7 +248,6 @@
 
     <hr class="divider">
 
-    {{-- ════ FURNIZOR / CUMPĂRĂTOR ════ --}}
     <table class="parties-table">
         <tr>
             <td class="party-cell party-furnizor">
@@ -268,7 +266,6 @@
             </td>
             <td class="party-cell party-cumparator">
                 <div class="party-label party-label-buyer">Cumpărător</div>
-                {{-- Afisam datele clientului daca exista --}}
                 <div class="party-name">{{ $invoice->client ? $invoice->client->name : 'Client necunoscut' }}</div>
                 @if($invoice->client && $invoice->client->cui)
                     <div class="party-detail">CUI / CIF: <strong>{{ $invoice->client->cui }}</strong></div>
@@ -286,12 +283,10 @@
         </tr>
     </table>
 
-    {{-- ════ TVA INFO ════ --}}
     @if($invoice->vat_rate)
         <div class="vat-line">Cotă TVA aplicată: {{ (int)$invoice->vat_rate }}%</div>
     @endif
 
-    {{-- ════ TABEL PRODUSE ════ --}}
     <table class="items-table">
         <thead>
             <tr>
@@ -325,7 +320,6 @@
                 </tr>
             @endforeach
 
-            {{-- Rânduri goale pentru aspect profesional (minim 5 rânduri) --}}
             @for($e = count($invoice->items); $e < 5; $e++)
                 <tr>
                     <td class="nr">&nbsp;</td>
@@ -343,7 +337,6 @@
         </tbody>
     </table>
 
-    {{-- ════ TOTALURI ════ --}}
     <div class="totals-wrap">
         <table class="totals-inner">
             <tr>
@@ -368,7 +361,6 @@
         </table>
     </div>
 
-    {{-- ════ NOTE ════ --}}
     @if($invoice->notes)
         <div class="notes-box">
             <div class="notes-label">Mențiuni / Note</div>
@@ -376,10 +368,8 @@
         </div>
     @endif
 
-    {{-- ════ BOTTOM: CONT BANCAR | ȘTAMPILĂ | SEMNĂTURĂ ════ --}}
     <table class="bottom-table">
         <tr>
-            {{-- Date plată --}}
             <td class="bottom-cell">
                 <div class="section-title">Date plată</div>
                 @if($invoice->user->bank_account)
@@ -394,7 +384,6 @@
                 @endif
             </td>
 
-            {{-- Ștampilă digitală --}}
             <td class="bottom-cell" style="text-align:center;">
                 <div class="section-title" style="text-align:center;">Ștampilă</div>
                 @php
@@ -417,7 +406,6 @@
                 </div>
             </td>
 
-            {{-- Semnătură --}}
             <td class="bottom-cell" style="text-align:center;">
                 <div class="section-title" style="text-align:center;">Semnătură furnizor</div>
                 <div class="sig-space"></div>
@@ -427,7 +415,6 @@
         </tr>
     </table>
 
-    {{-- ════ FOOTER ════ --}}
     <div class="footer">
         Document generat electronic cu <strong>Cashly</strong> &bull; {{ date('d.m.Y H:i') }}<br>
         Acest document este valabil fără semnătură olografă conform Legii nr. 227/2015 privind Codul Fiscal.

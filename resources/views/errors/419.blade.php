@@ -1,10 +1,9 @@
-{{-- Pagina de eroare 419 - Sesiunea a expirat (token CSRF invalid) --}}
 <!DOCTYPE html>
 <html lang="ro">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cashly – Sesiune expirată</title>
+    <title>Cashly - Sesiune expirată</title>
     @vite(['resources/css/app.css'])
 </head>
 <body class="font-sans bg-gray-50">

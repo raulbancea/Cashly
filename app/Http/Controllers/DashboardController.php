@@ -3,22 +3,19 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
-    
+
     public function index()
     {
-        
-        $user = auth()->user();
 
-        
+        $user = Auth::user();
+
         $lunaCurenta = now()->month;
         $anulCurent  = now()->year;
 
-        
-        
         $venituri = $user->invoices()
             ->where('status', 'paid')
             ->whereMonth('issue_date', $lunaCurenta)
@@ -27,8 +24,6 @@ class DashboardController extends Controller
             ->groupBy('currency')
             ->pluck('total', 'currency');
 
-        
-        
         if (isset($venituri['RON'])) {
             $revenue_ron = (float) $venituri['RON'];
         } else {
@@ -41,7 +36,6 @@ class DashboardController extends Controller
             $revenue_eur = 0;
         }
 
-        
         $totalCheltuieli = $user->expenses()
             ->whereMonth('date', $lunaCurenta)
             ->whereYear('date', $anulCurent)
@@ -49,7 +43,6 @@ class DashboardController extends Controller
             ->groupBy('currency')
             ->pluck('total', 'currency');
 
-        
         if (isset($totalCheltuieli['RON'])) {
             $expenses_ron = (float) $totalCheltuieli['RON'];
         } else {
@@ -62,17 +55,13 @@ class DashboardController extends Controller
             $expenses_eur = 0;
         }
 
-        
         $profit_ron = $revenue_ron - $expenses_ron;
         $profit_eur = $revenue_eur - $expenses_eur;
 
-        
         $overdueCount = $user->invoices()->where('status', 'overdue')->count();
 
-        
         $sixMonthsAgo = now()->startOfMonth()->subMonths(5);
 
-        
         $invoiceRowsRaw = $user->invoices()
             ->where('status', 'paid')
             ->where('issue_date', '>=', $sixMonthsAgo)
@@ -80,32 +69,27 @@ class DashboardController extends Controller
             ->groupBy('year', 'month', 'currency')
             ->get();
 
-        
         $invoiceRowsIndexate = [];
         foreach ($invoiceRowsRaw as $row) {
             $cheie = $row->year . '-' . $row->month . '-' . $row->currency;
             $invoiceRowsIndexate[$cheie] = $row;
         }
 
-        
         $expenseRowsRaw = $user->expenses()
             ->where('date', '>=', $sixMonthsAgo)
             ->selectRaw('YEAR(date) as year, MONTH(date) as month, currency, SUM(amount) as total')
             ->groupBy('year', 'month', 'currency')
             ->get();
 
-        
         $expenseRowsIndexate = [];
         foreach ($expenseRowsRaw as $row) {
             $cheie = $row->year . '-' . $row->month . '-' . $row->currency;
             $expenseRowsIndexate[$cheie] = $row;
         }
 
-        
         $cashFlow_ron = [];
         $cashFlow_eur = [];
 
-        
         for ($i = 5; $i >= 0; $i--) {
             $data   = now()->startOfMonth()->subMonths($i);
             $an     = $data->year;
@@ -113,7 +97,6 @@ class DashboardController extends Controller
             $label  = $data->format('M Y');
             $cheie  = $an . '-' . $luna;
 
-            
             $cheieRon = $cheie . '-RON';
             if (isset($invoiceRowsIndexate[$cheieRon])) {
                 $venitRon = (float) $invoiceRowsIndexate[$cheieRon]->total;
@@ -121,7 +104,6 @@ class DashboardController extends Controller
                 $venitRon = 0;
             }
 
-            
             if (isset($expenseRowsIndexate[$cheieRon])) {
                 $cheltuialaRon = (float) $expenseRowsIndexate[$cheieRon]->total;
             } else {
@@ -134,7 +116,6 @@ class DashboardController extends Controller
                 'expenses' => $cheltuialaRon,
             ];
 
-            
             $cheieEur = $cheie . '-EUR';
             if (isset($invoiceRowsIndexate[$cheieEur])) {
                 $venitEur = (float) $invoiceRowsIndexate[$cheieEur]->total;
@@ -155,14 +136,11 @@ class DashboardController extends Controller
             ];
         }
 
-        
         $statusCounts = $user->invoices()
             ->selectRaw('status, COUNT(*) as cnt')
             ->groupBy('status')
             ->pluck('cnt', 'status');
 
-        
-        
         if (isset($statusCounts['draft'])) {
             $nrDraft = (int) $statusCounts['draft'];
         } else {
@@ -201,14 +179,12 @@ class DashboardController extends Controller
             'cancelled' => $nrCancelled,
         ];
 
-        
         $recentInvoices = $user->invoices()
             ->with('client')
             ->latest()
             ->limit(5)
             ->get();
 
-        
         return view('dashboard', compact(
             'revenue_ron', 'revenue_eur',
             'expenses_ron', 'expenses_eur',

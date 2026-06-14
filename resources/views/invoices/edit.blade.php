@@ -1,15 +1,12 @@
-{{-- Pagina pentru editarea unei facturi existente --}}
 <x-cashly-layout>
     <x-slot name="title">Editează Factură</x-slot>
 
-    {{-- Titlu pagina --}}
     <div class="max-w-4xl">
         <div class="mb-4">
             <h2 class="text-xl font-bold text-gray-900">Editează Factura {{ $invoice->number }}</h2>
             <p class="text-sm text-gray-500">Modifică detaliile facturii</p>
         </div>
 
-        {{-- Formular editare factura --}}
         <form method="POST" action="{{ route('invoices.update', $invoice) }}">
             @csrf
             @method('PUT')
@@ -54,7 +51,6 @@
                     </div>
                 </div>
 
-                {{-- MOBIL: 2 coloane pentru date; DESKTOP: 4 coloane --}}
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div>
                         <label class="block mb-1 text-sm font-medium text-gray-700">
@@ -95,7 +91,6 @@
                 </div>
             </div>
 
-            {{-- Linii factura --}}
             <div class="p-5 mb-4 bg-white border border-gray-100 rounded-xl shadow-sm">
                 <h3 class="mb-4 text-sm font-semibold text-gray-800">Produse / Servicii</h3>
 
@@ -103,7 +98,6 @@
                     ⚠️ Produsul selectat este în <strong id="product-currency-label"></strong>, dar factura este în <strong id="invoice-currency-label"></strong>. Verifică prețul înainte de salvare.
                 </div>
 
-                {{-- MOBIL: scroll orizontal pe items; DESKTOP: normal --}}
                 <div class="overflow-x-auto -mx-5 px-5">
                 <div id="items-container" style="min-width:460px;">
                     <div class="grid grid-cols-12 gap-2 mb-2 text-xs font-medium text-gray-500 uppercase">
@@ -157,8 +151,8 @@
                     @endforeach
                 </div>
 
-                </div>{{-- sfarsit items-container --}}
-                </div>{{-- sfarsit overflow-x-auto --}}
+                </div>
+                </div>
 
                 <div class="flex items-center justify-between pt-4 mt-4 border-t border-gray-100">
                     <button type="button" onclick="addItem()"
@@ -185,7 +179,6 @@
                 </div>
             </div>
 
-            {{-- Note --}}
             <div class="p-5 mb-4 bg-white border border-gray-100 rounded-xl shadow-sm">
                 <label class="block mb-1 text-sm font-medium text-gray-700">Note (opțional)</label>
                 <textarea name="notes" rows="2"
