@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cashly - Platforma financiara pentru freelanceri si PFA-uri</title>
-    <link rel="icon" type="image/png" href="/logo.png">
+    <link rel="icon" type="image/png" href="{{ asset('logo.png') }}">
     @vite(['resources/css/app.css'])
     <style>
         * { box-sizing: border-box; }
@@ -73,7 +73,7 @@
 <nav style="background:#fff;border-bottom:1px solid #e2e8f0;position:sticky;top:0;z-index:50;">
     <div style="max-width:1200px;margin:0 auto;padding:0 28px;height:64px;display:flex;align-items:center;justify-content:space-between;">
         <a href="/" style="display:flex;align-items:center;gap:10px;">
-            <img src="/logo.png" alt="Cashly" style="height:34px;width:auto;">
+            <img src="{{ asset('logo.png') }}" alt="Cashly" style="height:34px;width:auto;">
             <span style="font-size:20px;font-weight:800;color:#0d9488;letter-spacing:-0.5px;">Cashly</span>
         </a>
         <div class="nav-links" style="display:flex;align-items:center;gap:4px;">
@@ -140,7 +140,7 @@
         <div class="hero-mockup" style="border-radius:20px;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,0.12);transition:transform .3s,box-shadow .3s;"
              onmouseover="this.style.transform='translateY(-6px)';this.style.boxShadow='0 32px 96px rgba(0,0,0,0.18)'"
              onmouseout="this.style.transform='';this.style.boxShadow='0 24px 80px rgba(0,0,0,0.12)'">
-            <img src="/Dashboard.png" alt="Cashly Dashboard" style="width:100%;height:auto;display:block;">
+            <img src="{{ asset('Dashboard.png') }}" alt="Cashly Dashboard" style="width:100%;height:auto;display:block;">
         </div>
     </div>
 </section>
@@ -236,7 +236,7 @@
         <div style="border-radius:20px;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,0.12);transition:transform .3s,box-shadow .3s;"
              onmouseover="this.style.transform='translateY(-6px)';this.style.boxShadow='0 32px 96px rgba(0,0,0,0.18)'"
              onmouseout="this.style.transform='';this.style.boxShadow='0 24px 80px rgba(0,0,0,0.12)'">
-            <img src="/Facturi.png" alt="Facturi Cashly" style="width:100%;height:auto;display:block;">
+            <img src="{{ asset('Facturi.png') }}" alt="Facturi Cashly" style="width:100%;height:auto;display:block;">
         </div>
     </div>
 
@@ -244,7 +244,7 @@
         <div style="border-radius:20px;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,0.12);transition:transform .3s,box-shadow .3s;max-width:380px;justify-self:end;"
              onmouseover="this.style.transform='translateY(-6px)';this.style.boxShadow='0 32px 96px rgba(0,0,0,0.18)'"
              onmouseout="this.style.transform='';this.style.boxShadow='0 24px 80px rgba(0,0,0,0.12)'">
-            <img src="/EmailPrimitFactura.png" alt="Email Factura Cashly" style="width:100%;height:auto;display:block;">
+            <img src="{{ asset('EmailPrimitFactura.png') }}" alt="Email Factura Cashly" style="width:100%;height:auto;display:block;">
         </div>
         <div>
             <h3 style="font-size:22px;font-weight:800;color:#0f172a;margin:0 0 14px;letter-spacing:-0.3px;">Reminder-uri automate pentru facturi neplatite</h3>
@@ -276,7 +276,7 @@
         <div style="border-radius:20px;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,0.12);transition:transform .3s,box-shadow .3s;"
              onmouseover="this.style.transform='translateY(-6px)';this.style.boxShadow='0 32px 96px rgba(0,0,0,0.18)'"
              onmouseout="this.style.transform='';this.style.boxShadow='0 24px 80px rgba(0,0,0,0.12)'">
-            <img src="/Cheltuieli.png" alt="Cheltuieli Cashly" style="width:100%;height:auto;display:block;">
+            <img src="{{ asset('Cheltuieli.png') }}" alt="Cheltuieli Cashly" style="width:100%;height:auto;display:block;">
         </div>
     </div>
 </section>
@@ -407,7 +407,7 @@
 <footer style="background:#f8fafc;border-top:1px solid #e2e8f0;padding:28px;">
     <div style="max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
         <div style="display:flex;align-items:center;gap:9px;">
-            <img src="/logo.png" alt="Cashly" style="height:26px;width:auto;">
+            <img src="{{ asset('logo.png') }}" alt="Cashly" style="height:26px;width:auto;">
             <span style="font-weight:800;color:#0d9488;font-size:16px;">Cashly</span>
         </div>
         <p style="font-size:13px;color:#94a3b8;margin:0;">© {{ date('Y') }} Cashly. Toate drepturile rezervate.</p>

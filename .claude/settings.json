@@ -48,7 +48,18 @@
       "PowerShell(& \"D:\\\\laragon\\\\bin\\\\mysql\\\\mysql-8.4.3-winx64\\\\bin\\\\mysql.exe\" -u root cashly -e \"UPDATE users SET subscription_status = 'active', subscription_ends_at = '2027-06-02 00:00:00' WHERE email = 'raul.bancea@gmail.com';\")",
       "PowerShell(& \"D:\\\\laragon\\\\bin\\\\mysql\\\\mysql-8.4.3-winx64\\\\bin\\\\mysql.exe\" -u root cashly -e \"SELECT email, subscription_status, subscription_ends_at FROM users WHERE email = 'raul.bancea@gmail.com';\")",
       "Bash(xargs wc -l)",
-      "Bash(python -c ' *)"
+      "Bash(python -c ' *)",
+      "Bash(findstr /n \"MAIL_MAILER\" d:\\\\laragon\\\\www\\\\cashly\\\\.env)",
+      "Bash(Select-String -Path \"d:\\\\laragon\\\\www\\\\cashly\\\\.env\" -Pattern \"MAIL_MAILER|MAIL_HOST|MAIL_FROM\")",
+      "Bash(grep -v \"<!--\\\\|//\\\\|class=\\\\|id=\\\\|style=\\\\|aria\\\\|role\\\\|data-\\\\|name=\\\\|type=\\\\|method=\\\\|action=\\\\|value=\\\\|placeholder=\\\\|label\\\\|meta\\\\|link\\\\|script\\\\|href\\\\|src\\\\|alert\\\\|success\\\\|error\\\\|warning\\\\|session\\\\|route\\\\|old\\\\|config\\\\|asset\")",
+      "Bash(grep -v \"^$\")",
+      "Bash(grep -v \"class=\\\\|style=\\\\|<!--\\\\|//\\\\|href=\\\\|src=\")",
+      "Bash(grep -v \"//\\\\|storage\\\\|test\")",
+      "Bash(grep -rn \"App\\\\\\\\\\\\Mail\\\\\\\\\\\\InvoiceMail\\\\|App\\\\\\\\\\\\Mail\\\\\\\\\\\\InvoiceOverdueMail\\\\|App\\\\\\\\\\\\Mail\\\\\\\\\\\\InvoiceReminderMail\" d:/laragon/www/cashly/app/ --include=\"*.php\")",
+      "Bash(grep -v \"class=\\\\|style=\\\\|<!--\\\\|//\\\\|href=\\\\|aria\")",
+      "Bash(git -C d:/laragon/www/cashly status --short)",
+      "Bash(git -C d:/laragon/www/cashly ls-files)",
+      "Bash(del \"d:\\\\laragon\\\\www\\\\cashly\\\\resources\\\\views\\\\welcome.blade.php\")"
     ]
   }
 }

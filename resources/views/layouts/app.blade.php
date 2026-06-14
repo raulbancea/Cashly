@@ -10,8 +10,8 @@
         <meta name="robots" content="noindex, nofollow">
         <meta property="og:title" content="Cashly">
         <meta property="og:description" content="Facturare, cheltuieli si rapoarte intr-un singur loc.">
-        <meta property="og:image" content="/logo.png">
-        <link rel="icon" type="image/png" href="/logo.png">
+        <meta property="og:image" content="{{ asset('logo.png') }}">
+        <link rel="icon" type="image/png" href="{{ asset('logo.png') }}">
 
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />

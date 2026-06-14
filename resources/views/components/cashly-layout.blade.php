@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cashly - {{ $title ?? 'Dashboard' }}</title>
-    <link rel="icon" type="image/png" href="/logo.png">
+    <link rel="icon" type="image/png" href="{{ asset('logo.png') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="font-sans bg-gray-50">
@@ -24,7 +24,7 @@
 
         <div class="flex items-center justify-between h-16 px-6 border-b border-gray-200 flex-shrink-0">
             <a href="{{ url('/') }}" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
-                <img src="/logo.png" alt="Cashly" class="h-8 w-auto">
+                <img src="{{ asset('logo.png') }}" alt="Cashly" class="h-8 w-auto">
                 <span class="text-xl font-bold text-teal-600">Cashly</span>
             </a>
 

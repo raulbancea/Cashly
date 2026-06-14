@@ -69,6 +69,7 @@ class ExpenseController extends Controller
         }
 
         $dateCheltuiala = $validated;
+        unset($dateCheltuiala['receipt']);
         $dateCheltuiala['receipt_path'] = $receiptPath;
         auth()->user()->expenses()->create($dateCheltuiala);
 

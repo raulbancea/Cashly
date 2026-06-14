@@ -57,7 +57,7 @@ class InvoiceController extends Controller
 
         $products = auth()->user()->products()->get();
 
-        $nextNumber = $this->generateInvoiceNumber();
+        $nextNumber = DB::transaction(fn() => $this->generateInvoiceNumber());
 
         return view('invoices.create', compact('clients', 'products', 'nextNumber'));
     }

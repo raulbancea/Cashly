@@ -89,13 +89,17 @@
 
             <div style="padding:1.25rem 1.75rem 1.75rem;display:flex;flex-direction:column;align-items:center;gap:0.625rem;">
                 @if($user->subscription_status === 'active')
-                    <a href="{{ route('subscription.portal') }}"
-                       style="display:inline-flex;align-items:center;gap:0.5rem;padding:0.625rem 1.5rem;font-size:0.875rem;font-weight:500;color:#374151;border:1px solid #d1d5db;border-radius:0.625rem;background:#fff;text-decoration:none;transition:background .15s;"
-                       onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='#fff'">
-                        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                        Gestionează abonamentul
-                    </a>
-                    <p style="font-size:0.75rem;color:#9ca3af;margin:0;">Modifici sau anulezi din portalul Stripe.</p>
+                    @if($user->stripe_customer_id)
+                        <a href="{{ route('subscription.portal') }}"
+                           style="display:inline-flex;align-items:center;gap:0.5rem;padding:0.625rem 1.5rem;font-size:0.875rem;font-weight:500;color:#374151;border:1px solid #d1d5db;border-radius:0.625rem;background:#fff;text-decoration:none;transition:background .15s;"
+                           onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='#fff'">
+                            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                            Gestionează abonamentul
+                        </a>
+                        <p style="font-size:0.75rem;color:#9ca3af;margin:0;">Modifici sau anulezi din portalul Stripe.</p>
+                    @else
+                        <p style="font-size:0.875rem;font-weight:500;color:#166534;margin:0;">Abonament activ.</p>
+                    @endif
                 @else
                     <form method="POST" action="{{ route('subscription.checkout') }}" style="width:100%;display:flex;justify-content:center;">
                         @csrf
