@@ -13,9 +13,7 @@
         .field { margin-bottom:18px; }
         .field label { display:block;font-size:13px;font-weight:500;color:#374151;margin-bottom:6px; }
         .field input { width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:9px;font-size:14px;color:#0f172a;background:#fff; }
-        /* DESKTOP: panoul stang este flex container */
         .auth-left { display: flex; }
-        /* MOBIL: ascundem panoul stang */
         @media (max-width:640px) {
             .auth-left { display:none !important; }
             .auth-right { padding:32px 20px !important; }

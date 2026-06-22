@@ -8,9 +8,7 @@
     <style>
         * { box-sizing: border-box; }
         body { margin:0; font-family:ui-sans-serif,system-ui,sans-serif; overflow-x:hidden; }
-        /* DESKTOP: panoul stang este flex container */
         .auth-left { display: flex; }
-        /* MOBIL: ascundem panoul stang */
         @media (max-width:640px) {
             .auth-left { display:none !important; }
             .auth-right { padding:32px 20px !important; }
