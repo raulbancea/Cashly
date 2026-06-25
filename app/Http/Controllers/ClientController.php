@@ -142,7 +142,7 @@ class ClientController extends Controller
                 ->with('error', 'Nu poți șterge un client care are facturi asociate. Șterge mai întâi facturile.');
         }
 
-        $client->delete();
+        Client::destroy($client->id);
         return redirect()->route('clients.index')->with('success', 'Client șters!');
     }
 }
