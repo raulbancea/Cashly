@@ -59,7 +59,7 @@
         <div class="p-4 bg-white border border-blue-100 shadow-sm rounded-xl">
             <p class="text-xs font-medium tracking-wide text-gray-400 uppercase">TVA colectat</p>
             <p class="mt-1 text-xl font-bold text-blue-700">
-                {{ number_format($totalVatColectat, 2, ',', '.') }}
+                {{ number_format($vatTotalByCurrency[$currency] ?? 0, 2, ',', '.') }}
                 <span class="text-sm font-normal text-blue-400">{{ $currency }}</span>
             </p>
             <p class="mt-0.5 text-xs text-gray-400">din facturi plătite</p>

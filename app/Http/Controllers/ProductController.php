@@ -10,7 +10,6 @@ class ProductController extends Controller
 
     public function index()
     {
-
         $products = auth()->user()->products()->latest()->paginate(15);
         return view('products.index', compact('products'));
     }
@@ -22,7 +21,6 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-
         $validated = $request->validate([
             'name'        => 'required|string|max:255',
             'category'    => 'nullable|string|max:100',

@@ -11,13 +11,11 @@
             background: #fff;
         }
         .page {
-            padding: 36px 44px 36px 44px;
-            min-height: 1050px;
+            padding: 28px 36px 24px 36px;
             display: block;
         }
 
-        /* ── HEADER ── */
-        .header-table { width: 100%; margin-bottom: 20px; }
+        .header-table { width: 100%; margin-bottom: 14px; }
         .header-table td { vertical-align: middle; }
 
         .logo-cell { width: 55%; vertical-align: middle; }
@@ -57,12 +55,11 @@
         .divider {
             border: none;
             border-top: 3px solid #0d9488;
-            margin-bottom: 22px;
+            margin-bottom: 14px;
         }
 
-        /* ── PARTIES ── */
-        .parties-table { width: 100%; margin-bottom: 22px; border-collapse: separate; border-spacing: 10px 0; }
-        .party-cell { width: 50%; vertical-align: top; padding: 14px 16px; }
+        .parties-table { width: 100%; margin-bottom: 14px; border-collapse: separate; border-spacing: 10px 0; }
+        .party-cell { width: 50%; vertical-align: top; padding: 10px 14px; }
         .party-furnizor {
             background: #f0fdfa;
             border: 1.5px solid #99f6e4;
@@ -87,19 +84,17 @@
         .party-name   { font-size: 14px; font-weight: bold; color: #1a1a2e; margin-bottom: 5px; }
         .party-detail { font-size: 11px; color: #555; margin-bottom: 3px; line-height: 1.5; }
 
-        /* ── TVA LINE ── */
         .vat-line {
             font-size: 11px;
             color: #0d9488;
             font-weight: bold;
-            margin-bottom: 10px;
-            padding: 6px 10px;
+            margin-bottom: 8px;
+            padding: 5px 10px;
             background: #f0fdfa;
             border-left: 3px solid #0d9488;
             border-radius: 3px;
         }
 
-        /* ── ITEMS TABLE ── */
         .items-table { width: 100%; border-collapse: collapse; margin-bottom: 0; }
         .items-table thead tr { background: #0d9488; }
         .items-table thead th {
@@ -117,7 +112,7 @@
         .items-table tbody tr:nth-child(even) { background: #f8fafc; }
         .items-table tbody tr:nth-child(odd)  { background: #fff; }
         .items-table tbody td {
-            padding: 10px 10px;
+            padding: 6px 10px;
             font-size: 11px;
             color: #1a1a2e;
             border-bottom: 1px solid #e2e8f0;
@@ -126,8 +121,7 @@
         .items-table tbody td.center { text-align: center; }
         .items-table tbody td.nr     { color: #aaa; font-size: 10px; }
 
-        /* ── TOTALS ── */
-        .totals-wrap { border: 1px solid #e2e8f0; border-top: none; margin-bottom: 22px; }
+        .totals-wrap { border: 1px solid #e2e8f0; border-top: none; margin-bottom: 14px; }
         .totals-inner { width: 100%; border-collapse: collapse; }
         .totals-inner td { padding: 8px 10px; font-size: 11px; border-bottom: 1px solid #f1f5f9; }
         .t-label { text-align: right; color: #555; width: 78%; }
@@ -136,10 +130,9 @@
         .totals-inner tr.grand td.t-label { font-size: 13px; font-weight: bold; color: #fff; }
         .totals-inner tr.grand td.t-value { font-size: 16px; font-weight: bold; color: #fff; }
 
-        /* ── NOTES ── */
         .notes-box {
-            margin-bottom: 22px;
-            padding: 10px 14px;
+            margin-bottom: 12px;
+            padding: 8px 12px;
             background: #fffbeb;
             border-left: 4px solid #f59e0b;
             border-radius: 3px;
@@ -147,9 +140,8 @@
         .notes-label { font-size: 9px; font-weight: bold; text-transform: uppercase; color: #92400e; margin-bottom: 5px; }
         .notes-text  { font-size: 11px; color: #555; line-height: 1.6; }
 
-        /* ── BOTTOM ── */
-        .bottom-table { width: 100%; border-collapse: separate; border-spacing: 12px 0; margin-top: 10px; }
-        .bottom-cell  { vertical-align: top; width: 33.33%; padding: 14px 16px; border: 1px solid #e2e8f0; border-radius: 6px; }
+        .bottom-table { width: 100%; border-collapse: separate; border-spacing: 10px 0; margin-top: 6px; }
+        .bottom-cell  { vertical-align: top; width: 33.33%; padding: 10px 12px; border: 1px solid #e2e8f0; border-radius: 6px; }
 
         .section-title {
             font-size: 9px;
@@ -164,18 +156,14 @@
         .bank-label { font-size: 10px; color: #888; margin-bottom: 3px; }
         .bank-value { font-size: 11px; font-weight: bold; color: #1a1a2e; margin-bottom: 10px; word-break: break-all; }
 
-        /* ── STAMP SVG ── */
         .stamp-wrap { text-align: center; padding-top: 4px; }
-
-        /* ── SIGNATURE ── */
         .sig-space { height: 55px; }
         .sig-line  { border-top: 1px solid #333; width: 85%; margin: 0 auto 5px auto; }
         .sig-label { font-size: 10px; color: #555; text-align: center; }
 
-        /* ── FOOTER ── */
         .footer {
-            margin-top: 28px;
-            padding-top: 10px;
+            margin-top: 14px;
+            padding-top: 8px;
             border-top: 2px solid #0d9488;
             text-align: center;
             font-size: 9px;
@@ -320,7 +308,7 @@
                 </tr>
             @endforeach
 
-            @for($e = count($invoice->items); $e < 5; $e++)
+            @for($e = count($invoice->items); $e < 2; $e++)
                 <tr>
                     <td class="nr">&nbsp;</td>
                     <td>&nbsp;</td>
@@ -392,16 +380,16 @@
                     $stampDate = $invoice->issue_date->format('d.m.Y');
                 @endphp
                 <div class="stamp-wrap">
-                    <svg width="140" height="140" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto;">
-                        <circle cx="70" cy="70" r="66" fill="none" stroke="#0d9488" stroke-width="3"/>
-                        <circle cx="70" cy="70" r="57" fill="none" stroke="#0d9488" stroke-width="1"/>
-                        <text x="70" y="28"  font-family="DejaVu Sans" font-size="9"  fill="#0d9488" text-anchor="middle" font-weight="bold">✦ CASHLY ✦</text>
-                        <text x="70" y="60"  font-family="DejaVu Sans" font-size="9"  fill="#0d9488" text-anchor="middle" font-weight="bold">{{ $stampName }}</text>
+                    <svg width="120" height="120" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto;">
+                        <circle cx="60" cy="60" r="56" fill="none" stroke="#0d9488" stroke-width="3"/>
+                        <circle cx="60" cy="60" r="49" fill="none" stroke="#0d9488" stroke-width="1"/>
+                        <text x="60" y="24"  font-family="DejaVu Sans" font-size="9"  fill="#0d9488" text-anchor="middle" font-weight="bold">✦ CASHLY ✦</text>
+                        <text x="60" y="51"  font-family="DejaVu Sans" font-size="9"  fill="#0d9488" text-anchor="middle" font-weight="bold">{{ $stampName }}</text>
                         @if($stampCui)
-                        <text x="70" y="74"  font-family="DejaVu Sans" font-size="8.5" fill="#0d9488" text-anchor="middle">{{ $stampCui }}</text>
+                        <text x="60" y="63"  font-family="DejaVu Sans" font-size="8.5" fill="#0d9488" text-anchor="middle">{{ $stampCui }}</text>
                         @endif
-                        <text x="70" y="90"  font-family="DejaVu Sans" font-size="10" fill="#0d9488" text-anchor="middle" font-weight="bold">{{ $stampDate }}</text>
-                        <text x="70" y="110" font-family="DejaVu Sans" font-size="7.5" fill="#0d9488" text-anchor="middle">DOCUMENT EMIS ELECTRONIC</text>
+                        <text x="60" y="77"  font-family="DejaVu Sans" font-size="10" fill="#0d9488" text-anchor="middle" font-weight="bold">{{ $stampDate }}</text>
+                        <text x="60" y="94" font-family="DejaVu Sans" font-size="7.5" fill="#0d9488" text-anchor="middle">DOCUMENT EMIS ELECTRONIC</text>
                     </svg>
                 </div>
             </td>
