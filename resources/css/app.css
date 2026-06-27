@@ -2,12 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
-/* MOBIL: previne scroll-ul lateral pe toate paginile */
-html, body {
+html,
+body {
     overflow-x: hidden;
 }
 
-/* MOBIL: panoul stang (auth-left) se ascunde complet sub 640px */
 @media (max-width: 640px) {
     .auth-left {
         display: none !important;

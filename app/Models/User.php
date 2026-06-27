@@ -51,7 +51,7 @@ class User extends Authenticatable
         }
 
         if (in_array($this->subscription_status, ['active', 'trialing'])) {
-            if ($this->subscription_ends_at !== null && $this->subscription_ends_at->isFuture()) {
+            if ($this->subscription_ends_at === null || $this->subscription_ends_at->isFuture()) {
                 return true;
             }
         }

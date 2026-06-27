@@ -7,45 +7,43 @@
             <p class="text-sm text-gray-500">Completează detaliile produsului sau serviciului</p>
         </div>
 
-        <div class="p-5 bg-white border border-gray-100 rounded-xl shadow-sm">
+        <div class="p-5 bg-white border border-gray-100 shadow-sm rounded-xl">
             <form method="POST" action="{{ route('products.store') }}">
                 @csrf
 
                 <div class="mb-4">
-                    <label class="block mb-1 text-sm font-medium text-gray-700">
+                    <label for="name" class="block mb-1 text-sm font-medium text-gray-700">
                         Denumire <span class="text-red-500">*</span>
                     </label>
-                    <input type="text" name="name" value="{{ old('name') }}"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500
-                           @error('name') border-red-400 @enderror">
+                    <input type="text" id="name" name="name" value="{{ old('name') }}"
+                           @class(['w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500', 'border-red-400' => $errors->has('name')])>
                     @error('name')
                         <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
                     @enderror
                 </div>
 
                 <div class="mb-4">
-                    <label class="block mb-1 text-sm font-medium text-gray-700">Categorie</label>
-                    <input type="text" name="category" value="{{ old('category') }}"
+                    <label for="category" class="block mb-1 text-sm font-medium text-gray-700">Categorie</label>
+                    <input type="text" id="category" name="category" value="{{ old('category') }}"
                            placeholder="ex: Consultanță, Design, Development"
                            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
                 </div>
 
                 <div class="flex gap-4 mb-4">
                     <div class="flex-1">
-                        <label class="block mb-1 text-sm font-medium text-gray-700">
+                        <label for="price" class="block mb-1 text-sm font-medium text-gray-700">
                             Preț <span class="text-red-500">*</span>
                         </label>
-                        <input type="number" name="price" value="{{ old('price') }}"
+                        <input type="number" id="price" name="price" value="{{ old('price') }}"
                                step="0.01" min="0"
-                               class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500
-                               @error('price') border-red-400 @enderror">
+                               @class(['w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500', 'border-red-400' => $errors->has('price')])>
                         @error('price')
                             <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
                         @enderror
                     </div>
                     <div class="w-32">
-                        <label class="block mb-1 text-sm font-medium text-gray-700">Monedă</label>
-                        <select name="currency"
+                        <label for="currency" class="block mb-1 text-sm font-medium text-gray-700">Monedă</label>
+                        <select id="currency" name="currency"
                                 class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
                             <option value="RON" {{ old('currency') === 'RON' ? 'selected' : '' }}>RON</option>
                             <option value="EUR" {{ old('currency') === 'EUR' ? 'selected' : '' }}>EUR</option>
@@ -54,8 +52,8 @@
                 </div>
 
                 <div class="mb-6">
-                    <label class="block mb-1 text-sm font-medium text-gray-700">Descriere</label>
-                    <textarea name="description" rows="3"
+                    <label for="description" class="block mb-1 text-sm font-medium text-gray-700">Descriere</label>
+                    <textarea id="description" name="description" rows="3"
                               class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">{{ old('description') }}</textarea>
                 </div>
 

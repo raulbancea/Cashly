@@ -169,7 +169,6 @@
                     <td class="px-5 py-2.5 text-xs text-gray-500">{{ $inv->issue_date->format('d.m.Y') }}</td>
                     <td class="px-5 py-2.5">
                         @php
-                            // Determinam clasa CSS si eticheta badge-ului de status
                             if ($inv->status === 'paid') {
                                 $badgeCls = 'bg-emerald-100 text-emerald-700';
                                 $badgeLbl = 'Încasată';

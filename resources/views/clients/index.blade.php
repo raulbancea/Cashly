@@ -71,10 +71,8 @@
         <div class="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
             @foreach($clients as $i => $client)
                 @php
-                    // Alegem culoarea avatarului in functie de pozitia clientului in lista
                     $color = $avatarColors[$i % count($avatarColors)];
 
-                    // Determinam stilul badge-ului de status
                     if ($client->status === 'active') {
                         $statusStyle = 'background:#dcfce7;color:#15803d';
                         $statusLabel = 'Activ';
@@ -87,7 +85,7 @@
                     }
                 @endphp
 
-                <div class="bg-white border border-gray-100 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-150">
+                <div class="transition-shadow duration-150 bg-white border border-gray-100 shadow-sm rounded-xl hover:shadow-md">
 
                     <div class="p-5">
                         <div class="flex items-center gap-3 mb-3">
@@ -103,7 +101,7 @@
                                 @endif
                             </div>
                             <div class="flex-1 min-w-0">
-                                <p class="font-semibold text-gray-900 truncate text-sm">{{ $client->name }}</p>
+                                <p class="text-sm font-semibold text-gray-900 truncate">{{ $client->name }}</p>
                                 @if($client->cui)
                                     <p class="text-xs text-gray-400">CUI: {{ $client->cui }}</p>
                                 @endif
@@ -122,7 +120,7 @@
                                 <p class="text-sm text-gray-500">{{ $client->phone }}</p>
                             @endif
                             @if(!$client->email && !$client->phone)
-                                <p class="text-xs text-gray-300 italic">Fără date de contact</p>
+                                <p class="text-xs italic text-gray-300">Fără date de contact</p>
                             @endif
                         </div>
                     </div>

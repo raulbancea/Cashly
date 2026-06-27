@@ -6,7 +6,7 @@
             <h2 class="text-xl font-bold text-gray-900">Facturi</h2>
             <p class="text-sm text-gray-500">Gestionează și urmărește facturile</p>
         </div>
-        <div class="flex gap-2 flex-shrink-0">
+        <div class="flex flex-shrink-0 gap-2">
             <a href="{{ route('invoices.exportCsv') }}"
                class="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50">
                 Export Excel
@@ -49,10 +49,10 @@
         </div>
     </div>
 
-    <form method="GET" action="{{ route('invoices.index') }}" class="flex flex-wrap items-end gap-3 p-4 mb-4 bg-white border border-gray-100 rounded-xl shadow-sm">
+    <form method="GET" action="{{ route('invoices.index') }}" class="flex flex-wrap items-end gap-3 p-4 mb-4 bg-white border border-gray-100 shadow-sm rounded-xl">
         <div class="flex flex-col gap-1">
             <label class="text-xs font-medium text-gray-500">Status</label>
-            <select name="status" class="form-select pl-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+            <select name="status" class="py-2 pl-3 text-sm border border-gray-300 rounded-lg form-select focus:outline-none focus:ring-2 focus:ring-teal-500">
                 <option value="">Toate</option>
                 <option value="draft"     {{ request('status') === 'draft'     ? 'selected' : '' }}>Draft</option>
                 <option value="sent"      {{ request('status') === 'sent'      ? 'selected' : '' }}>Trimise</option>
@@ -64,7 +64,7 @@
 
         <div class="flex flex-col gap-1">
             <label class="text-xs font-medium text-gray-500">Client</label>
-            <select name="client_id" class="form-select pl-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+            <select name="client_id" class="py-2 pl-3 text-sm border border-gray-300 rounded-lg form-select focus:outline-none focus:ring-2 focus:ring-teal-500">
                 <option value="">Toți clienții</option>
                 @foreach($clients as $client)
                     <option value="{{ $client->id }}" {{ request('client_id') == $client->id ? 'selected' : '' }}>
@@ -76,7 +76,7 @@
 
         <div class="flex flex-col gap-1">
             <label class="text-xs font-medium text-gray-500">An</label>
-            <select name="an" class="form-select pl-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+            <select name="an" class="py-2 pl-3 text-sm border border-gray-300 rounded-lg form-select focus:outline-none focus:ring-2 focus:ring-teal-500">
                 <option value="">Toți anii</option>
                 @foreach($ani as $an)
                     <option value="{{ $an }}" {{ request('an') == $an ? 'selected' : '' }}>{{ $an }}</option>
@@ -85,7 +85,7 @@
         </div>
 
         <div class="flex flex-col gap-1">
-            <span class="text-xs font-medium text-gray-500 invisible">_</span>
+            <span class="invisible text-xs font-medium text-gray-500">_</span>
             <div class="flex gap-2">
                 <button type="submit"
                         class="px-3 py-1.5 text-sm font-medium text-white bg-teal-600 rounded-lg hover:bg-teal-700">
@@ -125,7 +125,7 @@
             @endif
         </div>
     @else
-        <div class="overflow-x-auto bg-white border border-gray-100 rounded-xl shadow-sm">
+        <div class="overflow-x-auto bg-white border border-gray-100 shadow-sm rounded-xl">
             <table class="w-full min-w-[640px] text-sm">
                 <thead class="bg-gray-50">
                     <tr>
@@ -156,7 +156,6 @@
                             <td class="px-5 py-2.5">
                                 <div class="flex items-center gap-1.5">
                                     @php
-                                        // Calculam eticheta statusului pentru afisare in tabel
                                         if ($invoice->status === 'paid') {
                                             $lblStatus = 'Încasată';
                                         } elseif ($invoice->status === 'draft') {
@@ -181,7 +180,7 @@
                                     </span>
                                     @if($invoice->reminder_sent_at)
                                         <span title="Reminder trimis {{ $invoice->reminder_sent_at->format('d.m.Y') }}"
-                                              class="text-amber-500 text-xs">●</span>
+                                              class="text-xs text-amber-500">●</span>
                                     @endif
                                 </div>
                             </td>

@@ -314,41 +314,24 @@
 </div>
 
 <script>
-    // Deschide sidebar-ul pe mobil
-    // Elimina clasa -translate-x-full si arata overlay-ul
     function deschideMeniu() {
         var sidebar = document.getElementById('sidebar');
         var overlay = document.getElementById('sidebar-overlay');
-
-        // Mutam sidebar-ul in pozitia vizibila
         sidebar.classList.remove('-translate-x-full');
         sidebar.classList.add('translate-x-0');
-
-        // Aratam fundalul intunecat
         overlay.classList.remove('hidden');
-
-        // Blocam scroll-ul pe body cat timp meniul e deschis
         document.body.style.overflow = 'hidden';
     }
 
-    // Inchide sidebar-ul pe mobil
-    // Adauga clasa -translate-x-full si ascunde overlay-ul
     function inchideMeniu() {
         var sidebar = document.getElementById('sidebar');
         var overlay = document.getElementById('sidebar-overlay');
-
-        // Trimitem sidebar-ul inapoi in afara ecranului
         sidebar.classList.add('-translate-x-full');
         sidebar.classList.remove('translate-x-0');
-
-        // Ascundem fundalul intunecat
         overlay.classList.add('hidden');
-
-        // Deblocam scroll-ul pe body
         document.body.style.overflow = '';
     }
 
-    // Deschide sau inchide dropdown-ul de profil din header
     function toggleProfileMenu() {
         var menu = document.getElementById('profile-menu');
         if (menu.style.display === 'none' || menu.style.display === '') {
@@ -358,7 +341,6 @@
         }
     }
 
-    // Inchide dropdown-ul de profil cand se da click in afara lui
     document.addEventListener('click', function(e) {
         var wrapper = document.getElementById('profile-menu-wrapper');
         if (wrapper && !wrapper.contains(e.target)) {
@@ -366,8 +348,6 @@
         }
     });
 
-    // Inchide meniul mobil la redimensionarea ferestrei pe desktop
-    // (evitam situatia in care meniul ramane deschis dupa rotirea telefonului)
     window.addEventListener('resize', function() {
         if (window.innerWidth >= 768) {
             inchideMeniu();

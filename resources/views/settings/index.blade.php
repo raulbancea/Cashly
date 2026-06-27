@@ -9,17 +9,17 @@
             <p class="text-sm text-gray-500">Gestionează contul, firma și preferințele tale</p>
         </div>
 
-        <div class="flex border-b border-gray-200 mb-6 overflow-x-auto">
+        <div class="flex mb-6 overflow-x-auto border-b border-gray-200">
             <button onclick="switchTab('profil')" id="tab-profil"
-                    class="px-5 py-3 text-sm font-medium border-b-2 -mb-px transition-colors">
+                    class="px-5 py-3 -mb-px text-sm font-medium transition-colors border-b-2">
                 Profil
             </button>
             <button onclick="switchTab('firma')" id="tab-firma"
-                    class="px-5 py-3 text-sm font-medium border-b-2 -mb-px transition-colors">
+                    class="px-5 py-3 -mb-px text-sm font-medium transition-colors border-b-2">
                 Firmă &amp; Factură
             </button>
             <button onclick="switchTab('categorii')" id="tab-categorii"
-                    class="px-5 py-3 text-sm font-medium border-b-2 -mb-px transition-colors">
+                    class="px-5 py-3 -mb-px text-sm font-medium transition-colors border-b-2">
                 Categorii cheltuieli
             </button>
         </div>
@@ -38,9 +38,9 @@
                 </div>
             @endif
 
-            <div id="panel-profil" class="tab-panel space-y-5">
+            <div id="panel-profil" class="space-y-5 tab-panel">
 
-                <div class="p-5 bg-white border border-gray-100 rounded-xl shadow-sm">
+                <div class="p-5 bg-white border border-gray-100 shadow-sm rounded-xl">
                     <h3 class="mb-1 text-sm font-semibold text-gray-800">Fotografie de profil</h3>
                     <p class="mb-4 text-xs text-gray-400">Avatarul tău apare în bara laterală și pe pagina de clienți.</p>
                     <div class="flex items-center gap-5">
@@ -56,7 +56,7 @@
                         </div>
                         <div>
                             <a href="{{ route('profile.edit') }}"
-                               class="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 inline-block">
+                               class="inline-block px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50">
                                 Schimbă fotografia
                             </a>
                             <p class="mt-2 text-xs text-gray-400">JPG, PNG sau WebP, max 2 MB</p>
@@ -64,12 +64,12 @@
                     </div>
                 </div>
 
-                <div class="p-5 bg-white border border-gray-100 rounded-xl shadow-sm">
+                <div class="p-5 bg-white border border-gray-100 shadow-sm rounded-xl">
                     <h3 class="mb-4 text-sm font-semibold text-gray-800">Informații personale</h3>
 
                     <div class="grid grid-cols-2 gap-4">
                         <div class="col-span-2">
-                            <label class="block mb-1 text-xs font-medium text-gray-500 uppercase tracking-wide">
+                            <label class="block mb-1 text-xs font-medium tracking-wide text-gray-500 uppercase">
                                 Nume complet <span class="text-red-500">*</span>
                             </label>
                             <input type="text" name="name" value="{{ old('name', $user->name) }}"
@@ -80,7 +80,7 @@
                         </div>
 
                         <div>
-                            <label class="block mb-1 text-xs font-medium text-gray-500 uppercase tracking-wide">Email</label>
+                            <label class="block mb-1 text-xs font-medium tracking-wide text-gray-500 uppercase">Email</label>
                             <div class="flex items-center px-3 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-lg text-gray-400">
                                 {{ $user->email }}
                             </div>
@@ -88,7 +88,7 @@
                         </div>
 
                         <div>
-                            <label class="block mb-1 text-xs font-medium text-gray-500 uppercase tracking-wide">Telefon</label>
+                            <label class="block mb-1 text-xs font-medium tracking-wide text-gray-500 uppercase">Telefon</label>
                             <input type="text" name="phone" value="{{ old('phone', $user->phone) }}"
                                    placeholder="+40 700 000 000"
                                    class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
@@ -104,28 +104,28 @@
                 </div>
             </div>
 
-            <div id="panel-firma" class="tab-panel space-y-5" style="display:none;">
+            <div id="panel-firma" class="space-y-5 tab-panel" style="display:none;">
 
-                <div class="p-5 bg-white border border-gray-100 rounded-xl shadow-sm">
+                <div class="p-5 bg-white border border-gray-100 shadow-sm rounded-xl">
                     <h3 class="mb-4 text-sm font-semibold text-gray-800">Date firmă</h3>
 
                     <div class="grid grid-cols-2 gap-4">
                         <div class="col-span-2">
-                            <label class="block mb-1 text-xs font-medium text-gray-500 uppercase tracking-wide">Nume firmă</label>
+                            <label class="block mb-1 text-xs font-medium tracking-wide text-gray-500 uppercase">Nume firmă</label>
                             <input type="text" name="company_name" value="{{ old('company_name', $user->company_name) }}"
                                    placeholder="Ex: Firma Mea SRL"
                                    class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
                         </div>
 
                         <div>
-                            <label class="block mb-1 text-xs font-medium text-gray-500 uppercase tracking-wide">CUI / CIF</label>
+                            <label class="block mb-1 text-xs font-medium tracking-wide text-gray-500 uppercase">CUI / CIF</label>
                             <input type="text" name="company_vat" value="{{ old('company_vat', $user->company_vat) }}"
                                    placeholder="RO12345678"
                                    class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
                         </div>
 
                         <div>
-                            <label class="block mb-1 text-xs font-medium text-gray-500 uppercase tracking-wide">Monedă implicită</label>
+                            <label class="block mb-1 text-xs font-medium tracking-wide text-gray-500 uppercase">Monedă implicită</label>
                             <select name="currency"
                                     class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
                                 <option value="RON" {{ old('currency', $user->currency) === 'RON' ? 'selected' : '' }}>🇷🇴 RON - Leu românesc</option>
@@ -134,7 +134,7 @@
                         </div>
 
                         <div class="col-span-2">
-                            <label class="block mb-1 text-xs font-medium text-gray-500 uppercase tracking-wide">Adresă</label>
+                            <label class="block mb-1 text-xs font-medium tracking-wide text-gray-500 uppercase">Adresă</label>
                             <textarea name="address" rows="2"
                                       placeholder="Str. Exemplu nr. 1, București"
                                       class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 resize-none">{{ old('address', $user->address) }}</textarea>
@@ -142,38 +142,38 @@
                     </div>
                 </div>
 
-                <div class="p-5 bg-white border border-gray-100 rounded-xl shadow-sm">
+                <div class="p-5 bg-white border border-gray-100 shadow-sm rounded-xl">
                     <h3 class="mb-1 text-sm font-semibold text-gray-800">Date bancare</h3>
                     <p class="mb-4 text-xs text-gray-400">Apar pe facturile PDF generate.</p>
 
                     <div>
-                        <label class="block mb-1 text-xs font-medium text-gray-500 uppercase tracking-wide">Cont bancar (IBAN)</label>
+                        <label class="block mb-1 text-xs font-medium tracking-wide text-gray-500 uppercase">Cont bancar (IBAN)</label>
                         <input type="text" name="bank_account" value="{{ old('bank_account', $user->bank_account) }}"
                                placeholder="RO49AAAA1B31007593840000"
                                class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 font-mono tracking-wide">
                     </div>
                 </div>
 
-                <div class="p-5 bg-white border border-gray-100 rounded-xl shadow-sm">
+                <div class="p-5 bg-white border border-gray-100 shadow-sm rounded-xl">
                     <h3 class="mb-1 text-sm font-semibold text-gray-800">Logo firmă</h3>
                     <p class="mb-4 text-xs text-gray-400">Apare în colțul stânga al facturii PDF. Format PNG sau JPG, max 2 MB.</p>
 
                     @if($user->logo && Storage::disk('public')->exists($user->logo))
-                        <div class="flex items-center gap-4 p-4 mb-4 bg-gray-50 border border-gray-200 rounded-lg">
+                        <div class="flex items-center gap-4 p-4 mb-4 border border-gray-200 rounded-lg bg-gray-50">
                             <img src="{{ Storage::url($user->logo) }}" alt="Logo" style="max-height:48px;max-width:160px;object-fit:contain;display:block;">
                             <div class="flex-1">
                                 <p class="text-xs font-medium text-gray-600">Logo curent</p>
                                 <p class="text-xs text-gray-400">Încarcă un fișier nou pentru a-l înlocui</p>
                             </div>
                             <label class="flex items-center gap-2 text-xs text-red-500 cursor-pointer">
-                                <input type="checkbox" name="remove_logo" value="1" class="rounded border-gray-300">
+                                <input type="checkbox" name="remove_logo" value="1" class="border-gray-300 rounded">
                                 Șterge logo
                             </label>
                         </div>
                     @endif
 
                     <input type="file" name="logo" accept="image/png,image/jpeg"
-                           class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 cursor-pointer">
+                           class="w-full text-sm text-gray-500 cursor-pointer file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100">
                     @error('logo')
                         <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
                     @enderror
@@ -189,7 +189,7 @@
 
         </form>
 
-        <div id="panel-categorii" class="tab-panel space-y-5" style="display:none;">
+        <div id="panel-categorii" class="space-y-5 tab-panel" style="display:none;">
 
             <div id="cat-delete-modal" style="display:none;position:fixed;inset:0;z-index:50;background:rgba(0,0,0,0.4);align-items:center;justify-content:center;" aria-hidden="true">
                 <div role="dialog" aria-modal="true" aria-label="Șterge categorie" style="background:#fff;border-radius:1rem;padding:1.5rem;width:100%;max-width:380px;margin:1rem;box-shadow:0 20px 60px rgba(0,0,0,0.2);">
@@ -224,23 +224,23 @@
                 </div>
             </div>
 
-            <div class="p-5 bg-white border border-gray-100 rounded-xl shadow-sm">
+            <div class="p-5 bg-white border border-gray-100 shadow-sm rounded-xl">
                 <h3 class="mb-1 text-sm font-semibold text-gray-800">Categorii cheltuieli</h3>
                 <p class="mb-4 text-xs text-gray-400">Folosite pentru a clasifica cheltuielile tale.</p>
 
                 @if($categories->isEmpty())
                     <p class="py-6 text-sm text-center text-gray-400">Nu ai nicio categorie încă.</p>
                 @else
-                    <div class="space-y-2 mb-5">
+                    <div class="mb-5 space-y-2">
                         @foreach($categories as $category)
-                            <div class="flex items-center justify-between px-4 py-3 rounded-lg bg-gray-50 border border-gray-100">
+                            <div class="flex items-center justify-between px-4 py-3 border border-gray-100 rounded-lg bg-gray-50">
                                 <div class="flex items-center gap-3">
                                     <div style="width:12px;height:12px;min-width:12px;border-radius:50%;background-color:{{ $category->color }};"></div>
                                     <span class="text-sm font-medium text-gray-700">{{ $category->name }}</span>
                                 </div>
                                 <button type="button"
                                         onclick="openCatModal('{{ route('settings.categories.destroy', $category) }}', {{ json_encode($category->name) }})"
-                                        class="text-xs text-red-400 hover:text-red-600 font-medium">
+                                        class="text-xs font-medium text-red-400 hover:text-red-600">
                                     Șterge
                                 </button>
                             </div>
@@ -249,7 +249,7 @@
                 @endif
 
                 <div class="pt-4 border-t border-gray-100">
-                    <p class="mb-3 text-xs font-medium text-gray-500 uppercase tracking-wide">Adaugă categorie nouă</p>
+                    <p class="mb-3 text-xs font-medium tracking-wide text-gray-500 uppercase">Adaugă categorie nouă</p>
                     <form method="POST" action="{{ route('settings.categories.store') }}" class="flex flex-wrap gap-3">
                         @csrf
                         <input type="text" name="name" placeholder="Nume categorie" required
@@ -293,7 +293,6 @@
             location.hash = name;
         }
 
-        // Determine active tab: error fields, hash, or default
         @if($errors->has('name') || $errors->has('phone'))
             switchTab('profil');
         @elseif($errors->has('company_name') || $errors->has('company_vat') || $errors->has('address') || $errors->has('bank_account') || $errors->has('currency') || $errors->has('logo'))
@@ -303,7 +302,6 @@
             switchTab(tabs.includes(hash) ? hash : 'profil');
         @endif
 
-        // Category modal
         const catModal = document.getElementById('cat-delete-modal');
 
         function openCatModal(action, name) {

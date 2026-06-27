@@ -9,6 +9,7 @@ use Stripe\BillingPortal\Session as PortalSession;
 use Stripe\Checkout\Session as CheckoutSession;
 use Stripe\Exception\SignatureVerificationException;
 use Stripe\Stripe;
+use Stripe\Subscription;
 use Stripe\Webhook;
 
 class StripeController extends Controller
@@ -80,6 +81,8 @@ class StripeController extends Controller
     public function webhook(Request $request)
     {
 
+        Stripe::setApiKey(config('services.stripe.secret'));
+
         $payload   = $request->getContent();
         $sigHeader = $request->header('Stripe-Signature');
 
@@ -104,6 +107,8 @@ class StripeController extends Controller
             $this->handleSubscriptionUpdated($object);
         } elseif ($event->type === 'customer.subscription.deleted') {
             $this->handleSubscriptionDeleted($object);
+        } elseif ($event->type === 'invoice.paid') {
+            $this->handleInvoicePaid($object);
         }
 
         return response('OK', 200);
@@ -139,11 +144,46 @@ class StripeController extends Controller
         $user = User::where('stripe_customer_id', $subscription->customer)->first();
 
         if ($user !== null) {
+            $fresh = Subscription::retrieve($subscription->id);
+
+            \Illuminate\Support\Facades\Log::info('stripe_subscription_debug', [
+                'current_period_end'          => $fresh->current_period_end ?? 'NULL',
+                'items_period_end'            => $fresh->items->data[0]->current_period_end ?? 'NULL',
+                'billing_cycle_anchor'        => $fresh->billing_cycle_anchor ?? 'NULL',
+                'status'                      => $fresh->status ?? 'NULL',
+                'keys'                        => array_keys($fresh->toArray()),
+            ]);
+
+            $periodEnd = $fresh->current_period_end
+                ?? ($fresh->items->data[0]->current_period_end ?? null);
+
             $user->update([
                 'stripe_subscription_id' => $subscription->id,
                 'subscription_status'    => $subscription->status,
-                'subscription_ends_at'   => Carbon::createFromTimestamp($subscription->current_period_end),
+                'subscription_ends_at'   => $periodEnd ? Carbon::createFromTimestamp($periodEnd) : null,
             ]);
+        }
+    }
+
+    private function handleInvoicePaid($invoice)
+    {
+        if (!$invoice->subscription) {
+            return;
+        }
+
+        $user = User::where('stripe_customer_id', $invoice->customer)->first();
+
+        if ($user === null) {
+            return;
+        }
+
+        $periodEnd = null;
+        if (!empty($invoice->lines->data)) {
+            $periodEnd = $invoice->lines->data[0]->period->end ?? null;
+        }
+
+        if ($periodEnd) {
+            $user->update(['subscription_ends_at' => Carbon::createFromTimestamp($periodEnd)]);
         }
     }
 
